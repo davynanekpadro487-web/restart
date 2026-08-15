@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Ma Progression</h1>
+    <p class="text-gray-600 mb-10">Suis tes accomplissements et reste constant.</p>
+
+    <div class="card-premium p-8 bg-white mb-10 relative overflow-hidden">
+        <div class="absolute right-0 top-0 w-32 h-32 bg-purple-50 rounded-bl-[100px] z-0"></div>
+        <div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
+            <div class="w-32 h-32 shrink-0 rounded-full border-4 border-aurea-gold flex items-center justify-center bg-white shadow-xl">
+                <span class="text-4xl font-extrabold {% if stats_cours.terminee %}text-green-500{% else %}text-aurea-purple{% endif %}">{{ stats_cours.score }}/6</span>
+            </div>
+            
+            <div class="flex-grow w-full">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Cette semaine</h2>
+                <div class="flex flex-col sm:flex-row gap-6 mb-4">
+                    <p class="text-gray-600 font-medium">Défis terminés : <span class="font-bold {% if stats_cours.terminee %}text-green-600{% else %}text-aurea-purple{% endif %}">{{ stats_cours.score }} / 6</span></p>
+                    <p class="text-gray-600 font-medium">XP gagnés : <span class="font-bold text-green-600">+{{ stats_cours.xp_semaine }}</span></p>
+                    <p class="text-gray-600 font-medium">XP global : <span class="font-bold text-aurea-gold">{{ user.profil.xp_total|default:"0" }}</span></p>
+                </div>
+                
+                <div class="progress-bar-container shadow-inner mb-4">
+                    <div class="progress-bar-fill {% if stats_cours.terminee %}bg-green-500{% endif %}" style="width: {% widthratio stats_cours.score 6 100 %}%;"></div>
+                </div>
+
+                {% if dernier_defi %}
+                <p class="text-sm text-gray-500 font-medium">
+                    <span class="text-gray-700 font-bold">Dernier défi réalisé :</span> {{ dernier_defi.action_choisie.texte }}
+                </p>
+                {% else %}
+                <p class="text-sm text-gray-500 font-medium">Aucun défi terminé pour le moment.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Historique des programmes -->
+        <div class="card-premium p-6 bg-white animate-on-scroll">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <i data-lucide="award" class="text-aurea-gold w-6 h-6"></i> Historique des programmes
+            </h3>
+            
+            {% if programmes_historique %}
+            <ul class="space-y-4">
+                {% for prog in programmes_historique %}
+                <li class="flex items-start gap-4 p-4 rounded-xl border {% if prog.progression >= prog.total %}bg-green-50/30 border-green-100{% else %}bg-purple-50/30 border-purple-100{% endif %} hover:shadow-md transition-shadow">
+                    <div class="mt-1">
+                        {% if prog.progression >= prog.total %}
+                        <i data-lucide="check-circle-2" class="text-green-500 w-6 h-6"></i>
+                        {% else %}
+                        <i data-lucide="play-circle" class="text-aurea-purple w-6 h-6"></i>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow">
+                        <p class="font-bold text-gray-900">{{ prog.theme }}</p>
+                        <div class="flex justify-between items-center mt-1">
+                            <p class="text-sm text-gray-500">{{ prog.progression }}/{{ prog.total }} terminés</p>
+                            <span class="text-xs font-bold {% if prog.progression >= prog.total %}text-green-700 bg-green-100{% else %}text-aurea-purple bg-purple-100{% endif %} px-2 py-0.5 rounded-full">+{{ prog.xp_total }} XP</span>
+                        </div>
+                    </div>
+                    <a href="{% url 'defi_redirect_programme' prog.id %}" class="mt-2 text-aurea-purple hover:text-purple-700">
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="text-center py-8">
+                <p class="text-gray-500">Tu n'as pas encore d'historique de programmes.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Dernières notes -->
+        <div class="card-premium p-6 bg-white animate-on-scroll" style="transition-delay: 100ms;">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <i data-lucide="pen-tool" class="text-aurea-purple w-6 h-6"></i> Dernières notes
+            </h3>
+            
+            {% if dernieres_notes %}
+            <div class="space-y-4">
+                {% for note in dernieres_notes %}
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <p class="text-sm text-gray-400 mb-1">{{ note.date_creation|date:"d/m/Y" }}</p>
+                    <p class="text-gray-700 line-clamp-3">{{ note.texte }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="mt-4 text-center">
+                <a href="{% url 'journal' %}" class="text-aurea-purple font-bold hover:underline text-sm">Voir tout mon journal</a>
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-6">Aucune note dans ton journal.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

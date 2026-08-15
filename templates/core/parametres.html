@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="conteneur-auth">
+  <div class="forme-fond" style="width:340px; height:340px; top:-100px; left:-100px; background:radial-gradient(circle, rgba(63,169,240,0.16), transparent 70%);"></div>
+  <div class="forme-fond" style="width:300px; height:300px; bottom:-100px; right:-80px; background:radial-gradient(circle, rgba(247,201,72,0.14), transparent 70%);"></div>
+
+  <div class="carte-auth carte-parametres">
+    <a href="{% url 'profil' %}" class="retour-accueil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour au profil
+    </a>
+
+    <h1>Paramètres</h1>
+    <p class="sous-titre-auth">Gère les informations de ton compte.</p>
+
+    <section class="bloc-parametre">
+      <h2>Informations du compte</h2>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_infos">
+
+        <label for="{{ infos_form.username.id_for_label }}">{{ infos_form.username.label }}</label>
+        {{ infos_form.username }}
+        {% if infos_form.username.errors %}<p class="erreur-champ">{{ infos_form.username.errors|striptags }}</p>{% endif %}
+
+        <label for="{{ infos_form.telephone.id_for_label }}">{{ infos_form.telephone.label }}</label>
+        {{ infos_form.telephone }}
+        {% if infos_form.telephone.errors %}<p class="erreur-champ">{{ infos_form.telephone.errors|striptags }}</p>{% endif %}
+
+        <button type="submit" class="bouton-submit">Enregistrer</button>
+      </form>
+    </section>
+
+    <section class="bloc-parametre">
+      <h2>Mot de passe</h2>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="change_password">
+
+        <label for="{{ password_form.old_password.id_for_label }}">{{ password_form.old_password.label }}</label>
+        {{ password_form.old_password }}
+        {% if password_form.old_password.errors %}<p class="erreur-champ">{{ password_form.old_password.errors|striptags }}</p>{% endif %}
+
+        <label for="{{ password_form.new_password1.id_for_label }}">{{ password_form.new_password1.label }}</label>
+        {{ password_form.new_password1 }}
+        {% if password_form.new_password1.errors %}<p class="erreur-champ">{{ password_form.new_password1.errors|striptags }}</p>{% endif %}
+
+        <label for="{{ password_form.new_password2.id_for_label }}">{{ password_form.new_password2.label }}</label>
+        {{ password_form.new_password2 }}
+        {% if password_form.new_password2.errors %}<p class="erreur-champ">{{ password_form.new_password2.errors|striptags }}</p>{% endif %}
+
+        <button type="submit" class="bouton-submit">Changer le mot de passe</button>
+      </form>
+    </section>
+
+    <section class="bloc-parametre">
+      <h2>Thème de couleurs</h2>
+      <form method="post" class="choix-themes">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_theme">
+        {% for code, label in themes_couleur %}
+        <label class="carte-theme carte-theme-{{ code }} {% if profil.theme_couleur == code %}selectionnee{% endif %}">
+          <input type="radio" name="theme_couleur" value="{{ code }}" {% if profil.theme_couleur == code %}checked{% endif %} onchange="this.form.submit()">
+          <span class="apercu-theme"></span>
+          <span>{{ label }}</span>
+        </label>
+        {% endfor %}
+      </form>
+    </section>
+
+    <section class="bloc-parametre bloc-danger">
+      <h2>Zone dangereuse</h2>
+      <p class="sous-titre-auth">Supprimer ton compte est définitif et irréversible.</p>
+      <form method="post" onsubmit="return confirm('Es-tu sûr(e) de vouloir supprimer définitivement ton compte ? Cette action est irréversible.');">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="delete_account">
+        <button type="submit" class="bouton-danger">Supprimer mon compte</button>
+      </form>
+    </section>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light only">
+    <title>Restart by Auréa — Deviens la meilleure version de toi-même</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v={% now 'U' %}">
+
+    <!-- Tailwind (utilisé par les pages internes : dashboard, programme, défis, journal, progression, communauté) -->
+    <script src="{% static 'js/tailwind.js' %}"></script>
+    <script>
+      const theme = "{{ user.profil.theme_couleur|default:'violet_or' }}";
+      let aureaPurple = '#7C3AED';
+      let aureaGold = '#F7C948';
+      let aureaDark = '#4C1D95';
+
+      if (theme === 'sombre') {
+          aureaPurple = '#3FA9F0';
+          aureaDark = '#0B1220';
+      } else if (theme !== 'violet_or') {
+          aureaPurple = '#1D6FB8';
+          aureaDark = '#123A66';
+      }
+
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'aurea-purple': aureaPurple,
+              'aurea-gold': aureaGold,
+              'aurea-dark': aureaDark,
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="{% static 'js/lucide.js' %}"></script>
+</head>
+<body class="flex flex-col min-h-screen theme-{{ user.profil.theme_couleur|default:'bleu_or' }}">
+    <!-- Header -->
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="{% url 'home' %}" class="logo">
+          <span class="logo-nom">Restart</span>
+          <span class="logo-signature">by Auréa</span>
+        </a>
+
+        {% if user.is_authenticated %}
+        <nav class="nav-membre" aria-label="Navigation membre">
+          <a href="{% url 'home' %}" class="actif">Accueil</a>
+          <a href="{% url 'programmes_list' %}">Programmes</a>
+          <a href="{% url 'defi_redirect_actuel' %}">Défis</a>
+          <a href="{% url 'journal' %}">Journal</a>
+          <a href="{% url 'progression' %}">Progression</a>
+          <a href="{% url 'profil' %}">Profil</a>
+        </nav>
+        <div class="header-actions">
+          <a href="{% url 'profil' %}" class="avatar-utilisateur" aria-label="Mon profil">
+            {% if user.profil.photo_profil %}
+              <img src="{{ user.profil.photo_profil.url }}" alt="">
+            {% else %}
+              {{ user.username|first|upper }}
+            {% endif %}
+          </a>
+        </div>
+        {% else %}
+        <nav class="nav-visiteur" aria-label="Navigation visiteur">
+          <a href="{% url 'login' %}">Connexion</a>
+          <a href="{% url 'register' %}" class="bouton-nav-principal">Nous Rejoindre</a>
+        </nav>
+        {% endif %}
+
+        <button class="bouton-menu-mobile" id="mobile-menu-btn" aria-label="Ouvrir le menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+
+        {% include 'partials/mobile_menu.html' %}
+      </div>
+    </header>
+
+    <!-- Messages Django -->
+    {% if messages %}
+    <div id="flash-messages" class="fixed top-24 right-4 z-50 flex flex-col gap-2">
+        {% for message in messages %}
+        <div class="flash-msg bg-white border-l-4 {% if message.tags == 'success' %}border-green-500 text-green-700{% elif message.tags == 'error' %}border-red-500 text-red-700{% else %}border-aurea-purple text-aurea-purple{% endif %} p-4 rounded shadow-lg flex justify-between items-center animate-[slide-left_0.3s_ease-out] transition-opacity duration-500 opacity-100">
+            <p>{{ message }}</p>
+            <button onclick="this.parentElement.remove()" class="ml-4 text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                var msgs = document.querySelectorAll('.flash-msg');
+                msgs.forEach(function(msg) {
+                    msg.style.opacity = '0';
+                    setTimeout(function() { msg.remove(); }, 500);
+                });
+            }, 3500);
+        });
+    </script>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <div class="footer-logo">
+            <span class="logo-nom" style="font-size:1.2rem;">Restart</span>
+            <span class="logo-signature">BY AURÉA</span>
+          </div>
+          <div class="footer-pillars">Confiance en soi · Beauté · Guérison · Construction</div>
+          <div class="socials">
+            <a href="https://www.tiktok.com/@_davyyyna_" target="_blank" class="social-circle" aria-label="TikTok">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.7 7.4c-.4 0-.8-.1-1.1-.3v5.4c0 2.2-1.8 4-4 4s-4-1.8-4-4 1.8-4 4-4c.2 0 .4 0 .6.1v2.1c-.2-.1-.4-.1-.6-.1-1 0-1.9.8-1.9 1.9s.8 1.9 1.9 1.9 1.9-.8 1.9-1.9V6h2c.1.9.6 1.7 1.4 2.2.5.3 1.1.5 1.7.5v2.1z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/__realbabiqueen_" target="_blank" class="social-circle" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4" fill="#fff"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff"/></svg>
+            </a>
+            <a href="https://chat.whatsapp.com/GdR1kJsTenpEwJYN8KgPt3" target="_blank" class="social-circle" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.3 4.8 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+            </a>
+          </div>
+        </div>
+        <p>© 2026 Restart by Davyna. Tous droits réservés.</p>
+      </div>
+    </footer>
+
+
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide icons (si le CDN est bloqué/hors-ligne, on ne casse pas le reste du JS)
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // Intersection Observer pour les animations au scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.animate-on-scroll').forEach((el) => {
+            observer.observe(el);
+        });
+
+        // Animation de la barre de progression au chargement
+        window.addEventListener('load', () => {
+            const progressBars = document.querySelectorAll('.progress-bar-fill');
+            progressBars.forEach(bar => {
+                const targetWidth = bar.getAttribute('data-width');
+                if (targetWidth) {
+                    setTimeout(() => {
+                        bar.style.width = targetWidth + '%';
+                    }, 300); // Léger délai pour effet visuel
+                }
+            });
+        });
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

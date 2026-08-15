@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="conteneur-auth">
+  <div class="forme-fond" style="width:340px; height:340px; top:-100px; right:-100px; background:radial-gradient(circle, rgba(63,169,240,0.16), transparent 70%);"></div>
+  <div class="forme-fond" style="width:300px; height:300px; bottom:-100px; left:-80px; background:radial-gradient(circle, rgba(247,201,72,0.14), transparent 70%);"></div>
+
+  <div class="carte-auth carte-profil">
+    <div class="profil-entete">
+      <div class="avatar-grand">
+        {% if profil.photo_profil %}
+          <img src="{{ profil.photo_profil.url }}" alt="Photo de profil">
+        {% else %}
+          <span>{{ user.username|first|upper }}</span>
+        {% endif %}
+      </div>
+      <form method="post" enctype="multipart/form-data" class="form-photo">
+        {% csrf_token %}
+        <label for="id_photo_profil" class="bouton-secondaire-petit">Changer la photo</label>
+        <input type="file" id="id_photo_profil" name="photo_profil" accept="image/*" onchange="this.form.submit()" hidden>
+      </form>
+    </div>
+
+    <h1 style="text-align:center;">{{ user.username }}</h1>
+    <p class="sous-titre-auth" style="text-align:center;">Membre depuis le {{ user.date_joined|date:"d F Y" }}</p>
+
+    <div class="stats-profil">
+      <div class="stat-item">
+        <span class="stat-valeur">{{ defis_termines }}</span>
+        <span class="stat-label">défi{{ defis_termines|pluralize }} terminé{{ defis_termines|pluralize }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-valeur">{{ profil.xp_total }}</span>
+        <span class="stat-label">XP</span>
+      </div>
+    </div>
+
+    <div class="actions-profil">
+      <a href="{% url 'parametres' %}" class="bouton-submit" style="text-decoration:none; text-align:center; display:block;">Paramètres</a>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="bouton-deconnexion">Se déconnecter</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="carte-auth carte-profil" style="margin-top: 2rem;">
+    <h2 class="text-xl font-bold text-aurea-purple mb-6 border-b border-gray-100 pb-3" style="text-align:center;">Ma boussole</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_espace">
+        
+        <div class="groupe-input">
+            <label style="font-weight:bold; margin-bottom:0.5rem; display:block; color:#4a5568; font-size:0.875rem;">Ce que je construis (Ma vision)</label>
+            <textarea name="vision" rows="4" class="input-auth" placeholder="Où te vois-tu dans 5 ans ?" style="resize:none; padding:1rem;">{{ espace.vision|default_if_none:'' }}</textarea>
+        </div>
+        
+        <div class="groupe-input" style="margin-top:1.5rem;">
+            <label style="font-weight:bold; margin-bottom:0.5rem; display:block; color:#4a5568; font-size:0.875rem;">Qui je veux devenir (Mes objectifs)</label>
+            <textarea name="objectifs" rows="4" class="input-auth" placeholder="Tes buts pour ce mois ou cette année." style="resize:none; padding:1rem;">{{ espace.objectifs|default_if_none:'' }}</textarea>
+        </div>
+        
+        <div class="groupe-input" style="margin-top:1.5rem;">
+            <label style="font-weight:bold; margin-bottom:0.5rem; display:block; color:#4a5568; font-size:0.875rem;">Mes forces (Mes qualités)</label>
+            <textarea name="qualites" rows="3" class="input-auth" placeholder="Ce qui fait ta force." style="resize:none; padding:1rem;">{{ espace.qualites|default_if_none:'' }}</textarea>
+        </div>
+        
+        <button type="submit" class="bouton-submit" style="margin-top:2rem; width:100%;">
+            Sauvegarder ma boussole
+        </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

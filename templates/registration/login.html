@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="conteneur-auth">
+  <div class="forme-fond" style="width:340px; height:340px; top:-100px; left:-100px; background:radial-gradient(circle, rgba(63,169,240,0.16), transparent 70%);"></div>
+  <div class="forme-fond" style="width:300px; height:300px; bottom:-100px; right:-80px; background:radial-gradient(circle, rgba(247,201,72,0.18), transparent 70%);"></div>
+
+  <div class="carte-auth">
+    <a href="{% url 'home' %}" class="retour-accueil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à l'accueil
+    </a>
+
+    <div class="auth-icone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    </div>
+
+    <h1>Bon retour !</h1>
+    <p class="sous-titre-auth">Pas encore de compte ? <a href="{% url 'register' %}">Rejoins-nous</a></p>
+
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <p class="erreur-champ">{{ form.non_field_errors|striptags }}</p>
+      {% endif %}
+
+      <label for="{{ form.username.id_for_label }}">Nom d'utilisateur</label>
+      {{ form.username }}
+      {% if form.username.errors %}<p class="erreur-champ">{{ form.username.errors|striptags }}</p>{% endif %}
+
+      <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+      {{ form.password }}
+      {% if form.password.errors %}<p class="erreur-champ">{{ form.password.errors|striptags }}</p>{% endif %}
+
+      <button type="submit" class="bouton-submit">Se connecter</button>
+      <input type="hidden" name="next" value="{{ next|default:'/programme/' }}">
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  /* ---------- COPIE DES STYLES DE DEFI.HTML ---------- */
+  .page-defi-main { max-width:1240px; margin:0 auto; padding:40px 48px 80px; }
+  .page-defi-main .page-head{ margin-bottom:24px; }
+  .page-defi-main .page-head h1{ font-family:'Poppins',sans-serif; font-weight:800; font-size:34px; color:var(--bleu-nuit); margin-bottom:6px; }
+  .page-defi-main .page-head p{ color:#5a6472; font-size:15px; }
+  
+  /* tabs en tant que vrais liens */
+  .page-defi-main .tabs{ display:flex; gap:12px; margin-bottom:28px; }
+  .page-defi-main .tab-link{ text-decoration:none; display:inline-block; font-family:'Poppins',sans-serif; font-weight:600; font-size:14px; padding:11px 22px; border-radius:999px; border:1.5px solid rgba(26,79,180,0.18); background:#ffffff; color:var(--bleu-nuit); cursor:pointer; transition:all .2s ease; outline:none; }
+  .page-defi-main .tab-link.active{ background:var(--bleu-profond); color:#ffffff; border-color:var(--bleu-profond); }
+  .page-defi-main .tab-link:not(.active):hover{ background:#eaf2ff; }
+  
+  /* boutons */
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:'Poppins',sans-serif; font-weight:600; font-size:14px; border-radius:999px; cursor:pointer; transition:all .15s ease; text-decoration:none; border:none; }
+  .btn:hover{ transform:translateY(-1px); }
+  .btn-blue{ background:var(--bleu-profond); color:#ffffff !important; padding:12px 22px; box-shadow:0 6px 16px rgba(26,79,180,0.25); }
+  
+  .img-placeholder{ width:100%; height:100%; min-height:120px; background: repeating-linear-gradient(45deg, rgba(13,27,76,0.05), rgba(13,27,76,0.05) 10px, rgba(13,27,76,0.09) 10px, rgba(13,27,76,0.09) 20px); border:1.5px dashed rgba(13,27,76,0.25); border-radius:inherit; display:flex; align-items:center; justify-content:center; text-align:center; padding:12px; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:rgba(13,27,76,0.55); }
+  
+  @media (max-width:960px){
+    .page-defi-main{ padding:28px 20px 60px; }
+  }
+</style>
+
+<div class="page-defi-main">
+
+  <!-- ============ HEADER DE LA PAGE ============ -->
+  <div class="page-head">
+    <h1>Mes défis</h1>
+    <p>Avance étape par étape dans ton programme.</p>
+  </div>
+
+  <!-- ============ ONGLETS (LIENS) ============ -->
+  <div class="tabs">
+    <a href="{% url 'defi_redirect_actuel' %}" class="tab-link">Cette semaine</a>
+    <a href="{% url 'defis_historique' %}" class="tab-link active">Mes défis précédents</a>
+  </div>
+
+  <!-- ============ CONTENU HISTORIQUE ============ -->
+  <div id="tab-precedents">
+    {% if programmes_termines_historique %}
+      <div style="display:flex; align-items:center; gap:8px; font-family:'Poppins',sans-serif; font-weight:700; font-size:19px; color:var(--bleu-nuit); margin-bottom:18px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1f9d55" stroke-width="2"/><path d="M8 12L11 15L16 9" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Défis précédents ({{ programmes_termines_historique|length }})
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px; margin-bottom:40px;">
+      {% for past_sem in programmes_termines_historique %}
+        <div style="background:white; border-radius:14px; padding:22px; box-shadow:0 4px 18px rgba(13,27,76,0.08); display:flex; flex-direction:column; gap:14px;">
+          <div style="height:140px; border-radius:10px; overflow:hidden; background:#f0f4f8;">
+            {% if past_sem.programme.illustration %}
+              <img src="{{ past_sem.programme.illustration.url }}" alt="{{ past_sem.programme.theme }}" style="width:100%; height:100%; object-fit:cover;">
+            {% else %}
+              <div class="img-placeholder" style="border:none; border-radius:0;">IMAGE<br>{{ past_sem.programme.theme }}</div>
+            {% endif %}
+          </div>
+          <div>
+            <h3 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:16px; margin-bottom:4px; color:var(--bleu-nuit);">Programme : {{ past_sem.programme.theme }}</h3>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:#1f9d55; margin-top:auto;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1f9d55" stroke-width="2"/><path d="M8 12L11 15L16 9" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Défis terminés
+          </div>
+          <!-- Le lien mène directement à la page de détails des 7 domaines du programme passé -->
+          <a href="{% url 'defi_semaine' past_sem.id %}" class="btn" style="border:1.5px solid rgba(26,79,180,0.18); color:var(--bleu-nuit); justify-content:center;">
+            Voir les réponses
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      {% endfor %}
+      </div>
+    {% else %}
+      <div style="text-align:center; padding: 60px 20px; background:white; border-radius: 20px; box-shadow: 0 4px 18px rgba(13,27,76,0.08);">
+        <h3 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:20px; color:var(--bleu-nuit); margin-bottom:12px;">Aucun défi précédent</h3>
+        <p style="color:var(--gris-texte); font-size:15px; margin-bottom:24px;">Tu n'as pas encore terminé de programme. Continue tes efforts !</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- ============ AIDE ============ -->
+  <div class="help-card" style="background:#ffffff; border-radius:20px; display:grid; grid-template-columns:260px 1fr auto; align-items:center; gap:28px; padding:26px 32px; box-shadow:0 4px 18px rgba(13,27,76,0.08); margin-bottom:20px; margin-top:40px;">
+    <div class="thumb" style="height:110px; border-radius:10px; overflow:hidden; background:#f0f4f8;">
+      <img src="{% static 'images/defis/illu-defi-aide.png' %}" alt="Aide" style="width:100%; height:100%; object-fit:cover;">
+    </div>
+    <div>
+      <h3 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:19px; margin-bottom:6px; color:var(--bleu-nuit);">Besoin d'aide ?</h3>
+      <p style="font-size:14px; color:#5a6472; line-height:1.5; margin:0;">Rejoins notre communauté bienveillante pour échanger et trouver du soutien avec les autres membres.</p>
+    </div>
+    <a href="{{ WHATSAPP_GROUP_LINK }}" target="_blank" class="btn btn-blue" style="display:inline-flex;">Rejoindre la communauté</a>
+  </div>
+
+</div>
+{% endblock %}

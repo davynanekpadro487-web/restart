@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center mb-16 animate-on-scroll">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">La Communauté <span class="text-aurea-purple">Restart</span></h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Rejoins ceux qui ont décidé de prendre leur vie en main. L'entourage est la clé du succès.</p>
+    </div>
+
+    <!-- WhatsApp Card -->
+    <div class="card-premium p-10 bg-gradient-aurea text-white rounded-3xl text-center mb-16 shadow-2xl relative overflow-hidden animate-[slide-up_1s_ease-out]">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-20 -mt-20"></div>
+        <div class="absolute bottom-0 left-0 w-40 h-40 bg-aurea-gold opacity-10 rounded-full -ml-10 -mb-10"></div>
+        
+        <div class="relative z-10">
+            <i class="fa-brands fa-whatsapp text-6xl text-[#25D366] mb-6 drop-shadow-lg bg-white rounded-full p-4"></i>
+            <h2 class="text-3xl font-bold mb-4">Le Groupe Privé</h2>
+            <p class="text-lg text-purple-100 mb-8 max-w-lg mx-auto">
+                Échange quotidiennement avec les autres membres, partage tes victoires, tes doutes et trouve la motivation pour rester discipliné.
+            </p>
+            <a href="{{ WHATSAPP_GROUP_LINK }}" target="_blank" class="inline-block bg-[#25D366] text-white text-lg font-bold px-10 py-4 rounded-full shadow-lg hover:bg-[#20bd5a] hover:scale-105 transition-all">
+                Rejoindre le WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- Wall of fame / Citations -->
+    {% if citations %}
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-10">Paroles de la communauté</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for citation in citations %}
+            <div class="card-premium p-8 bg-white animate-on-scroll">
+                <i data-lucide="quote" class="w-8 h-8 text-aurea-gold/30 mb-4"></i>
+                <p class="text-gray-700 italic text-lg mb-4">"{{ citation.texte }}"</p>
+                {% if citation.auteur %}
+                <p class="font-bold text-aurea-purple text-sm">— {{ citation.auteur }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

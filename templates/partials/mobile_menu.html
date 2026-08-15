@@ -1,0 +1,107 @@
+<style>
+  /* Menu Mobile Partagé */
+  .mobile-menu-overlay {
+    position: fixed; inset: 0; background: rgba(13,27,76,0.3); backdrop-filter: blur(4px);
+    z-index: 90; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+  }
+  .mobile-menu-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .mobile-menu {
+    position: fixed; top: 0; right: -300px; width: 280px; height: 100vh;
+    background: #ffffff; z-index: 100; box-shadow: -4px 0 24px rgba(13,27,76,0.1);
+    display: flex; flex-direction: column; padding: 24px;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+  }
+  .mobile-menu.open { right: 0; }
+
+  .mobile-menu-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;
+  }
+  .mobile-menu-close {
+    background: none; border: none; color: var(--bleu-nuit); cursor: pointer;
+    padding: 8px; border-radius: 50%; transition: background 0.2s; display: flex; align-items: center; justify-content: center;
+  }
+  .mobile-menu-links {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .mobile-menu-links a {
+    text-decoration: none; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 16px;
+    color: var(--bleu-nuit); padding: 14px 16px; border-radius: 12px;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(13,27,76,0.05);
+  }
+  .mobile-menu-links a:hover, .mobile-menu-links a:active {
+    background: rgba(26,79,180,0.05);
+    color: var(--bleu-profond);
+    padding-left: 20px;
+  }
+  .mobile-menu-links a.active { 
+    background: #eaf2ff;
+    color: var(--bleu-profond);
+    border-bottom-color: transparent;
+  }
+
+  .mobile-menu-links a:last-child { border-bottom: none; }
+</style>
+
+<div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-header">
+    <div class="logo-group" style="display:flex; flex-direction:column; line-height:1;">
+      <span class="logo" style="font-size:22px; font-weight:800; font-family:'Poppins',sans-serif; color:var(--bleu-nuit);">Restart</span>
+      <span class="logo-sub" style="color:var(--or-fonce); font-size:10px; font-weight:700; letter-spacing:0.1em;">BY AURÉA</span>
+    </div>
+    <button class="mobile-menu-close" id="mobile-menu-close">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="mobile-menu-links">
+    {% if user.is_authenticated %}
+    <a href="{% url 'home' %}" class="{% if request.path == '/' or request.path == '/home/' %}active{% endif %}">Accueil</a>
+    <a href="{% url 'programmes_list' %}" class="{% if '/programme' in request.path %}active{% endif %}">Programme</a>
+    <a href="{% url 'defi_redirect_actuel' %}" class="{% if '/defi' in request.path %}active{% endif %}">Défis</a>
+    <a href="{% url 'journal' %}" class="{% if '/journal' in request.path %}active{% endif %}">Journal</a>
+    <a href="{% url 'progression' %}" class="{% if '/progression' in request.path %}active{% endif %}">Progression</a>
+    <a href="{% url 'profil' %}" class="{% if '/profil' in request.path %}active{% endif %}">Profil</a>
+    <a href="{% url 'parametres' %}" class="{% if '/parametres' in request.path %}active{% endif %}">Paramètres</a>
+    {% else %}
+    <a href="{% url 'login' %}">Connexion</a>
+    <a href="{% url 'register' %}" style="color:var(--bleu-profond);">Nous Rejoindre</a>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const overlay = document.getElementById('mobile-menu-overlay');
+    const menu = document.getElementById('mobile-menu');
+    const links = document.querySelectorAll('.mobile-menu-links a');
+
+    function openMenu() {
+      if(menu) menu.classList.add('open');
+      if(overlay) overlay.classList.add('open');
+      if(menuBtn) menuBtn.classList.add('open');
+    }
+
+    function closeMenu() {
+      if(menu) menu.classList.remove('open');
+      if(overlay) overlay.classList.remove('open');
+      if(menuBtn) menuBtn.classList.remove('open');
+    }
+
+    if(menuBtn) {
+      // Nettoyer les anciens event listeners au cas où
+      const newMenuBtn = menuBtn.cloneNode(true);
+      if(menuBtn.parentNode) {
+        menuBtn.parentNode.replaceChild(newMenuBtn, menuBtn);
+      }
+      newMenuBtn.addEventListener('click', openMenu);
+    }
+    if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+    if(overlay) overlay.addEventListener('click', closeMenu);
+    links.forEach(l => l.addEventListener('click', closeMenu));
+  });
+</script>

@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  /* ---------- IMAGE PLACEHOLDER ---------- */
+  .img-placeholder{ width:100%; height:100%; min-height:120px; background: repeating-linear-gradient(45deg, rgba(13,27,76,0.05), rgba(13,27,76,0.05) 10px, rgba(13,27,76,0.09) 10px, rgba(13,27,76,0.09) 20px); border:1.5px dashed rgba(13,27,76,0.25); border-radius:inherit; display:flex; align-items:center; justify-content:center; text-align:center; padding:12px; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:rgba(13,27,76,0.55); }
+  
+  /* ---------- MAIN ---------- */
+  .page-programme-main { max-width:1240px; margin:0 auto; padding:40px 48px 80px; }
+  .page-programme-main .page-head{ margin-bottom:24px; }
+  .page-programme-main .page-head h1{ font-family:'Poppins',sans-serif; font-weight:800; font-size:34px; color:var(--bleu-nuit); margin-bottom:6px; }
+  .page-programme-main .page-head p{ color:#5a6472; font-size:15px; }
+  
+  /* tabs */
+  .page-programme-main .tabs{ display:flex; gap:12px; margin-bottom:28px; }
+  .page-programme-main .tab{ font-family:'Poppins',sans-serif; font-weight:600; font-size:14px; padding:11px 22px; border-radius:999px; border:1.5px solid rgba(26,79,180,0.18); background:#ffffff; color:var(--bleu-nuit); cursor:pointer; transition:all .2s ease; outline:none; }
+  .page-programme-main .tab.active{ background:var(--bleu-profond); color:#ffffff; border-color:var(--bleu-profond); }
+  .page-programme-main .tab:not(.active):hover{ background:#eaf2ff; }
+  
+  /* current program card */
+  .current-card{ background:linear-gradient(120deg,var(--bleu-profond),var(--bleu-nuit)); border-radius:20px; padding:0; display:grid; grid-template-columns:1.15fr 1fr; overflow:hidden; box-shadow:0 4px 18px rgba(13,27,76,0.08); margin-bottom:40px; }
+  .current-card-content{ padding:40px 44px; color:#ffffff; display:flex; flex-direction:column; justify-content:center; gap:16px; }
+  .current-card .badge{ display:inline-flex; align-items:center; gap:8px; align-self:flex-start; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.25); padding:7px 14px; border-radius:999px; font-family:'Poppins',sans-serif; font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:#fff; }
+  .current-card-content h2{ font-family:'Poppins',sans-serif; font-weight:800; font-size:30px; margin:0; color:#fff;}
+  .current-card-content .desc{ font-size:14.5px; line-height:1.6; color:rgba(255,255,255,0.85); max-width:400px; margin:0;}
+  .progress-block{ margin-top:6px; max-width:380px; }
+  .progress-label{ display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:8px; color:rgba(255,255,255,0.9); }
+  .progress-bar-track{ width:100%; height:9px; border-radius:999px; background:rgba(255,255,255,0.18); overflow:hidden; }
+  .progress-bar-fill{ height:100%; border-radius:999px; background:linear-gradient(90deg,#38c46f,#1f9d55); }
+  .meta-row{ display:flex; flex-direction:column; gap:8px; font-size:13.5px; color:rgba(255,255,255,0.85); margin-top:4px; }
+  .meta-row .item{ display:flex; align-items:center; gap:8px; }
+  .current-card-media{ position:relative; min-height:280px; }
+  .current-card-media img{ width: 100%; height: 100%; object-fit: cover; }
+  
+  /* section titles */
+  .section-title{ display:flex; align-items:center; gap:10px; font-family:'Poppins',sans-serif; font-weight:700; font-size:13px; letter-spacing:.05em; text-transform:uppercase; color:var(--bleu-profond); margin-bottom:18px; }
+  .section-title.vert{ color:#1f9d55; }
+  
+  /* upcoming grid */
+  .upcoming-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-bottom:44px; }
+  .upcoming-card{ background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 4px 18px rgba(13,27,76,0.08); transition:transform .2s ease, box-shadow .2s ease; text-decoration:none; display:flex; flex-direction:column;}
+  .upcoming-card:hover{ transform:translateY(-4px); box-shadow:0 10px 26px rgba(13,27,76,0.12); }
+  .upcoming-card .thumb{ height:150px; }
+  .upcoming-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .upcoming-card-body{ padding:20px 22px 22px; flex:1; display:flex; flex-direction:column;}
+  .upcoming-card h3{ font-family:'Poppins',sans-serif; font-weight:700; font-size:17px; margin-bottom:6px; color:var(--bleu-nuit);}
+  .upcoming-card p{ font-size:13.5px; color:#5a6472; line-height:1.5; margin-bottom:16px; flex:1; }
+  .upcoming-card-footer{ display:flex; align-items:center; justify-content:space-between; }
+  .date-chip{ display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--bleu-profond); }
+  .arrow-btn{ width:36px; height:36px; border-radius:50%; border:1.5px solid rgba(26,79,180,0.25); display:flex; align-items:center; justify-content:center; background:#ffffff; color:var(--bleu-profond); transition:all .2s ease; }
+  .upcoming-card:hover .arrow-btn{ background:var(--bleu-profond); color:#ffffff; }
+  
+  /* completed section */
+  .completed-card{ background:#eafaf0; border:1px solid rgba(31,157,85,0.18); border-radius:14px; display:grid; grid-template-columns:220px 1fr auto auto auto; align-items:center; gap:24px; padding:18px 26px; margin-bottom:24px; }
+  .completed-card .thumb{ height:96px; border-radius:10px; overflow:hidden; }
+  .completed-card .thumb img{ width: 100%; height: 100%; object-fit: cover; }
+  .completed-card h3{ font-family:'Poppins',sans-serif; font-weight:700; font-size:16px; margin-bottom:4px; color:var(--bleu-nuit);}
+  .completed-card p{ font-size:13px; color:#5a6472; line-height:1.5; margin:0;}
+  .completed-status{ display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:#1f9d55; white-space:nowrap; }
+  .status-pill{ background:#1f9d55; color:#ffffff; font-family:'Poppins',sans-serif; font-size:11px; font-weight:700; letter-spacing:.04em; padding:6px 12px; border-radius:999px; white-space:nowrap; }
+  
+  /* help card */
+  .help-card{ background:#ffffff; border-radius:20px; display:grid; grid-template-columns:260px 1fr auto; align-items:center; gap:28px; padding:26px 32px; box-shadow:0 4px 18px rgba(13,27,76,0.08); margin-bottom: 20px;}
+  .help-card .thumb{ height:110px; border-radius:10px; overflow:hidden; }
+  .help-card .thumb img{ width: 100%; height: 100%; object-fit: cover; }
+  .help-card h3{ font-family:'Poppins',sans-serif; font-weight:700; font-size:19px; margin-bottom:6px; color:var(--bleu-nuit);}
+  .help-card p{ font-size:14px; color:#5a6472; line-height:1.5; margin:0;}
+  
+  /* buttons */
+  .btn-or{ background:linear-gradient(135deg,#f5a623,#c9860a); color:#ffffff; padding:12px 22px; border-radius:999px; font-family:'Poppins',sans-serif; font-weight:600; font-size:14px; box-shadow:0 6px 16px rgba(201,134,10,0.30); display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; text-decoration:none; white-space: nowrap;}
+  .btn-or:hover{ box-shadow:0 8px 20px rgba(201,134,10,0.40); transform:translateY(-1px); }
+  .btn-outline-blue{ background:#ffffff; color:var(--bleu-profond); border:1.5px solid rgba(26,79,180,0.25); padding:11px 20px; border-radius:999px; font-family:'Poppins',sans-serif; font-weight:600; font-size:14px; display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; transition:transform .15s ease; text-decoration:none; white-space: nowrap;}
+  .btn-outline-blue:hover{ background:#eaf2ff; transform:translateY(-1px); }
+  .btn-blue{ background:var(--bleu-profond); color:#ffffff; padding:12px 22px; box-shadow:0 6px 16px rgba(26,79,180,0.25); border-radius:999px; font-family:'Poppins',sans-serif; font-weight:600; font-size:14px; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; text-decoration:none; white-space: nowrap;}
+  .btn-blue:hover{ transform:translateY(-1px); }
+
+  @media (max-width:960px){
+    .page-programme-main{ padding:28px 20px 60px; }
+    .current-card{ grid-template-columns:1fr; }
+    .current-card-media{ min-height:200px; order:-1; }
+    .upcoming-grid{ grid-template-columns:1fr; }
+    .completed-card{ grid-template-columns:1fr; text-align:left; }
+    .completed-card .thumb{ width:100%; height:140px; }
+    .help-card{ grid-template-columns:1fr; text-align:left; }
+  }
+</style>
+
+<div class="page-programme-main">
+
+  <div class="page-head">
+    <h1>Programme</h1>
+    <p>Choisis un programme et avance à ton rythme.</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" data-target="tab-en-cours">En cours</button>
+    <button class="tab" data-target="tab-a-venir">À venir</button>
+    <button class="tab" data-target="tab-termines">Terminés</button>
+  </div>
+
+  <!-- CONTENT: EN COURS -->
+  <div id="tab-en-cours" class="tab-content" style="display: block;">
+    {% if programme_actuel %}
+    <section class="current-card">
+      <div class="current-card-content">
+        <span class="badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="white" stroke-width="2"/><path d="M8 3V7M16 3V7M3 10H21" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Programme en cours
+        </span>
+
+        <h2>{{ programme_actuel.theme }}</h2>
+        {% if programme_actuel.description %}
+        <p class="desc">{{ programme_actuel.description }}</p>
+        {% endif %}
+
+        <a href="{% url 'defi_redirect_programme' programme_actuel.id %}" class="btn btn-or">
+          {% if programme_actuel.progression == 0 %}
+            Commencer le programme
+          {% else %}
+            Continuer le programme
+          {% endif %}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+
+        <div class="progress-block">
+          <div class="progress-label">
+            <span>Progression globale</span>
+            <span>{% widthratio programme_actuel.progression programme_actuel.total 100 %}%</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" style="width:{% widthratio programme_actuel.progression programme_actuel.total 100 %}%"></div>
+          </div>
+        </div>
+
+        <div class="meta-row">
+          <div class="item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#38c46f" stroke-width="2"/><path d="M8 12L11 15L16 9" stroke="#38c46f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {{ programme_actuel.progression }}/{{ programme_actuel.total }} domaines terminés
+          </div>
+          {% if programme_actuel.date_debut and programme_actuel.date_fin %}
+          <div class="item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="white" stroke-width="2"/><path d="M8 3V7M16 3V7M3 10H21" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+            {{ programme_actuel.date_debut|date:"d F" }} → {{ programme_actuel.date_fin|date:"d F Y" }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="current-card-media">
+        {% if programme_actuel.illustration %}
+          <img src="{{ programme_actuel.illustration.url }}" alt="{{ programme_actuel.theme }}">
+        {% else %}
+          <div class="img-placeholder">IMAGE<br>{{ programme_actuel.theme }}</div>
+        {% endif %}
+      </div>
+    </section>
+    {% else %}
+    <div style="background:#ffffff; border-radius:20px; padding:40px; text-align:center; box-shadow:0 4px 18px rgba(13,27,76,0.08); margin-bottom: 40px;">
+        <p style="color:var(--gris-texte); font-family:'Poppins', sans-serif; font-size:16px;">Aucun programme actuellement en cours.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- CONTENT: A VENIR -->
+  <div id="tab-a-venir" class="tab-content" style="display: none;">
+    {% if programmes_a_venir %}
+    <div class="section-title">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#1a4fb4" stroke-width="2"/><path d="M8 3V7M16 3V7M3 10H21" stroke="#1a4fb4" stroke-width="2" stroke-linecap="round"/></svg>
+      Programmes à venir
+    </div>
+
+    <div class="upcoming-grid">
+      {% for prog in programmes_a_venir %}
+      <div class="upcoming-card" style="cursor: default; position: relative;">
+        {% if prog.is_next %}
+        <div style="position:absolute; top:12px; right:12px; background:var(--bleu-profond); color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:12px; letter-spacing:0.05em; text-transform:uppercase; z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.15);">Prochain programme</div>
+        {% endif %}
+        <div class="thumb" style="position:relative;">
+          {% if prog.illustration %}
+            <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}">
+          {% else %}
+            <div class="img-placeholder">IMAGE<br>{{ prog.theme }}</div>
+          {% endif %}
+        </div>
+        <div class="upcoming-card-body">
+          <h3 {% if not prog.is_next %}style="color:var(--gris-texte);"{% endif %}>{{ prog.theme }}</h3>
+          {% if prog.description %}
+          <p>{{ prog.description }}</p>
+          {% endif %}
+          <div class="upcoming-card-footer mt-auto">
+            <span class="date-chip" style="color:var(--gris-texte);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3V7M16 3V7M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              {% if prog.date_disponibilite %}
+                Bientôt disponible — {{ prog.date_disponibilite|date:"d M Y" }}
+              {% else %}
+                Bientôt disponible
+              {% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="background:#ffffff; border-radius:20px; padding:40px; text-align:center; box-shadow:0 4px 18px rgba(13,27,76,0.08); margin-bottom: 40px;">
+        <p style="color:var(--gris-texte); font-family:'Poppins', sans-serif; font-size:16px;">Vous avez rattrapé tous les programmes prévus !</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- CONTENT: TERMINES -->
+  <div id="tab-termines" class="tab-content" style="display: none;">
+    {% if programmes_termines %}
+    <div class="section-title vert">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1f9d55" stroke-width="2"/><path d="M8 12L11 15L16 9" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Programmes terminés ({{ programmes_termines|length }})
+    </div>
+
+    {% for prog in programmes_termines %}
+    <div class="completed-card">
+      <div class="thumb">
+        {% if prog.illustration %}
+          <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}">
+        {% else %}
+          <div class="img-placeholder">IMAGE<br>{{ prog.theme }}</div>
+        {% endif %}
+      </div>
+      <div>
+        <h3>{{ prog.theme }}</h3>
+        {% if prog.description %}
+        <p>{{ prog.description }}</p>
+        {% endif %}
+      </div>
+      <div class="completed-status">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1f9d55" stroke-width="2"/><path d="M8 12L11 15L16 9" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        {{ prog.progression }} domaines terminés
+      </div>
+      <span class="status-pill">Terminé</span>
+      <a href="{% url 'defi_redirect_programme' prog.id %}" class="btn btn-outline-blue">
+        Voir les réalisations
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div style="background:#ffffff; border-radius:20px; padding:40px; text-align:center; box-shadow:0 4px 18px rgba(13,27,76,0.08); margin-bottom: 40px;">
+        <p style="color:var(--gris-texte); font-family:'Poppins', sans-serif; font-size:16px;">Vous n'avez pas encore terminé de programme. Continuez vos efforts !</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- HELP -->
+  <div class="help-card">
+    <div class="thumb">
+      <img src="{% static 'images/programme/illu-communaute.png' %}" alt="Besoin d'aide" onerror="this.outerHTML='<div class=\'img-placeholder\'>IMAGE<br>communauté</div>'">
+    </div>
+    <div>
+      <h3>Besoin d'aide ?</h3>
+      <p>Une question sur ton programme ? La communauté Restart est là pour t'accompagner.</p>
+    </div>
+    <a href="{{ WHATSAPP_GROUP_LINK }}" target="_blank" class="btn btn-blue">
+      Rejoindre la communauté
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tabs = document.querySelectorAll('.tab');
+  const contents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Retirer la classe active de tous les onglets
+      tabs.forEach(t => t.classList.remove('active'));
+      // Ajouter la classe active à l'onglet cliqué
+      tab.classList.add('active');
+
+      // Masquer tous les contenus
+      contents.forEach(c => c.style.display = 'none');
+      // Afficher le contenu ciblé
+      const targetId = tab.getAttribute('data-target');
+      document.getElementById(targetId).style.display = 'block';
+    });
+  });
+});
+</script>
+{% endblock %}

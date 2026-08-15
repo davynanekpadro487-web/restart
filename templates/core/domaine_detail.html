@@ -1,0 +1,842 @@
+{% extends 'base.html' %}
+{% load checklist_filters %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+
+    <!-- Header navigation -->
+    <div class="mb-8 flex items-center justify-between">
+        <a href="{% url 'defi_semaine' domaine.semaine.id %}" class="inline-flex items-center text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Retour aux défis
+        </a>
+        <div class="flex gap-2 items-center">
+            {% if is_bonus %}
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-200 shadow-sm">
+                <i data-lucide="sparkles" class="w-3 h-3"></i> Action Bonus
+            </span>
+            {% endif %}
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold {% if domaine_user.statut == 'completed' %}bg-green-100 text-green-700{% elif domaine_user.statut == 'engaged' %}bg-purple-100 text-aurea-purple{% else %}bg-gray-100 text-gray-500{% endif %}">
+                {% if domaine_user.statut == 'completed' %}Terminé{% elif domaine_user.statut == 'engaged' %}En cours{% else %}À faire{% endif %}
+            </span>
+        </div>
+    </div>
+
+    <!-- Messages (Toast) -->
+    {% if messages %}
+    <div class="fixed top-4 right-4 z-50 w-full max-w-sm space-y-4 px-4 sm:px-0 pointer-events-none">
+        {% for message in messages %}
+        <div class="p-4 rounded-xl flex items-start gap-3 shadow-lg border pointer-events-auto animate-fade-in {% if message.tags == 'success' %}bg-green-50 border-green-100 text-green-800{% else %}bg-blue-50 border-blue-100 text-blue-800{% endif %}">
+            {% if message.tags == 'success' %}
+                <i data-lucide="check-circle-2" class="w-5 h-5 shrink-0 mt-0.5 text-green-600"></i>
+            {% else %}
+                <i data-lucide="info" class="w-5 h-5 shrink-0 mt-0.5"></i>
+            {% endif %}
+            <span class="font-medium">{{ message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Container Principal -->
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden relative">
+        
+        <!-- ÉTAT 1 : DÉCOUVRIR + COMPRENDRE (Choix de l'action) -->
+        {% if domaine_user.statut == 'none' %}
+            
+            <div class="bg-gradient-to-br from-gray-50 to-white p-8 sm:p-12 border-b border-gray-100 relative overflow-hidden">
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-aurea-purple/5 rounded-full blur-3xl"></div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 relative z-10">{{ domaine.titre }}</h1>
+                <div class="flex items-start gap-3 relative z-10">
+                    <i data-lucide="lightbulb" class="w-6 h-6 text-aurea-gold shrink-0 mt-1"></i>
+                    <div>
+                        <p class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Pourquoi ça compte</p>
+                        <p class="text-gray-700 font-medium text-lg">{{ domaine.pourquoi_ca_compte }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-8 sm:p-12">
+                {% if domaine.categorie == 'spiritualite' %}
+                    <div class="mb-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-start gap-3">
+                        <i data-lucide="info" class="w-5 h-5 text-gray-500 shrink-0 mt-0.5"></i>
+                        <p class="text-sm text-gray-600 font-medium">Ces pratiques sont facultatives — à toi de voir si elles te parlent.</p>
+                    </div>
+                {% endif %}
+                <h2 class="text-xl font-bold text-gray-900 mb-6">Choisis UNE action à réaliser cette semaine :</h2>
+                
+                <form method="POST" action="{% url 'domaine_detail' domaine.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action_type" value="choisir_action">
+                    
+                    <div class="space-y-4 mb-8">
+                        {% for action in actions_proposees %}
+                            <label class="block relative cursor-pointer">
+                                <input type="radio" name="action_id" value="{{ action.id }}" class="peer sr-only" required>
+                                <div class="rounded-2xl border-2 border-gray-100 p-5 hover:border-gray-200 peer-checked:border-aurea-purple peer-checked:bg-purple-50/30 transition-all duration-200">
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-6 h-6 rounded-full border-2 border-gray-300 peer-checked:border-aurea-purple flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                                            <div class="w-3 h-3 rounded-full bg-aurea-purple opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+                                        </div>
+                                        <div class="text-gray-800 font-medium text-lg leading-snug">
+                                            {% if '**' in action.texte %}
+                                                <span class="block font-bold text-gray-900 mb-1">{{ action.texte|slice:":action.texte.find(':')" }}</span>
+                                                <span class="text-sm text-gray-600 block">{{ action.texte|slice:"action.texte.find(':')+1:" }}</span>
+                                            {% else %}
+                                                {{ action.texte }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-4 px-8 rounded-xl transition-colors text-lg flex items-center justify-center gap-2 shadow-md">
+                        Commencer l'action
+                    </button>
+                </form>
+            </div>
+
+        <!-- ÉTAT 2 : EN COURS -->
+        {% elif domaine_user.statut == 'engaged' %}
+            
+            <div class="p-6 sm:p-8 border-b border-gray-100 bg-gray-50/50">
+                <div class="text-sm font-bold text-aurea-purple uppercase tracking-wider mb-2">Ton engagement : {{ domaine.titre }}</div>
+                <p class="text-gray-900 font-bold text-lg sm:text-xl">{{ domaine_user.action_choisie.texte }}</p>
+            </div>
+
+            <div class="p-6 sm:p-8">
+                
+                {% if domaine.categorie == 'argent' and 'dépenses' in domaine_user.action_choisie.texte|lower %}
+                    
+                    <!-- FLUX SPÉCIAL MON ARGENT — "Suivre ses dépenses sans culpabilité" -->
+                    {% if etape == '1' %}
+                        <div class="animate-fade-in text-center mb-8">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-aurea-purple font-bold text-xl mb-4">1</div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Liste tes dépenses actuelles</h3>
+                            <p class="text-gray-600">Ajoute toutes les dépenses que tu effectues régulièrement. Pour chacune, indique si tu la trouves utile ou pas vraiment nécessaire.</p>
+                        </div>
+                        
+                        <form method="POST" action="{% url 'domaine_detail' domaine.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="action_type" value="etape_1_argent">
+                            {% if is_bonus %}
+                            <input type="hidden" name="bonus_id" value="{{ bonus_id }}">
+                            {% endif %}
+                            
+                            <div id="depenses-container" class="space-y-4 mb-6">
+                                <!-- Ligne par défaut -->
+                                <div class="depense-row bg-gray-50 rounded-xl p-4 border border-gray-100">
+                                    <div class="flex gap-3 items-center mb-3">
+                                        <div class="flex-1">
+                                            <input type="text" name="depense[]" placeholder="Ex: Livraison Uber Eats" class="w-full rounded-xl border-gray-300 focus:border-aurea-purple focus:ring-aurea-purple" required>
+                                        </div>
+                                        <div class="w-32">
+                                            <div class="relative">
+                                                <input type="number" name="montant[]" placeholder="0" class="w-full rounded-xl border-gray-300 focus:border-aurea-purple focus:ring-aurea-purple pr-8" required>
+                                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm">FCFA</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Input caché : une valeur par ligne, indépendante des autres lignes -->
+                                    <input type="hidden" name="utilite[]" value="utile" class="utilite-value">
+                                    <div class="flex gap-3 utilite-toggle">
+                                        <button type="button" onclick="setUtilite(this, 'utile')"
+                                            class="flex-1 p-2 rounded-lg border-2 text-sm font-bold transition-all border-green-500 bg-green-50 text-green-700 btn-utile">
+                                            ✅ Utile
+                                        </button>
+                                        <button type="button" onclick="setUtilite(this, 'pas_necessaire')"
+                                            class="flex-1 p-2 rounded-lg border-2 text-sm font-bold transition-all border-gray-200 text-gray-500 btn-pas-necessaire">
+                                            ⚠️ Pas vraiment nécessaire
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                            <button type="button" onclick="ajouterLigneDepense()" class="text-aurea-purple font-bold text-sm hover:underline mb-8 flex items-center gap-1">
+                                <i data-lucide="plus" class="w-4 h-4"></i> Ajouter une dépense
+                            </button>
+                            
+                            <div class="flex justify-end">
+                                <button type="submit" class="bg-gray-900 hover:bg-black text-white font-bold py-3 px-8 rounded-xl transition-colors">Suivant</button>
+                            </div>
+                        </form>
+                        
+                    {% elif etape == '2' %}
+                        <div class="animate-fade-in text-center mb-8">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-aurea-purple font-bold text-xl mb-4">2</div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Ton total</h3>
+                        </div>
+
+                        {% with depenses=domaine_user.donnees_action.depenses %}
+                        <div class="max-w-lg mx-auto mb-8">
+                            <div class="space-y-3 mb-6">
+                                {% for dep in depenses %}
+                                <div class="flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-white">
+                                    <div class="flex items-center gap-3">
+                                        {% if dep.utile == 'pas_necessaire' %}
+                                            <span class="text-orange-500 text-lg">⚠️</span>
+                                        {% else %}
+                                            <span class="text-green-500 text-lg">✅</span>
+                                        {% endif %}
+                                        <span class="font-medium text-gray-800">{{ dep.nom }}</span>
+                                    </div>
+                                    <span class="font-bold text-gray-600">{{ dep.montant }} FCFA</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="bg-aurea-purple/10 border-2 border-aurea-purple/30 rounded-2xl p-6 text-center">
+                                <p class="text-sm font-bold text-aurea-purple uppercase tracking-wider mb-1">Total de tes dépenses cette semaine</p>
+                                <p class="text-3xl font-extrabold text-gray-900" id="total-depenses">{{ total_depenses }} FCFA</p>
+                            </div>
+                        </div>
+                        {% endwith %}
+
+                        <form method="POST" action="{% url 'domaine_detail' domaine.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="action_type" value="etape_2_argent">
+                            {% if is_bonus %}
+                            <input type="hidden" name="bonus_id" value="{{ bonus_id }}">
+                            {% endif %}
+                            <div class="flex justify-center">
+                                <button type="submit" class="bg-gray-900 hover:bg-black text-white font-bold py-3 px-8 rounded-xl transition-colors">Suivant</button>
+                            </div>
+                        </form>
+
+                    {% elif etape == '3' %}
+                        {% if total_regrets == '0' %}
+                            <div class="animate-fade-in text-center mb-8">
+                                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-600 font-bold text-xl mb-4">3</div>
+                                <h3 class="text-2xl font-bold text-gray-900 mb-2">Ta gestion cette semaine</h3>
+                            </div>
+                            
+                            <div class="max-w-xl mx-auto mb-8">
+                                <div class="bg-green-900 text-white rounded-2xl p-6 mb-6">
+                                    <p class="font-medium leading-relaxed">Toutes tes dépenses cette semaine sont utiles — bravo pour cette gestion ! Essaie quand même de garder un petit peu de côté chaque semaine, pour toi-même ou pour un projet qui te tient à cœur.</p>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="animate-fade-in text-center mb-8">
+                                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-600 font-bold text-xl mb-4">3</div>
+                                <h3 class="text-2xl font-bold text-gray-900 mb-2">Tes regrets</h3>
+                            </div>
+                            
+                            {% with depenses=domaine_user.donnees_action.depenses %}
+                            <div class="max-w-xl mx-auto mb-8">
+    
+                                <div class="space-y-3 mb-6">
+                                    {% for dep in depenses %}
+                                        {% if dep.utile == 'pas_necessaire' %}
+                                        <div class="flex items-center justify-between p-4 rounded-xl border border-orange-200 bg-orange-50">
+                                            <span class="font-medium text-gray-800">{{ dep.nom }}</span>
+                                            <span class="font-bold text-orange-700">{{ dep.montant }} FCFA</span>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+    
+                                <div class="bg-gray-900 text-white rounded-2xl p-6 mb-6">
+                                    <p class="font-medium leading-relaxed">Voici tes dépenses que tu as toi-même jugées pas vraiment nécessaires. Ça représente <strong>{{ total_regrets }} FCFA</strong> cette semaine. Regarde ça honnêtement — c'est de l'argent que tu aurais pu mettre ailleurs.</p>
+                                </div>
+                            </div>
+                            {% endwith %}
+                        {% endif %}
+
+                        <form method="POST" action="{% url 'domaine_detail' domaine.id %}" class="max-w-xl mx-auto">
+                            {% csrf_token %}
+                            <input type="hidden" name="action_type" value="etape_3_argent">
+                            {% if is_bonus %}
+                            <input type="hidden" name="bonus_id" value="{{ bonus_id }}">
+                            {% endif %}
+
+                            <div class="mb-6">
+                                {% if total_regrets == '0' %}
+                                    <label class="block text-gray-900 font-bold mb-3">Qu'est-ce que tu pourrais mettre de côté cette semaine, même un petit montant ?</label>
+                                {% else %}
+                                    <label class="block text-gray-900 font-bold mb-3">Où aurais-tu pu mettre cet argent à la place — un projet, une épargne, quelque chose qui compte vraiment pour toi ?</label>
+                                {% endif %}
+                                <textarea name="reponse_engagement" rows="3" class="w-full rounded-xl border-gray-300 focus:border-aurea-purple focus:ring-aurea-purple text-base p-4" placeholder="Ta réponse..." required></textarea>
+                            </div>
+                            
+                            <div class="flex justify-center">
+                                {% if total_regrets == '0' %}
+                                    <button type="submit" class="bg-aurea-purple hover:bg-purple-700 text-white font-bold py-4 px-10 rounded-xl transition-colors shadow-md text-lg">Je m'engage à mettre ça de côté</button>
+                                {% else %}
+                                    <button type="submit" class="bg-aurea-purple hover:bg-purple-700 text-white font-bold py-4 px-10 rounded-xl transition-colors shadow-md text-lg">Je m'engage à faire différemment</button>
+                                {% endif %}
+                            </div>
+                        </form>
+                    {% endif %}
+
+
+                {% elif domaine_user.donnees_action and domaine_user.donnees_action.type == 'checklist' %}
+                    <!-- COMPOSANT CHECKLIST -->
+                    <div class="max-w-lg mx-auto">
+                        <div class="animate-fade-in text-center mb-8">
+                            <i data-lucide="list-checks" class="w-12 h-12 text-aurea-purple mx-auto mb-4 bg-purple-100 p-2 rounded-full"></i>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Ta checklist</h3>
+                            
+                            {% if domaine_user.donnees_action.intro %}
+                                <p class="text-gray-700 font-medium italic p-4 bg-gray-50 rounded-2xl mb-4">{{ domaine_user.donnees_action.intro }}</p>
+                            {% endif %}
+                            
+                            <p class="text-gray-600">Coche chaque étape au fur et à mesure.</p>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            {% for etape in domaine_user.donnees_action.etapes %}
+                            <form method="POST" action="{% url 'domaine_detail' domaine.id %}" class="block checklist-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="action_type" value="update_checklist">
+                                <input type="hidden" name="index" value="{{ forloop.counter0 }}">
+                                <input type="hidden" name="is_checked" value="{% if etape.done %}false{% else %}true{% endif %}">
+                                {% if is_bonus %}
+                                <input type="hidden" name="bonus_id" value="{{ bonus_id }}">
+                                {% endif %}
+                                
+                                <button type="submit" class="checklist-btn w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-200 {% if etape.done %}border-green-200 bg-green-50/50 hover:bg-green-50{% else %}border-gray-200 hover:bg-gray-50{% endif %} text-left">
+                                    <div class="checklist-icon w-6 h-6 rounded border-2 flex items-center justify-center shrink-0 {% if etape.done %}border-green-500 bg-green-500 text-white{% else %}border-gray-300{% endif %}">
+                                        <i data-lucide="check" class="w-4 h-4 {% if not etape.done %}hidden{% endif %}"></i>
+                                    </div>
+                                    <span class="checklist-text font-medium {% if etape.done %}text-gray-500 line-through{% else %}text-gray-800{% endif %}">
+                                        {{ etape.label }}
+                                    </span>
+                                </button>
+                            </form>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Formulaire de validation final de la checklist -->
+                        <div id="checklist-validation-container" class="mt-8 flex justify-center transition-all duration-500 {% if not checklist_all_done %}opacity-0 pointer-events-none h-0 overflow-hidden{% else %}opacity-100{% endif %}">
+                            <form method="POST" action="{% url 'domaine_detail' domaine.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="action_type" value="validation_generique">
+                                {% if is_bonus %}
+                                    <input type="hidden" name="bonus_id" value="{{ bonus_id }}">
+                                {% endif %}
+                                <button type="submit" class="bg-aurea-purple hover:bg-purple-700 text-white font-bold py-4 px-10 rounded-xl transition-colors shadow-md text-lg">Valider mon défi</button>
+                            </form>
+                        </div>
+                    </div>
+
+                {% elif domaine_user.donnees_action and domaine_user.donnees_action.type == 'questionnaire' %}
+                    <!-- COMPOSANT QUESTIONNAIRE GUIDÉ -->
+                    <div class="max-w-xl mx-auto text-center">
+                        {% with current_step=domaine_user.donnees_action.etape_courante %}
+                            {% for etape in domaine_user.donnees_action.etapes %}
+                                {% if forloop.counter0 == current_step %}
+                                    <div class="animate-fade-in">
+                                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-aurea-purple font-bold text-xl mb-6">
+                                            {{ forloop.counter }}
+                                        </div>
+                                        
+                                        {% if forloop.first and domaine_user.donnees_action.intro %}
+                                            <p class="text-gray-700 font-medium italic p-4 bg-gray-50 rounded-2xl mb-6">{{ domaine_user.donnees_action.intro }}</p>
+                                        {% endif %}
+                                        
+                                        <h3 class="text-2xl font-bold text-gray-900 mb-6">{{ etape.question }}</h3>
+                                        
+                                        {% if etape.contexte %}
+                                        <p class="text-gray-600 mb-6 text-lg">{{ etape.contexte }}</p>
+                                        {% endif %}
+                                        
+                                        {% if etape.is_checklist_etape %}
+                                        <div class="space-y-3 mb-8">
+                                            {% for item in etape.items %}
+                                            <form method="POST" action="{% url 'domaine_detail' domaine.id %}" class="block checklist-form">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action_type" value="update_checklist_etape">
+                                                <input type="hidden" name="step_index" value="{{ current_step }}">
+                                                <input type="hidden" name="index" value="{{ forloop.counter0 }}">
+                                                <input type="hidden" name="is_checked" value="{% if item.done %}false{% else %}true{% endif %}">
+                                                {% if is_bonus %}
+                                                <input type="hidden" name="bonus_id" value="{{ bonus_id }}">
+                                                {% endif %}
+                                                
+                                                <button type="submit" class="checklist-btn w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-200 {% if item.done %}border-green-200 bg-green-50/50 hover:bg-green-50{% else %}border-gray-200 hover:bg-gray-50{% endif %} text-left">
+                                                    <div class="checklist-icon w-6 h-6 rounded border-2 flex items-center justify-center shrink-0 {% if item.done %}border-green-500 bg-green-500 text-white{% else %}border-gray-300{% endif %}">
+                                                        <i data-lucide="check" class="w-4 h-4 {% if not item.done %}hidden{% endif %}"></i>
+                                                    </div>
+                                                    <span class="checklist-text font-medium {% if item.done %}text-gray-500 line-through{% else %}text-gray-800{% endif %}">
+                                                        {{ item.label|safe }}
+                                                    </span>
+                                                </button>
+                                            </form>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <form method="POST" action="{% url 'domaine_detail' domaine.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action_type" value="next_question">
+                                            {% if is_bonus %}
+                                            <input type="hidden" name="bonus_id" value="{{ bonus_id }}">
+                                            {% endif %}
+                                            
+                                            {% if not etape.is_checklist_etape %}
+                                                {% if etape.reponse is not None %}
+                                                <div class="mb-8">
+                                                    <input type="text" name="reponse" class="w-full rounded-xl border-gray-300 focus:border-aurea-purple focus:ring-aurea-purple text-lg p-4 shadow-sm" placeholder="Ta réponse..." {% if not etape.optionnel %}required{% endif %} autofocus>
+                                                </div>
+                                                {% else %}
+                                                <!-- Si reponse est null, pas de champ texte, juste un bouton de confirmation -->
+                                                {% endif %}
+                                            {% endif %}
+                                            
+                                            <button id="etape-next-btn" type="submit" 
+                                                {% if etape.is_checklist_etape %}data-require-all="{{ etape.require_all|yesno:'true,false' }}"{% endif %}
+                                                class="bg-gray-900 hover:bg-black text-white font-bold py-4 px-10 rounded-xl transition-colors shadow-md text-lg inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                                                {{ etape.bouton }}
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                    </div>
+
+                {% else %}
+                    <!-- VALIDATION GÉNÉRIQUE POUR LES AUTRES DOMAINES -->
+                    <div class="text-center animate-fade-in py-8">
+                        <i data-lucide="target" class="w-16 h-16 text-aurea-purple mx-auto mb-4 opacity-50"></i>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Passe à l'action</h3>
+                        <p class="text-gray-600 mb-8 max-w-md mx-auto">Réalise ton action. Une fois que c'est fait, valide ton défi pour gagner tes XP.</p>
+                        
+                        <form method="POST" action="{% url 'domaine_detail' domaine.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="action_type" value="validation_generique">
+                            <button type="submit" class="bg-aurea-purple hover:bg-purple-700 text-white font-bold py-4 px-10 rounded-xl transition-colors shadow-md text-lg inline-flex items-center justify-center gap-2">
+                                <i data-lucide="check" class="w-6 h-6"></i>
+                                J'ai réalisé mon action
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+
+            </div>
+
+        <!-- ÉTAT 3 : VALIDATION (Défi réalisé) -->
+        {% elif domaine_user.statut == 'completed' %}
+            
+            <div class="p-8 text-left animate-fade-in bg-white">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+                        <i data-lucide="check-circle-2" class="w-8 h-8 text-green-600"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">{% if is_bonus %}Action bonus réalisée{% else %}Défi réalisé{% endif %}</h2>
+                        <div class="inline-flex items-center gap-2 text-green-700 font-bold bg-green-50 px-3 py-1 rounded-full text-sm mt-1">
+                            <i data-lucide="award" class="w-4 h-4"></i> +{{ domaine_user.xp_gagnes }} XP obtenus
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-2xl p-6 shadow-sm border border-gray-200 mb-8">
+                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">L'action que tu as choisie :</p>
+                    <p class="text-gray-900 font-medium text-lg">{{ domaine_user.action_choisie.texte }}</p>
+                </div>
+                
+                {% if domaine_user.donnees_action and domaine_user.donnees_action.etapes %}
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 px-2">Ce que tu as réalisé</h3>
+                    
+                    {% if domaine_user.donnees_action.type == 'checklist' %}
+                        <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm mb-8">
+                            <p class="text-sm font-bold text-aurea-purple mb-4">
+                                Ta checklist
+                            </p>
+                            
+                            <ul class="space-y-3">
+                                {% for etape in domaine_user.donnees_action.etapes %}
+                                    <li class="flex items-start gap-3">
+                                        <div class="mt-0.5 shrink-0">
+                                            {% if etape.done %}
+                                                <div class="w-5 h-5 rounded bg-green-500 text-white flex items-center justify-center">
+                                                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                                </div>
+                                            {% else %}
+                                                <div class="w-5 h-5 rounded border-2 border-gray-300"></div>
+                                            {% endif %}
+                                        </div>
+                                        <span class="text-gray-800 font-medium {% if etape.done %}text-gray-500 line-through{% endif %}">
+                                            {{ etape.label|safe }}
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="space-y-4 mb-8">
+                            {% for etape in domaine_user.donnees_action.etapes %}
+                                {% if 'reponse' in etape or 'question' in etape %}
+                                    <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+                                        <p class="text-sm font-bold text-gray-500 mb-2">
+                                            {% if etape.question %}
+                                                <span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-2">Étape {{ forloop.counter }}</span> {{ etape.question }}
+                                            {% else %}
+                                                <span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-2">Étape {{ forloop.counter }}</span> Action réalisée
+                                            {% endif %}
+                                        </p>
+                                        {% if etape.is_checklist_etape %}
+                                            <ul class="space-y-3 mt-4">
+                                            {% for item in etape.items %}
+                                                <li class="flex items-start gap-3">
+                                                    <div class="mt-0.5 shrink-0">
+                                                        {% if item.done %}
+                                                            <div class="w-5 h-5 rounded bg-green-500 text-white flex items-center justify-center">
+                                                                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="w-5 h-5 rounded border-2 border-gray-300"></div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <span class="text-gray-800 font-medium {% if item.done %}text-gray-500 line-through{% endif %}">
+                                                        {{ item.label|safe }}
+                                                    </span>
+                                                </li>
+                                            {% endfor %}
+                                            </ul>
+                                        {% elif 'reponse' in etape %}
+                                            {% if etape.reponse != "" and etape.reponse != None %}
+                                                <p class="text-gray-800 font-medium">{{ etape.reponse }}</p>
+                                            {% elif etape.reponse == None %}
+                                                <p class="text-gray-500 italic text-sm">Action réalisée</p>
+                                            {% else %}
+                                                <p class="text-gray-500 italic text-sm">(Aucune réponse saisie)</p>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                {% if domaine_user.donnees_action and domaine.categorie == 'argent' and 'dépenses' in domaine_user.action_choisie.texte|lower %}
+                    <!-- Point 1 : bilan uniquement pour l'action "Suivre ses dépenses sans culpabilité" -->
+                    {% if domaine_user.donnees_action.depenses %}
+                    <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm mb-8">
+                        <p class="text-sm font-bold text-gray-500 mb-3"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded mr-2">Bilan</span> Tes dépenses suivies</p>
+                        <div class="space-y-2">
+                            {% for dep in domaine_user.donnees_action.depenses %}
+                            <div class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                                <div class="flex items-center gap-2">
+                                    {% if dep.utile == 'pas_necessaire' %}
+                                        <span class="text-orange-500">⚠️</span>
+                                        <span class="text-gray-700 font-medium">{{ dep.nom }}</span>
+                                        <span class="text-xs text-orange-600 font-bold bg-orange-50 px-2 py-0.5 rounded">Pas vraiment nécessaire</span>
+                                    {% else %}
+                                        <span class="text-green-500">✅</span>
+                                        <span class="text-gray-700 font-medium">{{ dep.nom }}</span>
+                                    {% endif %}
+                                </div>
+                                <span class="font-bold text-gray-500 text-sm">{{ dep.montant }} FCFA</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if domaine_user.donnees_action.reponse_engagement %}
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <p class="text-sm font-bold text-gray-500 mb-1">Ton engagement :</p>
+                            <p class="text-gray-800 font-medium italic">"{{ domaine_user.donnees_action.reponse_engagement }}"</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endif %}
+
+                {% if domaine_user.preuve_fichier or domaine_user.preuve_texte %}
+                <h3 class="text-lg font-bold text-gray-900 mb-4 px-2">Ta preuve</h3>
+                <div class="bg-green-50 rounded-2xl p-6 border border-green-100 mb-8">
+                    {% if domaine_user.preuve_texte %}
+                        <p class="text-gray-800 italic mb-4">"{{ domaine_user.preuve_texte }}"</p>
+                    {% endif %}
+                    {% if domaine_user.preuve_fichier %}
+                        <div class="mt-2">
+                            <a href="{{ domaine_user.preuve_fichier.url }}" target="_blank" class="text-sm font-bold text-green-700 hover:underline flex items-center gap-1">
+                                <i data-lucide="image" class="w-4 h-4"></i> Voir la photo de preuve
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Invitation Journal -->
+                <div class="mt-6 bg-gradient-to-r from-aurea-gold/10 to-transparent border-l-4 border-aurea-gold p-6 rounded-r-2xl">
+                    <h4 class="font-bold text-gray-900 flex items-center gap-2 mb-2">
+                        <i data-lucide="book-open" class="w-5 h-5 text-aurea-gold"></i> Envie d'aller plus loin ?
+                    </h4>
+                    <p class="text-gray-700 mb-4 text-sm">Note ce que tu as ressenti après ce défi. Garder une trace t'aidera à voir ton évolution.</p>
+                    <a href="{% url 'journal' %}?prefill_type=defi&prefill_text=Défi : {{ domaine.titre }}%0A%0A" class="inline-flex items-center gap-2 text-aurea-gold font-bold hover:underline">
+                        Écrire dans mon Journal <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                
+                <!-- Lien bonus ou retour -->
+                <div class="mt-8 border-t border-gray-100 pt-6 text-center">
+                    {% if is_bonus %}
+                        {% if next_bonus %}
+                            <a href="{% url 'commencer_bonus' domaine.id next_bonus.id %}" class="bg-gray-900 hover:bg-black text-white font-bold py-3 px-8 rounded-xl transition-colors shadow-sm inline-flex items-center justify-center gap-2 w-full max-w-sm mx-auto mb-4">
+                                Faire l'autre action bonus <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'semaine_complete' domaine.semaine.id %}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center w-full max-w-sm mx-auto">
+                            Retour à mes réalisations
+                        </a>
+                    {% else %}
+                        <a href="{% url 'semaine_complete' domaine.semaine.id %}" class="bg-gray-900 hover:bg-black text-white font-bold py-3 px-8 rounded-xl transition-colors shadow-sm inline-flex items-center justify-center gap-2 w-full max-w-sm mx-auto mb-6">
+                            Retour à mes réalisations
+                        </a>
+                        <details class="text-sm text-gray-500 group">
+                            <summary class="cursor-pointer hover:text-gray-700 list-none text-center font-medium">
+                                <span class="border-b border-dashed border-gray-300">Voir les 2 autres actions (bonus, optionnel)</span>
+                            </summary>
+                            <div class="mt-4 space-y-3 max-w-md mx-auto">
+                                {% for action in actions_proposees %}
+                                    {% if action.id != domaine_user.action_choisie.id %}
+                                        <a href="{% url 'commencer_bonus' domaine.id action.id %}" class="block bg-gray-50 p-4 rounded-xl border border-gray-200 hover:border-aurea-purple hover:bg-purple-50 transition-colors text-left group-hover:shadow-sm">
+                                            <div class="flex items-start gap-3">
+                                                {% if action.bonus_user and action.bonus_user.statut == 'completed' %}
+                                                <div class="bg-green-100 text-green-700 rounded text-xs font-bold px-2 py-0.5 mt-0.5 shrink-0 border border-green-200 flex items-center gap-1">
+                                                    <i data-lucide="check" class="w-3 h-3"></i> Terminé
+                                                </div>
+                                                {% else %}
+                                                <div class="bg-yellow-100 text-yellow-700 rounded text-xs font-bold px-2 py-0.5 mt-0.5 shrink-0 border border-yellow-200">+10 XP</div>
+                                                {% endif %}
+                                                
+                                                <span class="text-gray-800 font-medium leading-snug {% if action.bonus_user and action.bonus_user.statut == 'completed' %}text-gray-500 line-through decoration-gray-300{% endif %}">
+                                                    {% if '**' in action.texte %}
+                                                        {{ action.texte|slice:":action.texte.find(':')" }}
+                                                    {% else %}
+                                                        {{ action.texte }}
+                                                    {% endif %}
+                                                </span>
+                                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 ml-auto shrink-0 mt-1 group-hover:text-aurea-purple"></i>
+                                            </div>
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </details>
+                    {% endif %}
+                </div>
+                
+            </div>
+            
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // JS pour l'étape 1 du flux Argent : Ajouter une ligne dynamique
+    function ajouterLigneDepense() {
+        const container = document.getElementById('depenses-container');
+        const template = `
+            <div class="depense-row bg-gray-50 rounded-xl p-4 border border-gray-100 mt-3 animate-fade-in">
+                <div class="flex gap-3 items-center mb-3">
+                    <div class="flex-1">
+                        <input type="text" name="depense[]" placeholder="Nouvelle dépense" class="w-full rounded-xl border-gray-300 focus:border-aurea-purple focus:ring-aurea-purple" required>
+                    </div>
+                    <div class="w-32">
+                        <div class="relative">
+                            <input type="number" name="montant[]" placeholder="0" class="w-full rounded-xl border-gray-300 focus:border-aurea-purple focus:ring-aurea-purple pr-8" required>
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm">FCFA</span>
+                        </div>
+                    </div>
+                    <button type="button" onclick="this.closest('.depense-row').remove()" class="text-red-400 hover:text-red-600 p-2 shrink-0">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <input type="hidden" name="utilite[]" value="utile" class="utilite-value">
+                <div class="flex gap-3 utilite-toggle">
+                    <button type="button" onclick="setUtilite(this, 'utile')"
+                        class="flex-1 p-2 rounded-lg border-2 text-sm font-bold transition-all border-green-500 bg-green-50 text-green-700 btn-utile">
+                        ✅ Utile
+                    </button>
+                    <button type="button" onclick="setUtilite(this, 'pas_necessaire')"
+                        class="flex-1 p-2 rounded-lg border-2 text-sm font-bold transition-all border-gray-200 text-gray-500 btn-pas-necessaire">
+                        ⚠️ Pas vraiment nécessaire
+                    </button>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', template);
+        lucide.createIcons();
+    }
+
+    function setUtilite(btn, value) {
+        const row = btn.closest('.depense-row');
+        row.querySelector('.utilite-value').value = value;
+        
+        const btnUtile = row.querySelector('.btn-utile');
+        const btnPasNec = row.querySelector('.btn-pas-necessaire');
+        
+        if (value === 'utile') {
+            btnUtile.className = "flex-1 p-2 rounded-lg border-2 text-sm font-bold transition-all border-green-500 bg-green-50 text-green-700 btn-utile";
+            btnPasNec.className = "flex-1 p-2 rounded-lg border-2 text-sm font-bold transition-all border-gray-200 text-gray-500 btn-pas-necessaire hover:border-orange-400";
+        } else {
+            btnUtile.className = "flex-1 p-2 rounded-lg border-2 text-sm font-bold transition-all border-gray-200 text-gray-500 btn-utile hover:border-green-400";
+            btnPasNec.className = "flex-1 p-2 rounded-lg border-2 text-sm font-bold transition-all border-orange-500 bg-orange-50 text-orange-700 btn-pas-necessaire";
+        }
+    }
+
+    // JS pour l'étape 2 du flux Argent : Limiter à 3 cases et activer le bouton
+    function checkLimit(el) {
+        const checkboxes = document.querySelectorAll('.depense-checkbox');
+        let checkedCount = 0;
+        
+        checkboxes.forEach(cb => {
+            if (cb.checked) checkedCount++;
+        });
+        
+        if (checkedCount > 3) {
+            el.checked = false;
+            checkedCount--;
+        }
+        
+        document.getElementById('compteur-selection').innerText = `${checkedCount}/3 sélectionnées`;
+        
+        const btnSuivant = document.getElementById('btn-suivant-2');
+        if (checkedCount === 3) {
+            btnSuivant.disabled = false;
+            btnSuivant.classList.remove('bg-gray-300', 'text-gray-500');
+            btnSuivant.classList.add('bg-gray-900', 'text-white', 'hover:bg-black');
+        } else {
+            btnSuivant.disabled = true;
+            btnSuivant.classList.add('bg-gray-300', 'text-gray-500');
+            btnSuivant.classList.remove('bg-gray-900', 'text-white', 'hover:bg-black');
+        }
+    }
+</script>
+
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+    input[type="radio"]:checked + div .bg-aurea-purple {
+        opacity: 1;
+    }
+    details > summary::-webkit-details-marker {
+        display: none;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialisation de l'état du bouton etape-next-btn
+        const etapeNextBtn = document.getElementById('etape-next-btn');
+        if (etapeNextBtn) {
+            const requireAll = etapeNextBtn.getAttribute('data-require-all') === 'true';
+            const totalForms = document.querySelectorAll('.checklist-form').length;
+            let checkedCount = 0;
+            document.querySelectorAll('.checklist-form').forEach(f => {
+                const iconContainer = f.querySelector('.checklist-icon');
+                if (iconContainer && iconContainer.firstElementChild) {
+                    if (!iconContainer.firstElementChild.classList.contains('hidden')) checkedCount++;
+                }
+            });
+            if (requireAll) {
+                etapeNextBtn.disabled = (checkedCount < totalForms);
+            } else {
+                etapeNextBtn.disabled = (checkedCount === 0 && totalForms > 0);
+            }
+        }
+
+        const checklistForms = document.querySelectorAll('.checklist-form');
+        checklistForms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const btn = form.querySelector('.checklist-btn');
+                const iconContainer = form.querySelector('.checklist-icon');
+                const icon = iconContainer.firstElementChild;
+                const textSpan = form.querySelector('.checklist-text');
+                const isCheckedInput = form.querySelector('input[name="is_checked"]');
+                
+                const willBeChecked = isCheckedInput.value === 'true';
+                
+                // Optimistic UI update
+                if (willBeChecked) {
+                    btn.classList.replace('border-gray-200', 'border-green-200');
+                    btn.classList.remove('hover:bg-gray-50');
+                    btn.classList.add('bg-green-50/50', 'hover:bg-green-50');
+                    
+                    iconContainer.classList.replace('border-gray-300', 'border-green-500');
+                    iconContainer.classList.add('bg-green-500', 'text-white');
+                    icon.classList.remove('hidden');
+                    
+                    textSpan.classList.replace('text-gray-800', 'text-gray-500');
+                    textSpan.classList.add('line-through');
+                } else {
+                    btn.classList.replace('border-green-200', 'border-gray-200');
+                    btn.classList.remove('bg-green-50/50', 'hover:bg-green-50');
+                    btn.classList.add('hover:bg-gray-50');
+                    
+                    iconContainer.classList.replace('border-green-500', 'border-gray-300');
+                    iconContainer.classList.remove('bg-green-500', 'text-white');
+                    icon.classList.add('hidden');
+                    
+                    textSpan.classList.replace('text-gray-500', 'text-gray-800');
+                    textSpan.classList.remove('line-through');
+                }
+                
+                // Toggle next state value
+                isCheckedInput.value = willBeChecked ? 'false' : 'true';
+                
+                // Perform AJAX request
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        // Gérer le bouton suivant de l'étape checklist (si présent)
+                        const etapeNextBtn = document.getElementById('etape-next-btn');
+                        if (etapeNextBtn) {
+                            const requireAll = etapeNextBtn.getAttribute('data-require-all') === 'true';
+                            if (requireAll) {
+                                etapeNextBtn.disabled = !result.all_done;
+                            } else {
+                                etapeNextBtn.disabled = !result.any_done;
+                            }
+                        }
+
+                        // Si on vient de cocher et que c'est le dernier élément
+                        if (result.all_done) {
+                            const validationContainer = document.getElementById('checklist-validation-container');
+                            if (validationContainer) {
+                                validationContainer.classList.remove('opacity-0', 'pointer-events-none', 'h-0', 'overflow-hidden');
+                                validationContainer.classList.add('opacity-100');
+                                
+                                // Optionnel : faire scroller jusqu'au bouton
+                                setTimeout(() => {
+                                    validationContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                }, 100);
+                            }
+                        } else {
+                            // S'assurer que le conteneur est caché si on décoche une case
+                            const validationContainer = document.getElementById('checklist-validation-container');
+                            if (validationContainer && !willBeChecked) {
+                                validationContainer.classList.add('opacity-0', 'pointer-events-none', 'h-0', 'overflow-hidden');
+                                validationContainer.classList.remove('opacity-100');
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Checklist update failed', error);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

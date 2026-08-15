@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex items-center justify-between mb-10">
+        <div>
+            <h1 class="text-4xl font-extrabold text-gray-900">Mon Journal</h1>
+            <p class="text-gray-600 mt-2">Réfléchis, écris, évolue.</p>
+        </div>
+        <div class="hidden sm:flex items-center justify-center text-aurea-gold/20">
+            <i data-lucide="book-open" class="w-12 h-12"></i>
+        </div>
+    </div>
+
+    <div class="max-w-3xl mx-auto space-y-6">
+        <!-- Nouvelle Note -->
+        <div class="card-premium p-6 bg-white" id="nouvelle-note">
+            {% if prefill_type == 'defi' or prefill_type == 'bilan' %}
+                <div class="mb-4 bg-aurea-gold/10 text-aurea-gold font-bold px-4 py-2 rounded-lg flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    {% if prefill_type == 'bilan' %}Ton bilan hebdomadaire t'attend{% else %}Réflexion sur ton défi{% endif %}
+                </div>
+            {% endif %}
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_note">
+                <input type="hidden" name="type_note" value="{{ prefill_type }}">
+                <textarea name="note_texte" rows="{% if prefill_text %}8{% else %}3{% endif %}" class="input-premium mb-4 resize-none border-dashed border-2 bg-gray-50 focus:bg-white text-lg" placeholder="Qu'est-ce qui a changé pour toi aujourd'hui ? Qu'est-ce que tu comptes faire ensuite ?" required>{{ prefill_text }}</textarea>
+                <div class="flex justify-end">
+                    <button type="submit" class="btn-primary px-6 py-2 rounded-xl font-bold flex items-center gap-2">
+                        <i data-lucide="pen-tool" class="w-4 h-4"></i> Ajouter la note
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Historique des notes -->
+        <div class="flex items-center justify-between mt-8 mb-4 border-b border-gray-200 pb-2">
+            <h3 class="text-xl font-bold text-gray-800">Historique</h3>
+            <div class="flex gap-2">
+                <a href="{% url 'journal' %}?filtre=toutes" class="px-3 py-1 text-sm font-bold rounded-full {% if filtre == 'toutes' %}bg-gray-800 text-white{% else %}bg-gray-100 text-gray-500 hover:bg-gray-200{% endif %} transition-colors">
+                    Toutes
+                </a>
+                <a href="{% url 'journal' %}?filtre=defi" class="px-3 py-1 text-sm font-bold rounded-full {% if filtre == 'defi' %}bg-aurea-purple text-white{% else %}bg-purple-50 text-aurea-purple hover:bg-purple-100{% endif %} transition-colors">
+                    Défis & Bilans
+                </a>
+                <a href="{% url 'journal' %}?filtre=libre" class="px-3 py-1 text-sm font-bold rounded-full {% if filtre == 'libre' %}bg-gray-800 text-white{% else %}bg-gray-100 text-gray-500 hover:bg-gray-200{% endif %} transition-colors">
+                    Notes libres
+                </a>
+            </div>
+        </div>
+        
+        {% if notes %}
+        <div class="space-y-4">
+            {% for note in notes %}
+            <div class="card-premium p-6 bg-white relative animate-on-scroll">
+                <div class="absolute left-0 top-0 bottom-0 w-1 {% if note.type_note == 'bilan' %}bg-aurea-gold{% elif note.type_note == 'defi' %}bg-aurea-purple{% else %}bg-gray-300{% endif %} rounded-l-xl"></div>
+                <div class="flex items-center justify-between mb-3">
+                    <div class="text-sm text-gray-400 font-medium flex items-center gap-2">
+                        <i data-lucide="clock" class="w-4 h-4"></i> {{ note.date_creation|date:"d F Y à H:i" }}
+                    </div>
+                    {% if note.type_note == 'defi' %}
+                        <span class="bg-purple-100 text-aurea-purple text-xs font-bold px-2.5 py-0.5 rounded flex items-center gap-1.5"><i data-lucide="award" class="w-3.5 h-3.5"></i> Défi validé</span>
+                    {% elif note.type_note == 'bilan' %}
+                        <span class="bg-aurea-gold/20 text-yellow-700 text-xs font-bold px-2.5 py-0.5 rounded flex items-center gap-1.5"><i data-lucide="calendar-check" class="w-3.5 h-3.5"></i> Bilan Semaine</span>
+                    {% endif %}
+                </div>
+                <p class="text-gray-700 whitespace-pre-line text-lg">{{ note.texte }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-10 bg-white rounded-xl border border-dashed border-gray-300">
+            <p class="text-gray-500">Aucune note pour le moment. Commence à écrire ton histoire !</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

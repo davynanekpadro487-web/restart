@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="conteneur-auth">
+  <div class="forme-fond" style="width:340px; height:340px; top:-100px; right:-100px; background:radial-gradient(circle, rgba(63,169,240,0.2), transparent 70%);"></div>
+  <div class="forme-fond" style="width:300px; height:300px; bottom:-100px; left:-80px; background:radial-gradient(circle, rgba(63,169,240,0.14), transparent 70%);"></div>
+
+  <div class="carte-auth">
+    <a href="{% url 'home' %}" class="retour-accueil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à l'accueil
+    </a>
+
+    <div class="auth-icone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+    </div>
+
+    <h1>Rejoindre Restart</h1>
+    <p class="sous-titre-auth">Déjà membre ? <a href="{% url 'login' %}">Connecte-toi ici</a></p>
+
+    <form method="post" action="{% url 'register' %}">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <p class="erreur-champ">{{ form.non_field_errors|striptags }}</p>
+      {% endif %}
+
+      <label for="{{ form.username.id_for_label }}">Nom d'utilisateur</label>
+      {{ form.username }}
+      {% if form.username.help_text %}<p class="aide-champ">{{ form.username.help_text|safe }}</p>{% endif %}
+      {% if form.username.errors %}<p class="erreur-champ">{{ form.username.errors|striptags }}</p>{% endif %}
+
+      <label for="{{ form.password1.id_for_label }}">Mot de passe</label>
+      {{ form.password1 }}
+      {% if form.password1.errors %}<p class="erreur-champ">{{ form.password1.errors|striptags }}</p>{% endif %}
+
+      <label for="{{ form.password2.id_for_label }}">Confirme ton mot de passe</label>
+      {{ form.password2 }}
+      {% if form.password2.errors %}<p class="erreur-champ">{{ form.password2.errors|striptags }}</p>{% endif %}
+
+      <label for="{{ form.telephone.id_for_label }}">Numéro de téléphone</label>
+      <div class="champ-tel">
+        {{ form.indicatif }}
+        {{ form.telephone }}
+      </div>
+      {% if form.indicatif.errors %}<p class="erreur-champ">{{ form.indicatif.errors|striptags }}</p>{% endif %}
+      {% if form.telephone.errors %}<p class="erreur-champ">{{ form.telephone.errors|striptags }}</p>{% endif %}
+
+      <button type="submit" class="bouton-submit">Créer mon compte</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
