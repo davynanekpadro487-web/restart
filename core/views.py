@@ -31,28 +31,42 @@ ICONES_CATEGORIE = {
 }
 
 def get_programme_actuel(utilisateur=None):
-    from django.utils import timezone
-    aujourdhui = timezone.now().date()
+    # 1. Récupérer tous les programmes publiés triés par ordre
+    programmes_publies = Programme.objects.filter(publie=True).order_by('ordre')
     
-    # 1. Chercher le programme dont les dates couvrent aujourd'hui (date_debut <= aujourdhui <= date_fin)
-    prog_en_cours = Programme.objects.filter(date_debut__lte=aujourdhui, date_fin__gte=aujourdhui).order_by('-date_debut').first()
-    if prog_en_cours:
-        return prog_en_cours
+    if not programmes_publies.exists():
+        # Fallback s'il n'y a aucun programme publié (peu probable en prod)
+        return Programme.objects.order_by('ordre').first()
         
-    # 2. S'il n'y en a pas, chercher le programme le plus récent qui a déjà commencé
-    prog_recent = Programme.objects.filter(date_debut__lte=aujourdhui).order_by('-date_debut').first()
-    if prog_recent:
-        return prog_recent
+    if utilisateur and utilisateur.is_authenticated:
+        for prog in programmes_publies:
+            total_domaines = DomaineSemaine.objects.filter(semaine__programme=prog).exclude(categorie='spiritualite').count()
+            prog_total = total_domaines if total_domaines > 0 else 6
+            
+            domaines_termines = DomaineUtilisateur.objects.filter(
+                utilisateur=utilisateur, 
+                domaine__semaine__programme=prog,
+                statut='completed'
+            ).exclude(domaine__categorie='spiritualite').count()
+            
+            if domaines_termines < prog_total:
+                # C'est le premier programme publié que l'utilisateur n'a pas terminé
+                return prog
+                
+        # Si tous les programmes publiés sont terminés, on renvoie le premier non publié
+        # pour qu'il s'affiche en "Bientôt disponible", ou à défaut le dernier publié
+        prochain_non_publie = Programme.objects.filter(publie=False).order_by('ordre').first()
+        if prochain_non_publie:
+            return prochain_non_publie
+        return programmes_publies.last()
         
-    # 3. Fallback sur le statut en base
-    return Programme.objects.filter(statut='en_cours').first()
+    # Utilisateur non connecté : on renvoie le premier programme publié
+    return programmes_publies.first()
 
-def enrich_programme(prog, user):
+def enrich_programme(prog, user, programme_actuel=None):
     if not prog:
         return None
-    from django.utils import timezone
-    aujourdhui = timezone.now().date()
-    
+        
     total_domaines = DomaineSemaine.objects.filter(semaine__programme=prog).exclude(categorie='spiritualite').count()
     prog.total = total_domaines if total_domaines > 0 else 6
     
@@ -70,20 +84,25 @@ def enrich_programme(prog, user):
 
     prog.pourcentage = int((prog.progression / prog.total) * 100) if prog.total > 0 else 0
     
-    # Harmonisation des statuts et boutons
-    if prog.progression >= prog.total and prog.total > 0 and prog.a_commence:
-        prog.statut_user = 'termine'
-        prog.button_text = 'Voir mes réalisations'
-    elif prog.date_debut and prog.date_debut > aujourdhui:
+    # Harmonisation stricte des statuts
+    if not prog.publie:
         prog.statut_user = 'a_venir'
         prog.button_text = 'Bientôt disponible'
+    elif prog.progression >= prog.total and prog.total > 0 and prog.a_commence:
+        prog.statut_user = 'termine'
+        prog.button_text = 'Voir mes réalisations'
     else:
-        prog.statut_user = 'en_cours'
-        # Règle absolue: 0% = Commencer
-        if prog.progression == 0:
-            prog.button_text = 'Commencer le programme'
+        # C'est un programme publié et non terminé
+        # S'il ne s'agit pas du programme actif, c'est qu'il est bloqué (soit l'utilisateur n'a pas fini le précédent)
+        if programme_actuel and prog.id != programme_actuel.id:
+            prog.statut_user = 'a_venir'
+            prog.button_text = 'Bientôt disponible'
         else:
-            prog.button_text = 'Continuer le programme'
+            prog.statut_user = 'en_cours'
+            if prog.progression == 0:
+                prog.button_text = 'Commencer le programme'
+            else:
+                prog.button_text = 'Continuer le programme'
             
     return prog
 
@@ -139,9 +158,7 @@ def home(request):
     programme_actuel = get_programme_actuel(request.user if request.user.is_authenticated else None)
     semaine_en_cours = get_semaine_en_cours(programme_actuel, request.user if request.user.is_authenticated else None)
     
-    prochain_rdv = None
-    if programme_actuel:
-        prochain_rdv = Semaine.objects.filter(programme=programme_actuel, date_rendez_vous__gt=aujourdhui).order_by('date_rendez_vous').first()
+    prochain_rdv = Semaine.objects.filter(date_rendez_vous__gt=aujourdhui).order_by('date_rendez_vous').first()
         
     programme_termine = False
     dernier_programme_complete = None
@@ -158,7 +175,7 @@ def home(request):
         membres_actifs = User.objects.filter(is_active=True).count()
         
         if programme_actuel:
-            programme_actuel = enrich_programme(programme_actuel, request.user)
+            programme_actuel = enrich_programme(programme_actuel, request.user, programme_actuel=programme_actuel)
         
         if pourcentage >= 100 and programme_actuel:
             programme_termine = True
@@ -215,14 +232,10 @@ def programmes_list(request):
     programmes_a_venir = []
     programmes_termines = []
     
-    from django.utils import timezone
-    aujourdhui = timezone.now().date()
-    
-    # Identifier le programme actif du calendrier
-    programme_actif_calendrier = Programme.objects.filter(date_debut__lte=aujourdhui, date_fin__gte=aujourdhui).order_by('-date_debut').first()
+    programme_actif = get_programme_actuel(request.user)
     
     for prog in programmes:
-        prog = enrich_programme(prog, request.user)
+        prog = enrich_programme(prog, request.user, programme_actuel=programme_actif)
         
         if prog.statut_user == 'termine':
             programmes_termines.append(prog)
@@ -230,14 +243,8 @@ def programmes_list(request):
             prog.is_next = (len(programmes_a_venir) == 0)
             programmes_a_venir.append(prog)
         else:
-            # S'il n'est ni terminé ni à venir, on le met dans "En cours" uniquement s'il est le programme actif du calendrier
-            # Ou si aucun programme calendrier n'est actif, le plus récent
-            if programme_actif_calendrier and prog.id == programme_actif_calendrier.id:
-                programmes_en_cours.append(prog)
-            elif not programme_actif_calendrier and prog.statut_user == 'en_cours':
-                # S'il n'y a pas de programme actif strict, on affiche le plus récent qui est en cours
-                if not programmes_en_cours:
-                    programmes_en_cours.append(prog)
+            # S'il n'est ni terminé ni à venir, c'est obligatoirement le programme "en_cours" (actif)
+            programmes_en_cours.append(prog)
                 
     return render(request, 'core/programmes_list.html', {
         'programmes_en_cours': programmes_en_cours,

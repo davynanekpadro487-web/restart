@@ -28,6 +28,7 @@ class Programme(models.Model):
     description = models.TextField(blank=True, null=True)
     statut = models.CharField(max_length=20, choices=STATUT_CHOICES, default='a_venir')
     ordre = models.PositiveIntegerField(default=0, verbose_name="Ordre de parcours")
+    publie = models.BooleanField(default=False, verbose_name="Publié")
     illustration = models.ImageField(upload_to='programmes_illus/', blank=True, null=True, verbose_name="Illustration (PNG/JPG)")
     date_disponibilite = models.DateField(null=True, blank=True, verbose_name="Date de disponibilité")
     date_debut = models.DateField(null=True, blank=True, verbose_name="Date de début")
