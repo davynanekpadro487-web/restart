@@ -153,6 +153,7 @@ def get_semaine_stats(semaine, utilisateur):
         'statut_global': statut_global
     }
 
+@never_cache
 def home(request):
     aujourdhui = timezone.now().date()
     programme_actuel = get_programme_actuel(request.user if request.user.is_authenticated else None)
@@ -224,7 +225,10 @@ def register(request):
         form = InscriptionForm()
     return render(request, 'registration/register.html', {'form': form})
 
+from django.views.decorators.cache import never_cache
+
 @login_required
+@never_cache
 def programmes_list(request):
     programmes = Programme.objects.all().order_by('ordre', 'date_debut')
     
@@ -762,6 +766,7 @@ def journal(request):
     })
 
 @login_required
+@never_cache
 def progression(request):
     programme_actuel = get_programme_actuel(request.user if request.user.is_authenticated else None)
     semaine_en_cours = get_semaine_en_cours(programme_actuel, request.user if request.user.is_authenticated else None)
