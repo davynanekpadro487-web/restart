@@ -6,6 +6,7 @@ from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
 from django.utils import timezone
+from django.views.decorators.cache import never_cache
 from .models import (
     Programme, Semaine, Defi, StatutDefi, EspacePersonnel, NoteEvolution, MessageInspirant, Profil,
     Action, ActionUtilisateur, PratiqueSpirituelle, PratiqueUtilisateur, CATEGORIES_ACTION, THEMES_COULEUR,
@@ -224,8 +225,6 @@ def register(request):
     else:
         form = InscriptionForm()
     return render(request, 'registration/register.html', {'form': form})
-
-from django.views.decorators.cache import never_cache
 
 @login_required
 @never_cache
