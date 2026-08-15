@@ -147,9 +147,19 @@
 
       <div class="current-card-media">
         {% if programme_actuel.illustration %}
-          <img src="{{ programme_actuel.illustration.url }}" alt="{{ programme_actuel.theme }}">
+          <img src="{{ programme_actuel.illustration.url }}" alt="{{ programme_actuel.theme }}" onerror="this.outerHTML='<div class=\'img-placeholder\'>IMAGE<br>{{ programme_actuel.theme }}</div>'">
+        {% elif 'amour' in programme_actuel.theme|lower or 'construire' in programme_actuel.theme|lower %}
+          <img src="{% static 'images/programme/illu-chemin-coeur.png' %}" alt="{{ programme_actuel.theme }}">
+        {% elif 'confiance' in programme_actuel.theme|lower %}
+          <img src="{% static 'images/programme/illu-montagne.png' %}" alt="{{ programme_actuel.theme }}">
+        {% elif 'entourage' in programme_actuel.theme|lower %}
+          <img src="{% static 'images/programme/illu-entourage.png' %}" alt="{{ programme_actuel.theme }}">
+        {% elif 'discipline' in programme_actuel.theme|lower %}
+          <img src="{% static 'images/programme/illu-discipline.png' %}" alt="{{ programme_actuel.theme }}">
+        {% elif 'temps' in programme_actuel.theme|lower or 'gestion' in programme_actuel.theme|lower %}
+          <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ programme_actuel.theme }}">
         {% else %}
-          <div class="img-placeholder">IMAGE<br>{{ programme_actuel.theme }}</div>
+          <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ programme_actuel.theme }}">
         {% endif %}
       </div>
     </section>
@@ -177,9 +187,19 @@
         {% endif %}
         <div class="thumb" style="position:relative;">
           {% if prog.illustration %}
-            <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}">
+            <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}" onerror="this.outerHTML='<div class=\'img-placeholder\'>IMAGE</div>'">
+          {% elif 'amour' in prog.theme|lower or 'construire' in prog.theme|lower %}
+            <img src="{% static 'images/programme/illu-chemin-coeur.png' %}" alt="{{ prog.theme }}">
+          {% elif 'confiance' in prog.theme|lower %}
+            <img src="{% static 'images/programme/illu-montagne.png' %}" alt="{{ prog.theme }}">
+          {% elif 'entourage' in prog.theme|lower %}
+            <img src="{% static 'images/programme/illu-entourage.png' %}" alt="{{ prog.theme }}">
+          {% elif 'discipline' in prog.theme|lower %}
+            <img src="{% static 'images/programme/illu-discipline.png' %}" alt="{{ prog.theme }}">
+          {% elif 'temps' in prog.theme|lower or 'gestion' in prog.theme|lower %}
+            <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ prog.theme }}">
           {% else %}
-            <div class="img-placeholder">IMAGE<br>{{ prog.theme }}</div>
+            <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ prog.theme }}">
           {% endif %}
         </div>
         <div class="upcoming-card-body">
@@ -220,9 +240,19 @@
     <div class="completed-card">
       <div class="thumb">
         {% if prog.illustration %}
-          <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}">
+          <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}" onerror="this.outerHTML='<div class=\'img-placeholder\'>IMAGE</div>'">
+        {% elif 'amour' in prog.theme|lower or 'construire' in prog.theme|lower %}
+          <img src="{% static 'images/programme/illu-chemin-coeur.png' %}" alt="{{ prog.theme }}">
+        {% elif 'confiance' in prog.theme|lower %}
+          <img src="{% static 'images/programme/illu-montagne.png' %}" alt="{{ prog.theme }}">
+        {% elif 'entourage' in prog.theme|lower %}
+          <img src="{% static 'images/programme/illu-entourage.png' %}" alt="{{ prog.theme }}">
+        {% elif 'discipline' in prog.theme|lower %}
+          <img src="{% static 'images/programme/illu-discipline.png' %}" alt="{{ prog.theme }}">
+        {% elif 'temps' in prog.theme|lower or 'gestion' in prog.theme|lower %}
+          <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ prog.theme }}">
         {% else %}
-          <div class="img-placeholder">IMAGE<br>{{ prog.theme }}</div>
+          <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ prog.theme }}">
         {% endif %}
       </div>
       <div>
