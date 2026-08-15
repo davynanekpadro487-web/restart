@@ -31,25 +31,61 @@ ICONES_CATEGORIE = {
 }
 
 def get_programme_actuel(utilisateur=None):
-    if utilisateur and utilisateur.is_authenticated:
-        from django.utils import timezone
-        aujourdhui = timezone.now().date()
-        programmes = Programme.objects.all().order_by('ordre', 'date_debut')
-        for prog in programmes:
-            total_domaines = DomaineSemaine.objects.filter(semaine__programme=prog).exclude(categorie='spiritualite').count()
-            total_domaines = total_domaines if total_domaines > 0 else 6
-            
-            domaines_termines = DomaineUtilisateur.objects.filter(
-                utilisateur=utilisateur, 
-                domaine__semaine__programme=prog,
-                statut='completed'
-            ).exclude(domaine__categorie='spiritualite').count()
-            if domaines_termines < total_domaines:
-                if prog.date_disponibilite and prog.date_disponibilite > aujourdhui:
-                    continue
-                return prog
-        return programmes.last() if programmes else None
+    from django.utils import timezone
+    aujourdhui = timezone.now().date()
+    
+    # 1. Chercher le programme dont les dates couvrent aujourd'hui (date_debut <= aujourdhui <= date_fin)
+    prog_en_cours = Programme.objects.filter(date_debut__lte=aujourdhui, date_fin__gte=aujourdhui).order_by('-date_debut').first()
+    if prog_en_cours:
+        return prog_en_cours
+        
+    # 2. S'il n'y en a pas, chercher le programme le plus récent qui a déjà commencé
+    prog_recent = Programme.objects.filter(date_debut__lte=aujourdhui).order_by('-date_debut').first()
+    if prog_recent:
+        return prog_recent
+        
+    # 3. Fallback sur le statut en base
     return Programme.objects.filter(statut='en_cours').first()
+
+def enrich_programme(prog, user):
+    if not prog:
+        return None
+    from django.utils import timezone
+    aujourdhui = timezone.now().date()
+    
+    total_domaines = DomaineSemaine.objects.filter(semaine__programme=prog).exclude(categorie='spiritualite').count()
+    prog.total = total_domaines if total_domaines > 0 else 6
+    
+    if user and user.is_authenticated:
+        domaines_termines = DomaineUtilisateur.objects.filter(
+            utilisateur=user, 
+            domaine__semaine__programme=prog,
+            statut='completed'
+        ).exclude(domaine__categorie='spiritualite').count()
+        prog.progression = domaines_termines
+        prog.a_commence = domaines_termines > 0 or DomaineUtilisateur.objects.filter(utilisateur=user, domaine__semaine__programme=prog, statut='engaged').exists()
+    else:
+        prog.progression = 0
+        prog.a_commence = False
+
+    prog.pourcentage = int((prog.progression / prog.total) * 100) if prog.total > 0 else 0
+    
+    # Harmonisation des statuts et boutons
+    if prog.progression >= prog.total and prog.total > 0 and prog.a_commence:
+        prog.statut_user = 'termine'
+        prog.button_text = 'Voir mes réalisations'
+    elif prog.date_debut and prog.date_debut > aujourdhui:
+        prog.statut_user = 'a_venir'
+        prog.button_text = 'Bientôt disponible'
+    else:
+        prog.statut_user = 'en_cours'
+        # Règle absolue: 0% = Commencer
+        if prog.progression == 0:
+            prog.button_text = 'Commencer le programme'
+        else:
+            prog.button_text = 'Continuer le programme'
+            
+    return prog
 
 def get_semaine_en_cours(programme=None, utilisateur=None):
     if not programme:
@@ -122,13 +158,7 @@ def home(request):
         membres_actifs = User.objects.filter(is_active=True).count()
         
         if programme_actuel:
-            domaines_termines = DomaineUtilisateur.objects.filter(
-                utilisateur=request.user, 
-                domaine__semaine__programme=programme_actuel,
-                statut='completed'
-            ).exclude(domaine__categorie='spiritualite').count()
-            programme_actuel.progression = domaines_termines
-            programme_actuel.total = 6
+            programme_actuel = enrich_programme(programme_actuel, request.user)
         
         if pourcentage >= 100 and programme_actuel:
             programme_termine = True
@@ -188,30 +218,26 @@ def programmes_list(request):
     from django.utils import timezone
     aujourdhui = timezone.now().date()
     
+    # Identifier le programme actif du calendrier
+    programme_actif_calendrier = Programme.objects.filter(date_debut__lte=aujourdhui, date_fin__gte=aujourdhui).order_by('-date_debut').first()
+    
     for prog in programmes:
-        total_domaines = DomaineSemaine.objects.filter(semaine__programme=prog).exclude(categorie='spiritualite').count()
-        prog.total = total_domaines if total_domaines > 0 else 6
+        prog = enrich_programme(prog, request.user)
         
-        domaines_termines = DomaineUtilisateur.objects.filter(
-            utilisateur=request.user, 
-            domaine__semaine__programme=prog,
-            statut='completed'
-        ).exclude(domaine__categorie='spiritualite').count()
-        
-        prog.progression = domaines_termines
-        prog.a_commence = domaines_termines > 0 or DomaineUtilisateur.objects.filter(utilisateur=request.user, domaine__semaine__programme=prog, statut='engaged').exists()
-        
-        if domaines_termines >= prog.total and prog.total > 0:
-            prog.statut_user = 'termine'
+        if prog.statut_user == 'termine':
             programmes_termines.append(prog)
+        elif prog.statut_user == 'a_venir':
+            prog.is_next = (len(programmes_a_venir) == 0)
+            programmes_a_venir.append(prog)
         else:
-            if prog.date_disponibilite and prog.date_disponibilite > aujourdhui:
-                prog.statut_user = 'a_venir'
-                prog.is_next = (len(programmes_a_venir) == 0)
-                programmes_a_venir.append(prog)
-            else:
-                prog.statut_user = 'en_cours'
+            # S'il n'est ni terminé ni à venir, on le met dans "En cours" uniquement s'il est le programme actif du calendrier
+            # Ou si aucun programme calendrier n'est actif, le plus récent
+            if programme_actif_calendrier and prog.id == programme_actif_calendrier.id:
                 programmes_en_cours.append(prog)
+            elif not programme_actif_calendrier and prog.statut_user == 'en_cours':
+                # S'il n'y a pas de programme actif strict, on affiche le plus récent qui est en cours
+                if not programmes_en_cours:
+                    programmes_en_cours.append(prog)
                 
     return render(request, 'core/programmes_list.html', {
         'programmes_en_cours': programmes_en_cours,
@@ -253,7 +279,7 @@ def defi_redirect_actuel(request):
     semaine = get_semaine_en_cours(utilisateur=request.user)
     if semaine:
         return redirect('defi_semaine', semaine_id=semaine.id)
-    return redirect('programmes_list')
+    return render(request, 'core/defi_vide.html')
 
 @login_required
 def defi_redirect_programme(request, programme_id):
@@ -261,7 +287,7 @@ def defi_redirect_programme(request, programme_id):
     semaine = get_semaine_en_cours(programme)
     if semaine:
         return redirect('defi_semaine', semaine_id=semaine.id)
-    return redirect('programmes_list')
+    return render(request, 'core/defi_vide.html')
 
 @login_required
 def get_categories_data(request, semaine):

@@ -117,11 +117,7 @@
         {% endif %}
 
         <a href="{% url 'defi_redirect_programme' programme_actuel.id %}" class="btn btn-or">
-          {% if programme_actuel.progression == 0 %}
-            Commencer le programme
-          {% else %}
-            Continuer le programme
-          {% endif %}
+          {{ programme_actuel.button_text }}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
 
@@ -241,7 +237,7 @@
       </div>
       <span class="status-pill">Terminé</span>
       <a href="{% url 'defi_redirect_programme' prog.id %}" class="btn btn-outline-blue">
-        Voir les réalisations
+        {{ prog.button_text }}
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
