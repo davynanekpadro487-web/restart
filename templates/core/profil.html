@@ -9,7 +9,7 @@
     <div class="profil-entete">
       <div class="avatar-grand">
         {% if profil.photo_profil %}
-          <img src="{{ profil.photo_profil.url }}" alt="Photo de profil">
+          <img src="{{ profil.photo_profil.url }}" alt="Photo de profil" loading="lazy">
         {% else %}
           <span>{{ user.username|first|upper }}</span>
         {% endif %}

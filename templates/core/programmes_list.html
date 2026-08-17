@@ -147,19 +147,19 @@
 
       <div class="current-card-media">
         {% if programme_actuel.illustration %}
-          <img src="{{ programme_actuel.illustration.url }}" alt="{{ programme_actuel.theme }}" onerror="this.outerHTML='<div class=\'img-placeholder\'>IMAGE<br>{{ programme_actuel.theme }}</div>'">
+          <img src="{{ programme_actuel.illustration.url }}" alt="{{ programme_actuel.theme }}" onerror="this.outerHTML='<div class=\'img-placeholder\' loading="lazy">IMAGE<br>{{ programme_actuel.theme }}</div>'">
         {% elif 'amour' in programme_actuel.theme|lower or 'construire' in programme_actuel.theme|lower %}
-          <img src="{% static 'images/programme/illu-chemin-coeur.png' %}" alt="{{ programme_actuel.theme }}">
+          <img src="{% static 'images/programme/illu-chemin-coeur.png' %}" alt="{{ programme_actuel.theme }}" loading="lazy">
         {% elif 'confiance' in programme_actuel.theme|lower %}
-          <img src="{% static 'images/programme/illu-montagne.png' %}" alt="{{ programme_actuel.theme }}">
+          <img src="{% static 'images/programme/illu-montagne.png' %}" alt="{{ programme_actuel.theme }}" loading="lazy">
         {% elif 'entourage' in programme_actuel.theme|lower %}
-          <img src="{% static 'images/programme/illu-entourage.png' %}" alt="{{ programme_actuel.theme }}">
+          <img src="{% static 'images/programme/illu-entourage.png' %}" alt="{{ programme_actuel.theme }}" loading="lazy">
         {% elif 'discipline' in programme_actuel.theme|lower %}
-          <img src="{% static 'images/programme/illu-discipline.png' %}" alt="{{ programme_actuel.theme }}">
+          <img src="{% static 'images/programme/illu-discipline.png' %}" alt="{{ programme_actuel.theme }}" loading="lazy">
         {% elif 'temps' in programme_actuel.theme|lower or 'gestion' in programme_actuel.theme|lower %}
-          <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ programme_actuel.theme }}">
+          <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ programme_actuel.theme }}" loading="lazy">
         {% else %}
-          <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ programme_actuel.theme }}">
+          <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ programme_actuel.theme }}" loading="lazy">
         {% endif %}
       </div>
     </section>
@@ -187,19 +187,19 @@
         {% endif %}
         <div class="thumb" style="position:relative;">
           {% if prog.illustration %}
-            <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}" onerror="this.outerHTML='<div class=\'img-placeholder\'>IMAGE</div>'">
+            <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}" onerror="this.outerHTML='<div class=\'img-placeholder\' loading="lazy">IMAGE</div>'">
           {% elif 'amour' in prog.theme|lower or 'construire' in prog.theme|lower %}
-            <img src="{% static 'images/programme/illu-chemin-coeur.png' %}" alt="{{ prog.theme }}">
+            <img src="{% static 'images/programme/illu-chemin-coeur.png' %}" alt="{{ prog.theme }}" loading="lazy">
           {% elif 'confiance' in prog.theme|lower %}
-            <img src="{% static 'images/programme/illu-montagne.png' %}" alt="{{ prog.theme }}">
+            <img src="{% static 'images/programme/illu-montagne.png' %}" alt="{{ prog.theme }}" loading="lazy">
           {% elif 'entourage' in prog.theme|lower %}
-            <img src="{% static 'images/programme/illu-entourage.png' %}" alt="{{ prog.theme }}">
+            <img src="{% static 'images/programme/illu-entourage.png' %}" alt="{{ prog.theme }}" loading="lazy">
           {% elif 'discipline' in prog.theme|lower %}
-            <img src="{% static 'images/programme/illu-discipline.png' %}" alt="{{ prog.theme }}">
+            <img src="{% static 'images/programme/illu-discipline.png' %}" alt="{{ prog.theme }}" loading="lazy">
           {% elif 'temps' in prog.theme|lower or 'gestion' in prog.theme|lower %}
-            <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ prog.theme }}">
+            <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ prog.theme }}" loading="lazy">
           {% else %}
-            <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ prog.theme }}">
+            <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ prog.theme }}" loading="lazy">
           {% endif %}
         </div>
         <div class="upcoming-card-body">
@@ -240,19 +240,19 @@
     <div class="completed-card">
       <div class="thumb">
         {% if prog.illustration %}
-          <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}" onerror="this.outerHTML='<div class=\'img-placeholder\'>IMAGE</div>'">
+          <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}" onerror="this.outerHTML='<div class=\'img-placeholder\' loading="lazy">IMAGE</div>'">
         {% elif 'amour' in prog.theme|lower or 'construire' in prog.theme|lower %}
-          <img src="{% static 'images/programme/illu-chemin-coeur.png' %}" alt="{{ prog.theme }}">
+          <img src="{% static 'images/programme/illu-chemin-coeur.png' %}" alt="{{ prog.theme }}" loading="lazy">
         {% elif 'confiance' in prog.theme|lower %}
-          <img src="{% static 'images/programme/illu-montagne.png' %}" alt="{{ prog.theme }}">
+          <img src="{% static 'images/programme/illu-montagne.png' %}" alt="{{ prog.theme }}" loading="lazy">
         {% elif 'entourage' in prog.theme|lower %}
-          <img src="{% static 'images/programme/illu-entourage.png' %}" alt="{{ prog.theme }}">
+          <img src="{% static 'images/programme/illu-entourage.png' %}" alt="{{ prog.theme }}" loading="lazy">
         {% elif 'discipline' in prog.theme|lower %}
-          <img src="{% static 'images/programme/illu-discipline.png' %}" alt="{{ prog.theme }}">
+          <img src="{% static 'images/programme/illu-discipline.png' %}" alt="{{ prog.theme }}" loading="lazy">
         {% elif 'temps' in prog.theme|lower or 'gestion' in prog.theme|lower %}
-          <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ prog.theme }}">
+          <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ prog.theme }}" loading="lazy">
         {% else %}
-          <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ prog.theme }}">
+          <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ prog.theme }}" loading="lazy">
         {% endif %}
       </div>
       <div>
@@ -282,7 +282,7 @@
   <!-- HELP -->
   <div class="help-card">
     <div class="thumb">
-      <img src="{% static 'images/programme/illu-communaute.png' %}" alt="Besoin d'aide" onerror="this.outerHTML='<div class=\'img-placeholder\'>IMAGE<br>communauté</div>'">
+      <img src="{% static 'images/programme/illu-communaute.png' %}" alt="Besoin d'aide" onerror="this.outerHTML='<div class=\'img-placeholder\' loading="lazy">IMAGE<br>communauté</div>'">
     </div>
     <div>
       <h3>Besoin d'aide ?</h3>

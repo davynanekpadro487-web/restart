@@ -68,7 +68,7 @@
         <div class="header-actions">
           <a href="{% url 'profil' %}" class="avatar-utilisateur" aria-label="Mon profil">
             {% if user.profil.photo_profil %}
-              <img src="{{ user.profil.photo_profil.url }}" alt="">
+              <img src="{{ user.profil.photo_profil.url }}" alt="" loading="lazy">
             {% else %}
               {{ user.username|first|upper }}
             {% endif %}
