@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <!-- ============ HERO ============ -->
@@ -97,13 +98,13 @@
   <div>
     <div class="section-image-photos">
       <div class="photo-principale">
-        <img src="{% static 'images/communaute/photo-communaute-groupe.png' %}" alt="Communauté Restart" style="width:100%; height:100%; object-fit:cover; border-radius:inherit;">
+        <img src="{% static 'images/communaute/photo-communaute-groupe.png' %}" alt="Communauté Restart" style="width:100%; height:100%; object-fit:contain; object-position:top center; border-radius:inherit;">
       </div>
       <div class="photo-secondaire" style="background: linear-gradient(160deg, var(--or), var(--or-fonce));">
-        <img src="{% static 'images/communaute/photo-communaute-objectif.png' %}" alt="Objectifs communauté" style="width:100%; height:100%; object-fit:cover; border-radius:inherit;">
+        <img src="{% static 'images/communaute/photo-communaute-objectif.png' %}" alt="Objectifs communauté" style="width:100%; height:100%; object-fit:contain; object-position:top center; border-radius:inherit;">
       </div>
       <div class="photo-secondaire" style="background: linear-gradient(160deg, var(--bleu-profond), var(--bleu-nuit));">
-        <img src="{% static 'images/communaute/photo-communaute-engagement.png' %}" alt="Engagement communauté" style="width:100%; height:100%; object-fit:cover; border-radius:inherit;">
+        <img src="{% static 'images/communaute/photo-communaute-engagement.png' %}" alt="Engagement communauté" style="width:100%; height:100%; object-fit:contain; object-position:top center; border-radius:inherit;">
       </div>
     </div>
   </div>

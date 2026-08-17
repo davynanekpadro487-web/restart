@@ -48,14 +48,15 @@
 <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
 <div class="mobile-menu" id="mobile-menu">
   <div class="mobile-menu-header">
-    <div class="logo-group" style="display:flex; flex-direction:column; line-height:1;">
-      <span class="logo" style="font-size:22px; font-weight:800; font-family:'Poppins',sans-serif; color:var(--bleu-nuit);">Restart</span>
-      <span class="logo-sub" style="color:var(--or-fonce); font-size:10px; font-weight:700; letter-spacing:0.1em;">BY AURÉA</span>
+    <div class="logo-group" style="display:flex; flex-direction:column; line-height:1;" translate="no">
+      <span class="logo" style="font-size:22px; font-weight:800; font-family:'Poppins',sans-serif; color:var(--bleu-nuit);" translate="no">Restart</span>
+      <span class="logo-sub" style="color:var(--or-fonce); font-size:10px; font-weight:700; letter-spacing:0.1em;" translate="no">by Auréa</span>
     </div>
     <button class="mobile-menu-close" id="mobile-menu-close">
       <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
+  <hr style="border:none; border-top:1px solid rgba(13,27,76,0.12); margin: 0 0 20px 0;">
   <div class="mobile-menu-links">
     {% if user.is_authenticated %}
     <a href="{% url 'home' %}" class="{% if request.path == '/' or request.path == '/home/' %}active{% endif %}">Accueil</a>
@@ -66,8 +67,8 @@
     <a href="{% url 'profil' %}" class="{% if '/profil' in request.path %}active{% endif %}">Profil</a>
     <a href="{% url 'parametres' %}" class="{% if '/parametres' in request.path %}active{% endif %}">Paramètres</a>
     {% else %}
-    <a href="{% url 'login' %}">Connexion</a>
-    <a href="{% url 'register' %}" style="color:var(--bleu-profond);">Nous Rejoindre</a>
+    <a href="{% url 'login' %}" translate="no">Se connecter</a>
+    <a href="{% url 'register' %}" style="color:var(--bleu-profond);" translate="no">Nous rejoindre</a>
     {% endif %}
   </div>
 </div>
