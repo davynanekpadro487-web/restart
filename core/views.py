@@ -750,7 +750,9 @@ def journal(request):
     if filtre == 'libre':
         notes = espace.notes.filter(type_note='libre')
     elif filtre == 'defi':
-        notes = espace.notes.exclude(type_note='libre')
+        notes = espace.notes.filter(type_note__in=['defi', 'bilan'])
+    elif filtre == 'spiritualite':
+        notes = espace.notes.filter(type_note='spiritualite')
     else:
         notes = espace.notes.all()
         
