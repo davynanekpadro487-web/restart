@@ -5,7 +5,7 @@
 
     <!-- Header navigation -->
     <div class="mb-8 flex items-center justify-between">
-        <a href="{% url 'defi_semaine' domaine.semaine.id %}" class="inline-flex items-center text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">
+        <a href="{% url 'defi_semaine' domaine.semaine.id %}" class="inline-flex items-center text-sm font-bold text-gray-500 hover:text-[#123A66] transition-colors">
             <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Retour aux défis
         </a>
         <div class="flex gap-2 items-center">
@@ -44,7 +44,7 @@
             
             <div class="bg-gradient-to-br from-gray-50 to-white p-8 sm:p-12 border-b border-gray-100 relative overflow-hidden">
                 <div class="absolute -right-20 -top-20 w-64 h-64 bg-aurea-purple/5 rounded-full blur-3xl"></div>
-                <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 relative z-10">{{ domaine.titre }}</h1>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-[#123A66] mb-4 relative z-10">{{ domaine.titre }}</h1>
                 <div class="flex items-start gap-3 relative z-10">
                     <i data-lucide="lightbulb" class="w-6 h-6 text-aurea-gold shrink-0 mt-1"></i>
                     <div>
@@ -61,7 +61,7 @@
                         <p class="text-sm text-gray-600 font-medium">Ces pratiques sont facultatives — à toi de voir si elles te parlent.</p>
                     </div>
                 {% endif %}
-                <h2 class="text-xl font-bold text-gray-900 mb-6">Choisis UNE action à réaliser cette semaine :</h2>
+                <h2 class="text-xl font-bold text-[#123A66] mb-6">Choisis UNE action à réaliser cette semaine :</h2>
                 
                 <form method="POST" action="{% url 'domaine_detail' domaine.id %}">
                     {% csrf_token %}
@@ -78,7 +78,7 @@
                                         </div>
                                         <div class="text-gray-800 font-medium text-lg leading-snug">
                                             {% if '**' in action.texte %}
-                                                <span class="block font-bold text-gray-900 mb-1">{{ action.texte|slice:":action.texte.find(':')" }}</span>
+                                                <span class="block font-bold text-[#123A66] mb-1">{{ action.texte|slice:":action.texte.find(':')" }}</span>
                                                 <span class="text-sm text-gray-600 block">{{ action.texte|slice:"action.texte.find(':')+1:" }}</span>
                                             {% else %}
                                                 {{ action.texte }}
@@ -101,7 +101,7 @@
             
             <div class="p-6 sm:p-8 border-b border-gray-100 bg-gray-50/50">
                 <div class="text-sm font-bold text-aurea-purple uppercase tracking-wider mb-2">Ton engagement : {{ domaine.titre }}</div>
-                <p class="text-gray-900 font-bold text-lg sm:text-xl">{{ domaine_user.action_choisie.texte }}</p>
+                <p class="text-[#123A66] font-bold text-lg sm:text-xl">{{ domaine_user.action_choisie.texte }}</p>
             </div>
 
             <div class="p-6 sm:p-8">
@@ -112,7 +112,7 @@
                     {% if etape == '1' %}
                         <div class="animate-fade-in text-center mb-8">
                             <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-aurea-purple font-bold text-xl mb-4">1</div>
-                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Liste tes dépenses actuelles</h3>
+                            <h3 class="text-2xl font-bold text-[#123A66] mb-2">Liste tes dépenses actuelles</h3>
                             <p class="text-gray-600">Ajoute toutes les dépenses que tu effectues régulièrement. Pour chacune, indique si tu la trouves utile ou pas vraiment nécessaire.</p>
                         </div>
                         
@@ -165,7 +165,7 @@
                     {% elif etape == '2' %}
                         <div class="animate-fade-in text-center mb-8">
                             <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-aurea-purple font-bold text-xl mb-4">2</div>
-                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Ton total</h3>
+                            <h3 class="text-2xl font-bold text-[#123A66] mb-2">Ton total</h3>
                         </div>
 
                         {% with depenses=domaine_user.donnees_action.depenses %}
@@ -188,7 +188,7 @@
 
                             <div class="bg-aurea-purple/10 border-2 border-aurea-purple/30 rounded-2xl p-6 text-center">
                                 <p class="text-sm font-bold text-aurea-purple uppercase tracking-wider mb-1">Total de tes dépenses cette semaine</p>
-                                <p class="text-3xl font-extrabold text-gray-900" id="total-depenses">{{ total_depenses }} FCFA</p>
+                                <p class="text-3xl font-extrabold text-[#123A66]" id="total-depenses">{{ total_depenses }} FCFA</p>
                             </div>
                         </div>
                         {% endwith %}
@@ -208,7 +208,7 @@
                         {% if total_regrets == '0' %}
                             <div class="animate-fade-in text-center mb-8">
                                 <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-600 font-bold text-xl mb-4">3</div>
-                                <h3 class="text-2xl font-bold text-gray-900 mb-2">Ta gestion cette semaine</h3>
+                                <h3 class="text-2xl font-bold text-[#123A66] mb-2">Ta gestion cette semaine</h3>
                             </div>
                             
                             <div class="max-w-xl mx-auto mb-8">
@@ -219,7 +219,7 @@
                         {% else %}
                             <div class="animate-fade-in text-center mb-8">
                                 <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-600 font-bold text-xl mb-4">3</div>
-                                <h3 class="text-2xl font-bold text-gray-900 mb-2">Tes regrets</h3>
+                                <h3 class="text-2xl font-bold text-[#123A66] mb-2">Tes regrets</h3>
                             </div>
                             
                             {% with depenses=domaine_user.donnees_action.depenses %}
@@ -252,9 +252,9 @@
 
                             <div class="mb-6">
                                 {% if total_regrets == '0' %}
-                                    <label class="block text-gray-900 font-bold mb-3">Qu'est-ce que tu pourrais mettre de côté cette semaine, même un petit montant ?</label>
+                                    <label class="block text-[#123A66] font-bold mb-3">Qu'est-ce que tu pourrais mettre de côté cette semaine, même un petit montant ?</label>
                                 {% else %}
-                                    <label class="block text-gray-900 font-bold mb-3">Où aurais-tu pu mettre cet argent à la place — un projet, une épargne, quelque chose qui compte vraiment pour toi ?</label>
+                                    <label class="block text-[#123A66] font-bold mb-3">Où aurais-tu pu mettre cet argent à la place — un projet, une épargne, quelque chose qui compte vraiment pour toi ?</label>
                                 {% endif %}
                                 <textarea name="reponse_engagement" rows="3" class="w-full rounded-xl border-gray-300 focus:border-aurea-purple focus:ring-aurea-purple text-base p-4" placeholder="Ta réponse..." required></textarea>
                             </div>
@@ -275,7 +275,7 @@
                     <div class="max-w-lg mx-auto">
                         <div class="animate-fade-in text-center mb-8">
                             <i data-lucide="list-checks" class="w-12 h-12 text-aurea-purple mx-auto mb-4 bg-purple-100 p-2 rounded-full"></i>
-                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Ta checklist</h3>
+                            <h3 class="text-2xl font-bold text-[#123A66] mb-2">Ta checklist</h3>
                             
                             {% if domaine_user.donnees_action.intro %}
                                 <p class="text-gray-700 font-medium italic p-4 bg-gray-50 rounded-2xl mb-4">{{ domaine_user.donnees_action.intro }}</p>
@@ -335,7 +335,7 @@
                                             <p class="text-gray-700 font-medium italic p-4 bg-gray-50 rounded-2xl mb-6">{{ domaine_user.donnees_action.intro }}</p>
                                         {% endif %}
                                         
-                                        <h3 class="text-2xl font-bold text-gray-900 mb-6">{{ etape.question }}</h3>
+                                        <h3 class="text-2xl font-bold text-[#123A66] mb-6">{{ etape.question }}</h3>
                                         
                                         {% if etape.contexte %}
                                         <p class="text-gray-600 mb-6 text-lg">{{ etape.contexte }}</p>
@@ -400,7 +400,7 @@
                     <!-- VALIDATION GÉNÉRIQUE POUR LES AUTRES DOMAINES -->
                     <div class="text-center animate-fade-in py-8">
                         <i data-lucide="target" class="w-16 h-16 text-aurea-purple mx-auto mb-4 opacity-50"></i>
-                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Passe à l'action</h3>
+                        <h3 class="text-2xl font-bold text-[#123A66] mb-2">Passe à l'action</h3>
                         <p class="text-gray-600 mb-8 max-w-md mx-auto">Réalise ton action. Une fois que c'est fait, valide ton défi pour gagner tes XP.</p>
                         
                         <form method="POST" action="{% url 'domaine_detail' domaine.id %}">
@@ -425,7 +425,7 @@
                         <i data-lucide="check-circle-2" class="w-8 h-8 text-green-600"></i>
                     </div>
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-900">{% if is_bonus %}Action bonus réalisée{% else %}Défi réalisé{% endif %}</h2>
+                        <h2 class="text-2xl font-bold text-[#123A66]">{% if is_bonus %}Action bonus réalisée{% else %}Défi réalisé{% endif %}</h2>
                         <div class="inline-flex items-center gap-2 text-green-700 font-bold bg-green-50 px-3 py-1 rounded-full text-sm mt-1">
                             <i data-lucide="award" class="w-4 h-4"></i> +{{ domaine_user.xp_gagnes }} XP obtenus
                         </div>
@@ -434,11 +434,11 @@
                 
                 <div class="bg-gray-50 rounded-2xl p-6 shadow-sm border border-gray-200 mb-8">
                     <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">L'action que tu as choisie :</p>
-                    <p class="text-gray-900 font-medium text-lg">{{ domaine_user.action_choisie.texte }}</p>
+                    <p class="text-[#123A66] font-medium text-lg">{{ domaine_user.action_choisie.texte }}</p>
                 </div>
                 
                 {% if domaine_user.donnees_action and domaine_user.donnees_action.etapes %}
-                    <h3 class="text-lg font-bold text-gray-900 mb-4 px-2">Ce que tu as réalisé</h3>
+                    <h3 class="text-lg font-bold text-[#123A66] mb-4 px-2">Ce que tu as réalisé</h3>
                     
                     {% if domaine_user.donnees_action.type == 'checklist' %}
                         <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm mb-8">
@@ -545,7 +545,7 @@
                 {% endif %}
 
                 {% if domaine_user.preuve_fichier or domaine_user.preuve_texte %}
-                <h3 class="text-lg font-bold text-gray-900 mb-4 px-2">Ta preuve</h3>
+                <h3 class="text-lg font-bold text-[#123A66] mb-4 px-2">Ta preuve</h3>
                 <div class="bg-green-50 rounded-2xl p-6 border border-green-100 mb-8">
                     {% if domaine_user.preuve_texte %}
                         <p class="text-gray-800 italic mb-4">"{{ domaine_user.preuve_texte }}"</p>
@@ -562,7 +562,7 @@
 
                 <!-- Invitation Journal -->
                 <div class="mt-6 bg-gradient-to-r from-aurea-gold/10 to-transparent border-l-4 border-aurea-gold p-6 rounded-r-2xl">
-                    <h4 class="font-bold text-gray-900 flex items-center gap-2 mb-2">
+                    <h4 class="font-bold text-[#123A66] flex items-center gap-2 mb-2">
                         <i data-lucide="book-open" class="w-5 h-5 text-aurea-gold"></i> Envie d'aller plus loin ?
                     </h4>
                     <p class="text-gray-700 mb-4 text-sm">Note ce que tu as ressenti après ce défi. Garder une trace t'aidera à voir ton évolution.</p>
