@@ -63,7 +63,7 @@
             {% elif 'temps' in past_sem.programme.theme|lower or 'gestion' in past_sem.programme.theme|lower %}
               <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ past_sem.programme.theme }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
             {% elif past_sem.programme.illustration %}
-              <img src="{{ past_sem.programme.illustration.url }}" alt="{{ past_sem.programme.theme }}" onerror="this.onerror=null; this.src='{% static \'images/programme/illu-laptop-nuit.png\' %}'" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+              <img src="{{ past_sem.programme.illustration.url }}" alt="{{ past_sem.programme.theme }}" onerror="this.onerror=null; this.src='{% static 'images/programme/illu-laptop-nuit.png' %}'" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
             {% else %}
               <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ past_sem.programme.theme }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
             {% endif %}

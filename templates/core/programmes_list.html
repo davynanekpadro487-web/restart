@@ -157,7 +157,7 @@
         {% elif 'temps' in programme_actuel.theme|lower or 'gestion' in programme_actuel.theme|lower %}
           <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ programme_actuel.theme }}" loading="lazy">
         {% elif programme_actuel.illustration %}
-          <img src="{{ programme_actuel.illustration.url }}" alt="{{ programme_actuel.theme }}" onerror="this.onerror=null; this.src='{% static \'images/programme/illu-laptop-nuit.png\' %}'">
+          <img src="{{ programme_actuel.illustration.url }}" alt="{{ programme_actuel.theme }}" onerror="this.onerror=null; this.src='{% static 'images/programme/illu-laptop-nuit.png' %}'">
         {% else %}
           <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ programme_actuel.theme }}" loading="lazy">
         {% endif %}
@@ -197,7 +197,7 @@
           {% elif 'temps' in prog.theme|lower or 'gestion' in prog.theme|lower %}
             <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ prog.theme }}" loading="lazy">
           {% elif prog.illustration %}
-            <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}" onerror="this.onerror=null; this.src='{% static \'images/programme/illu-laptop-nuit.png\' %}'">
+            <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}" onerror="this.onerror=null; this.src='{% static 'images/programme/illu-laptop-nuit.png' %}'">
           {% else %}
             <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ prog.theme }}" loading="lazy">
           {% endif %}
@@ -250,7 +250,7 @@
         {% elif 'temps' in prog.theme|lower or 'gestion' in prog.theme|lower %}
           <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ prog.theme }}" loading="lazy">
         {% elif prog.illustration %}
-          <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}" onerror="this.onerror=null; this.src='{% static \'images/programme/illu-laptop-nuit.png\' %}'">
+          <img src="{{ prog.illustration.url }}" alt="{{ prog.theme }}" onerror="this.onerror=null; this.src='{% static 'images/programme/illu-laptop-nuit.png' %}'">
         {% else %}
           <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ prog.theme }}" loading="lazy">
         {% endif %}
