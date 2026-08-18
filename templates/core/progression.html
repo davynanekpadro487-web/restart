@@ -11,7 +11,8 @@
             <p class="text-[#5a6472] text-[15px] md:text-[16px]">Suis tes accomplissements et reste constant.</p>
         </div>
         <div class="hidden md:block mt-8 md:mt-0">
-            <img src="{% static 'images/progression/hero-progression.png' %}" alt="Progression" class="h-40 md:h-48 object-contain">
+            <!-- Image du hero plus grande comme sur la maquette -->
+            <img src="{% static 'images/progression/hero-progression.png' %}" alt="Progression" class="h-48 md:h-[260px] object-contain drop-shadow-sm">
         </div>
     </div>
 
@@ -31,8 +32,8 @@
                 <div class="flex flex-col sm:flex-row gap-6 mb-8 md:mb-10 justify-between">
                     <!-- Défis terminés -->
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-full bg-blue-100/50 flex items-center justify-center shrink-0 border border-blue-100">
-                            <i data-lucide="check-circle-2" class="text-blue-600 w-6 h-6"></i>
+                        <div class="w-14 h-14 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center shrink-0 border border-gray-100">
+                            <i data-lucide="check-circle-2" class="text-blue-600 w-7 h-7"></i>
                         </div>
                         <div>
                             <p class="text-[13px] text-[#5a6472] font-medium mb-0.5">Défis terminés</p>
@@ -41,8 +42,8 @@
                     </div>
                     <!-- XP gagnés -->
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center shrink-0 border border-green-100">
-                            <img src="{% static 'images/progression/icon-etoile-xp.png' %}" alt="XP gagnés" class="w-6 h-6 object-contain">
+                        <div class="w-14 h-14 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center shrink-0 border border-gray-100">
+                            <img src="{% static 'images/progression/icon-etoile-xp.png' %}" alt="XP gagnés" class="w-8 h-8 object-contain">
                         </div>
                         <div>
                             <p class="text-[13px] text-[#5a6472] font-medium mb-0.5">XP gagnés</p>
@@ -51,8 +52,8 @@
                     </div>
                     <!-- XP global -->
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center shrink-0 border border-yellow-100">
-                            <img src="{% static 'images/progression/icon-etoile-xp.png' %}" alt="XP global" class="w-6 h-6 object-contain">
+                        <div class="w-14 h-14 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center shrink-0 border border-gray-100">
+                            <img src="{% static 'images/progression/icon-etoile-xp.png' %}" alt="XP global" class="w-8 h-8 object-contain">
                         </div>
                         <div>
                             <p class="text-[13px] text-[#5a6472] font-medium mb-0.5">XP global</p>
@@ -92,16 +93,16 @@
             <div class="bg-white rounded-[20px] p-6 shadow-[0_2px_10px_rgba(18,58,102,0.04)] border border-[#e8ecf4] flex flex-col sm:flex-row items-center gap-6">
                 <!-- Icône Programme -->
                 {% if 'amour' in prog.theme|lower or 'construire' in prog.theme|lower %}
-                    <div class="w-[72px] h-[72px] rounded-full bg-[#e6f8ef] flex items-center justify-center shrink-0">
-                        <img src="{% static 'images/progression/icon-amour.png' %}" alt="Amour" class="w-9 h-9 object-contain">
+                    <div class="w-[80px] h-[80px] rounded-full bg-[#e6f8ef] flex items-center justify-center shrink-0">
+                        <img src="{% static 'images/progression/icon-amour.png' %}" alt="Amour" class="w-10 h-10 object-contain">
                     </div>
                 {% elif 'confiance' in prog.theme|lower %}
-                    <div class="w-[72px] h-[72px] rounded-full bg-[#eaf2ff] flex items-center justify-center shrink-0">
-                        <img src="{% static 'images/progression/icon-confiance.png' %}" alt="Confiance" class="w-9 h-9 object-contain">
+                    <div class="w-[80px] h-[80px] rounded-full bg-[#eaf2ff] flex items-center justify-center shrink-0">
+                        <img src="{% static 'images/progression/icon-confiance.png' %}" alt="Confiance" class="w-10 h-10 object-contain">
                     </div>
                 {% else %}
-                    <div class="w-[72px] h-[72px] rounded-full bg-[#eaf2ff] flex items-center justify-center shrink-0">
-                        <i data-lucide="award" class="text-[#123A66] w-8 h-8"></i>
+                    <div class="w-[80px] h-[80px] rounded-full bg-[#eaf2ff] flex items-center justify-center shrink-0">
+                        <i data-lucide="award" class="text-[#123A66] w-9 h-9"></i>
                     </div>
                 {% endif %}
                 
@@ -148,7 +149,7 @@
             </h3>
             
             <div class="bg-[#f8f9fc] rounded-[24px] p-8 flex flex-col sm:flex-row items-center gap-8 border border-[#e8ecf4] flex-grow">
-                <div class="w-40 h-40 shrink-0">
+                <div class="w-48 h-48 md:w-56 md:h-56 shrink-0">
                     <img src="{% static 'images/progression/icon-journal.png' %}" alt="Journal" class="w-full h-full object-contain drop-shadow-sm">
                 </div>
                 
@@ -166,7 +167,7 @@
                         <p class="text-[#123A66] text-[15px] font-medium px-4 sm:px-0">Tu n'as encore aucune note dans ton journal.</p>
                     {% endif %}
                     
-                    <a href="{% url 'journal' %}" class="inline-flex items-center justify-center bg-[#D4AF37] text-white font-bold py-3 px-6 rounded-[12px] hover:bg-yellow-500 transition-transform hover:-translate-y-0.5 shadow-[0_4px_12px_rgba(212,175,55,0.25)] whitespace-nowrap text-[14px] w-full sm:w-auto">
+                    <a href="{% url 'journal' %}" class="inline-flex items-center justify-center bg-gradient-to-br from-[#f5a623] to-[#c9860a] text-white font-bold py-3 px-6 rounded-[12px] hover:scale-[1.02] transition-transform shadow-[0_6px_16px_rgba(201,134,10,0.3)] whitespace-nowrap text-[14px] w-full sm:w-auto">
                         <i data-lucide="edit-3" class="w-4 h-4 mr-2"></i> Commencer à écrire
                     </a>
                 </div>
@@ -176,7 +177,7 @@
         <!-- Encart motivation (span 2) -->
         <div class="lg:col-span-2 flex flex-col pt-0 lg:pt-[54px]">
             <div class="bg-[#fffdf5] rounded-[24px] p-8 flex flex-col items-center text-center border border-[#ffecd1] flex-grow justify-center relative overflow-hidden">
-                <div class="w-28 h-28 mb-4 relative z-10">
+                <div class="w-36 h-36 md:w-40 md:h-40 mb-4 relative z-10">
                     <img src="{% static 'images/progression/icon-trophee.png' %}" alt="Trophée" class="w-full h-full object-contain">
                 </div>
                 
@@ -187,7 +188,7 @@
                     Lance ton premier défi et commence ton évolution.
                 </p>
                 
-                <a href="{% url 'programmes_list' %}" class="inline-flex items-center justify-center bg-[#D4AF37] text-white font-bold py-3.5 px-6 rounded-[12px] hover:bg-yellow-500 transition-transform hover:-translate-y-0.5 shadow-[0_6px_16px_rgba(212,175,55,0.3)] w-full text-[14px] z-10 relative">
+                <a href="{% url 'programmes_list' %}" class="inline-flex items-center justify-center bg-gradient-to-br from-[#f5a623] to-[#c9860a] text-white font-bold py-3.5 px-6 rounded-[12px] hover:scale-[1.02] transition-transform shadow-[0_6px_16px_rgba(201,134,10,0.3)] w-full text-[14px] z-10 relative">
                     Commencer mes défis &rarr;
                 </a>
             </div>
@@ -196,7 +197,7 @@
 
     <!-- 5. Bloc "Besoin d'aide ?" -->
     <div class="bg-[#f4f7fe] rounded-[24px] p-8 flex flex-col md:flex-row items-center gap-8 border border-[#e8ecf4]">
-        <div class="w-48 h-auto shrink-0 md:-my-6 lg:-my-8 mx-auto md:mx-0 relative z-10">
+        <div class="w-56 h-auto md:w-72 shrink-0 md:-my-6 lg:-my-8 mx-auto md:mx-0 relative z-10">
             <img src="{% static 'images/programme/illu-communaute.png' %}" alt="Communauté" class="w-full h-full object-contain">
         </div>
         <div class="flex-grow text-center md:text-left z-10">
