@@ -18,8 +18,7 @@
     </div>
 
     <!-- 2. Bloc stats de la semaine -->
-    <!-- (Non modifié selon la demande, on le laisse tel quel ou bg-white ? Le prompt ne cite que 4 blocs, pas celui-ci, mais par cohérence on le laisse tel quel ou on suit la maquette. La maquette a un fond très clair. Je laisse tel quel) -->
-    <div class="bg-[#f8f9fc] rounded-[24px] p-8 md:p-12 mb-12 border border-[#e8ecf4]">
+    <div class="bg-[#f8f9fc] rounded-[24px] p-8 md:p-12 mb-12 border border-[#e8ecf4] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(18,58,102,0.06)]">
         <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
             <!-- Cercle de progression -->
             <div class="w-48 h-48 md:w-64 md:h-64 shrink-0 rounded-full flex items-center justify-center relative shadow-sm" style="background: conic-gradient(#123A66 0%, #123A66 {% widthratio stats_cours.score 6 100 %}%, #e8ecf4 {% widthratio stats_cours.score 6 100 %}%, #e8ecf4 100%);">
@@ -92,7 +91,7 @@
         <div class="space-y-4">
             {% if programmes_historique %}
             {% for prog in programmes_historique %}
-            <div class="bg-white rounded-[24px] p-6 shadow-[0_2px_12px_rgba(18,58,102,0.04)] border border-[#e8ecf4] flex flex-col sm:flex-row items-center gap-6">
+            <div class="bg-white rounded-[24px] p-6 shadow-[0_2px_12px_rgba(18,58,102,0.04)] border border-[#e8ecf4] flex flex-col sm:flex-row items-center gap-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(18,58,102,0.08)]">
                 <!-- Icône Programme dans un carré blanc -->
                 <div class="w-[88px] h-[88px] rounded-[20px] bg-white flex items-center justify-center shrink-0 border border-gray-100 shadow-[0_4px_16px_rgba(18,58,102,0.06)] p-4">
                     {% if 'amour' in prog.theme|lower or 'construire' in prog.theme|lower %}
@@ -132,8 +131,8 @@
         </div>
         
         <div class="mt-8 flex justify-center">
-            <a href="{% url 'programmes_list' %}" class="inline-flex items-center justify-center gap-3 bg-white text-[#123A66] font-bold py-3.5 px-8 rounded-xl hover:bg-[#f8f9fc] transition-colors text-[15px] w-full sm:w-auto border border-[#e8ecf4] shadow-[0_2px_12px_rgba(18,58,102,0.04)]">
-                <i data-lucide="calendar" class="w-5 h-5 text-[#8695aa]"></i> Voir tous mes programmes &rarr;
+            <a href="{% url 'programmes_list' %}" class="inline-flex items-center justify-center gap-3 bg-[#1a4fb4] text-white font-bold py-3.5 px-8 rounded-xl hover:bg-[#153e8f] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(26,79,180,0.3)] text-[15px] w-full sm:w-auto shadow-[0_4px_12px_rgba(26,79,180,0.2)]">
+                <i data-lucide="calendar" class="w-5 h-5 text-white"></i> Voir tous mes programmes &rarr;
             </a>
         </div>
     </div>
@@ -147,7 +146,7 @@
             </h3>
             
             <!-- Carte blanche uniforme, sans bordure interne autour de l'image -->
-            <div class="bg-white rounded-[24px] p-8 md:p-12 flex flex-col sm:flex-row items-center gap-10 shadow-[0_2px_12px_rgba(18,58,102,0.04)] flex-grow">
+            <div class="bg-white rounded-[24px] p-8 md:p-12 flex flex-col sm:flex-row items-center gap-10 shadow-[0_2px_12px_rgba(18,58,102,0.04)] flex-grow transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(18,58,102,0.08)]">
                 <div class="w-64 h-auto md:w-[380px] shrink-0 mx-auto sm:mx-0 relative z-10 flex items-center justify-center">
                     <img src="{% static 'images/progression/icon-journal.png' %}" alt="Journal" class="w-full h-auto object-contain">
                 </div>
@@ -176,7 +175,7 @@
         <!-- Encart motivation (span 2) -->
         <div class="lg:col-span-2 flex flex-col pt-0 lg:pt-[56px]">
             <!-- Carte blanche uniforme, sans bordure interne autour de l'image -->
-            <div class="bg-white rounded-[24px] p-8 md:p-12 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(18,58,102,0.04)] flex-grow justify-center relative overflow-hidden">
+            <div class="bg-white rounded-[24px] p-8 md:p-12 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(18,58,102,0.04)] flex-grow justify-center relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(18,58,102,0.08)]">
                 <div class="w-48 h-48 md:w-[260px] md:h-[260px] mb-8 relative z-10 flex items-center justify-center">
                     <img src="{% static 'images/progression/icon-trophee.png' %}" alt="Trophée" class="w-full h-full object-contain">
                 </div>
@@ -196,7 +195,7 @@
     </div>
 
     <!-- 5. Bloc "Besoin d'aide ?" -->
-    <div class="bg-white rounded-[32px] p-6 shadow-[0_2px_12px_rgba(18,58,102,0.04)] mb-10 max-w-2xl mx-auto flex flex-col">
+    <div class="bg-white rounded-[32px] p-6 shadow-[0_2px_12px_rgba(18,58,102,0.04)] mb-10 max-w-2xl mx-auto flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(18,58,102,0.08)]">
         <div class="w-full mb-6">
             <img src="{% static 'images/programme/illu-communaute.png' %}" alt="Communauté" class="w-full h-auto rounded-[24px] object-cover">
         </div>
