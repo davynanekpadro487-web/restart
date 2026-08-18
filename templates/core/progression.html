@@ -5,20 +5,20 @@
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-['Inter'] bg-[#f4f7fe]">
     
     <!-- 1. En-tête -->
-    <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-8">
+    <!-- Fond blanc total pour toute la section -->
+    <div class="bg-white rounded-[24px] p-8 md:p-12 shadow-[0_2px_12px_rgba(18,58,102,0.04)] mb-12 flex flex-col md:flex-row justify-between items-center gap-8">
         <div class="text-center md:text-left">
             <h1 class="text-[38px] md:text-[44px] font-extrabold text-[#123A66] mb-3 font-['Poppins'] leading-tight">Ma Progression</h1>
             <p class="text-[#5a6472] text-[16px] md:text-[18px]">Suis tes accomplissements et reste constant.</p>
         </div>
         <div class="flex w-full md:w-auto justify-center md:justify-end">
-            <!-- Image du hero agrandie, visible sur mobile, dans un fond blanc -->
-            <div class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(18,58,102,0.06)] border border-white flex items-center justify-center w-full max-w-[320px] md:max-w-none md:w-auto">
-                <img src="{% static 'images/progression/hero-progression.png' %}" alt="Progression" class="h-48 md:h-[280px] object-contain drop-shadow-sm">
-            </div>
+            <!-- Image du hero agrandie, sans bordure, fondue dans le blanc -->
+            <img src="{% static 'images/progression/hero-progression.png' %}" alt="Progression" class="h-56 md:h-[320px] object-contain drop-shadow-sm">
         </div>
     </div>
 
     <!-- 2. Bloc stats de la semaine -->
+    <!-- (Non modifié selon la demande, on le laisse tel quel ou bg-white ? Le prompt ne cite que 4 blocs, pas celui-ci, mais par cohérence on le laisse tel quel ou on suit la maquette. La maquette a un fond très clair. Je laisse tel quel) -->
     <div class="bg-[#f8f9fc] rounded-[24px] p-8 md:p-12 mb-12 border border-[#e8ecf4]">
         <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
             <!-- Cercle de progression -->
@@ -132,7 +132,7 @@
         </div>
         
         <div class="mt-8 flex justify-center">
-            <a href="{% url 'programmes_list' %}" class="inline-flex items-center justify-center gap-3 bg-[#f8f9fc] text-[#123A66] font-bold py-3.5 px-8 rounded-xl hover:bg-[#e8ecf4] transition-colors text-[15px] w-full sm:w-auto border border-[#e8ecf4]">
+            <a href="{% url 'programmes_list' %}" class="inline-flex items-center justify-center gap-3 bg-white text-[#123A66] font-bold py-3.5 px-8 rounded-xl hover:bg-[#f8f9fc] transition-colors text-[15px] w-full sm:w-auto border border-[#e8ecf4] shadow-[0_2px_12px_rgba(18,58,102,0.04)]">
                 <i data-lucide="calendar" class="w-5 h-5 text-[#8695aa]"></i> Voir tous mes programmes &rarr;
             </a>
         </div>
@@ -146,16 +146,17 @@
                 Dernières notes
             </h3>
             
-            <div class="bg-[#f8f9fc] rounded-[24px] p-8 md:p-10 flex flex-col sm:flex-row items-center gap-8 border border-[#e8ecf4] flex-grow">
-                <div class="w-48 h-48 md:w-64 md:h-64 shrink-0 bg-white rounded-[24px] shadow-[0_4px_16px_rgba(18,58,102,0.06)] border border-white p-6 flex items-center justify-center mx-auto sm:mx-0">
-                    <img src="{% static 'images/progression/icon-journal.png' %}" alt="Journal" class="w-full h-full object-contain drop-shadow-sm">
+            <!-- Carte blanche uniforme, sans bordure interne autour de l'image -->
+            <div class="bg-white rounded-[24px] p-8 md:p-12 flex flex-col sm:flex-row items-center gap-10 shadow-[0_2px_12px_rgba(18,58,102,0.04)] flex-grow">
+                <div class="w-56 h-56 md:w-[320px] md:h-[320px] shrink-0 mx-auto sm:mx-0 flex items-center justify-center">
+                    <img src="{% static 'images/progression/icon-journal.png' %}" alt="Journal" class="w-full h-full object-contain drop-shadow-md">
                 </div>
                 
                 <div class="flex-grow flex flex-col items-center sm:items-start text-center sm:text-left gap-6 w-full">
                     {% if dernieres_notes %}
                         <div class="w-full space-y-4">
                             {% for note in dernieres_notes|slice:":2" %}
-                            <div class="bg-white p-5 rounded-xl border border-gray-100 w-full text-left shadow-[0_2px_8px_rgba(18,58,102,0.03)]">
+                            <div class="bg-[#f8f9fc] p-5 rounded-xl border border-transparent w-full text-left">
                                 <p class="text-[13px] text-[#8695aa] mb-2 font-medium">{{ note.date_creation|date:"d M Y" }}</p>
                                 <p class="text-[15px] text-[#123A66] line-clamp-2 leading-relaxed">{{ note.texte }}</p>
                             </div>
@@ -174,9 +175,10 @@
         
         <!-- Encart motivation (span 2) -->
         <div class="lg:col-span-2 flex flex-col pt-0 lg:pt-[56px]">
-            <div class="bg-[#f8f9fc] rounded-[24px] p-8 md:p-10 flex flex-col items-center text-center border border-[#e8ecf4] flex-grow justify-center relative overflow-hidden">
-                <div class="w-40 h-40 md:w-56 md:h-56 mb-8 relative z-10 bg-white rounded-[24px] shadow-[0_4px_16px_rgba(18,58,102,0.06)] border border-white p-6 flex items-center justify-center">
-                    <img src="{% static 'images/progression/icon-trophee.png' %}" alt="Trophée" class="w-full h-full object-contain">
+            <!-- Carte blanche uniforme, sans bordure interne autour de l'image -->
+            <div class="bg-white rounded-[24px] p-8 md:p-12 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(18,58,102,0.04)] flex-grow justify-center relative overflow-hidden">
+                <div class="w-48 h-48 md:w-[260px] md:h-[260px] mb-8 relative z-10 flex items-center justify-center">
+                    <img src="{% static 'images/progression/icon-trophee.png' %}" alt="Trophée" class="w-full h-full object-contain drop-shadow-md">
                 </div>
                 
                 <h4 class="text-[20px] md:text-[22px] font-extrabold text-[#123A66] mb-4 leading-snug font-['Poppins'] z-10 relative">
@@ -194,16 +196,17 @@
     </div>
 
     <!-- 5. Bloc "Besoin d'aide ?" -->
-    <div class="bg-[#f8f9fc] rounded-[24px] p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 border border-[#e8ecf4]">
-        <div class="w-full max-w-[280px] md:max-w-[320px] h-auto shrink-0 mx-auto md:mx-0 relative z-10 bg-white rounded-[24px] shadow-[0_4px_16px_rgba(18,58,102,0.06)] border border-white p-6 flex items-center justify-center">
-            <img src="{% static 'images/programme/illu-communaute.png' %}" alt="Communauté" class="w-full h-auto object-contain">
+    <!-- Carte blanche uniforme, sans bordure interne autour de l'image -->
+    <div class="bg-white rounded-[24px] p-8 md:p-14 flex flex-col md:flex-row items-center gap-8 md:gap-14 shadow-[0_2px_12px_rgba(18,58,102,0.04)] mb-10">
+        <div class="w-64 h-auto md:w-[380px] shrink-0 mx-auto md:mx-0 relative z-10 flex items-center justify-center">
+            <img src="{% static 'images/programme/illu-communaute.png' %}" alt="Communauté" class="w-full h-auto object-contain drop-shadow-md">
         </div>
         <div class="flex-grow text-center md:text-left z-10">
-            <h3 class="text-[24px] font-extrabold text-[#123A66] mb-3 font-['Poppins']">Besoin d'aide ?</h3>
-            <p class="text-[#5a6472] text-[15px] md:text-[16px] max-w-lg mx-auto md:mx-0">Notre communauté est là pour te soutenir et t'accompagner dans tes défis.</p>
+            <h3 class="text-[26px] font-extrabold text-[#123A66] mb-3 font-['Poppins']">Besoin d'aide ?</h3>
+            <p class="text-[#5a6472] text-[16px] md:text-[17px] max-w-lg mx-auto md:mx-0">Notre communauté est là pour te soutenir et t'accompagner dans tes défis.</p>
         </div>
         <div class="shrink-0 mt-6 md:mt-0 z-10 w-full md:w-auto">
-            <a href="{{ WHATSAPP_GROUP_LINK|default:'https://chat.whatsapp.com/GdR1kJsTenpEwJYN8KgPt3' }}" target="_blank" class="inline-flex items-center justify-center bg-[#1a4fb4] text-white font-bold py-4 px-8 rounded-[12px] hover:bg-blue-700 transition-transform hover:-translate-y-0.5 shadow-[0_4px_12px_rgba(26,79,180,0.25)] whitespace-nowrap text-[15px] w-full md:w-auto">
+            <a href="{{ WHATSAPP_GROUP_LINK|default:'https://chat.whatsapp.com/GdR1kJsTenpEwJYN8KgPt3' }}" target="_blank" class="inline-flex items-center justify-center bg-[#1a4fb4] text-white font-bold py-4 px-10 rounded-[12px] hover:bg-blue-700 transition-transform hover:-translate-y-0.5 shadow-[0_4px_12px_rgba(26,79,180,0.25)] whitespace-nowrap text-[16px] w-full md:w-auto">
                 Rejoindre la communauté &rarr;
             </a>
         </div>
