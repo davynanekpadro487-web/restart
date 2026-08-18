@@ -132,6 +132,28 @@ LOGOUT_REDIRECT_URL = 'home'
 
 WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/GdR1kJsTenpEwJYN8KgPt3"
 
+# ============================================================
+# SÉCURITÉ PRODUCTION (HTTPS / CSRF)
+# ============================================================
+
+# Origines de confiance pour les requêtes CSRF (OBLIGATOIRE en HTTPS)
+# Lit depuis la variable d'env en prod, ou utilise le domaine Render par défaut
+_trusted = os.getenv(
+    'CSRF_TRUSTED_ORIGINS',
+    'https://restart-aurea.onrender.com'
+)
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _trusted.split(',') if o.strip()]
+
+# Cookies sécurisés uniquement sur HTTPS (activé en prod, inoffensif en local
+# car le navigateur ignore ces flags sur http://127.0.0.1)
+IS_PRODUCTION = not DEBUG
+CSRF_COOKIE_SECURE    = IS_PRODUCTION
+SESSION_COOKIE_SECURE = IS_PRODUCTION
+
+# SameSite=Lax : compatible mobile et redirections standard
+CSRF_COOKIE_SAMESITE    = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+
 # Temporary override for local development to avoid aggressive caching
 STORAGES = {
     "default": {
