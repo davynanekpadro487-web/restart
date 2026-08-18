@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Sum
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -134,8 +135,8 @@ def get_semaine_stats(semaine, utilisateur):
         statut='completed'
     ).exclude(domaine__categorie='spiritualite').count()
     
-    xp_domaines = sum([du.xp_gagnes for du in DomaineUtilisateur.objects.filter(utilisateur=utilisateur, domaine__semaine=semaine)])
-    xp_bonus = sum([ab.xp_gagnes for ab in ActionBonusUtilisateur.objects.filter(utilisateur=utilisateur, domaine__semaine=semaine)])
+    xp_domaines = DomaineUtilisateur.objects.filter(utilisateur=utilisateur, domaine__semaine=semaine).aggregate(total=Sum('xp_gagnes'))['total'] or 0
+    xp_bonus = ActionBonusUtilisateur.objects.filter(utilisateur=utilisateur, domaine__semaine=semaine).aggregate(total=Sum('xp_gagnes'))['total'] or 0
     
     xp_semaine = xp_domaines + xp_bonus
     
@@ -793,8 +794,9 @@ def progression(request):
         if a_commence:
             prog.progression = domaines_termines
             prog.total = 6
-            prog.xp_total = sum([du.xp_gagnes for du in DomaineUtilisateur.objects.filter(utilisateur=request.user, domaine__semaine__programme=prog)])
-            prog.xp_total += sum([ab.xp_gagnes for ab in ActionBonusUtilisateur.objects.filter(utilisateur=request.user, domaine__semaine__programme=prog)])
+            xp_d = DomaineUtilisateur.objects.filter(utilisateur=request.user, domaine__semaine__programme=prog).aggregate(total=Sum('xp_gagnes'))['total'] or 0
+            xp_b = ActionBonusUtilisateur.objects.filter(utilisateur=request.user, domaine__semaine__programme=prog).aggregate(total=Sum('xp_gagnes'))['total'] or 0
+            prog.xp_total = xp_d + xp_b
             
             # Add completion bonus if 6/6 is reached in at least one week? For now just use the basic logic.
             programmes_historique.append(prog)

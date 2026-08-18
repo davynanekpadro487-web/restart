@@ -154,12 +154,22 @@ SESSION_COOKIE_SECURE = IS_PRODUCTION
 CSRF_COOKIE_SAMESITE    = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
 
-# Temporary override for local development to avoid aggressive caching
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
+# Configuration du cache des statiques via WhiteNoise en production
+if IS_PRODUCTION:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
