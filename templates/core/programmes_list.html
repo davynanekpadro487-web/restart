@@ -60,13 +60,6 @@
   .completed-status{ display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:#1f9d55; white-space:nowrap; }
   .status-pill{ background:#1f9d55; color:#ffffff; font-family:'Poppins',sans-serif; font-size:11px; font-weight:700; letter-spacing:.04em; padding:6px 12px; border-radius:999px; white-space:nowrap; }
   
-  /* help card */
-  .help-card{ background:#ffffff; border-radius:20px; display:grid; grid-template-columns:260px 1fr auto; align-items:center; gap:28px; padding:26px 32px; box-shadow:0 4px 18px rgba(13,27,76,0.08); margin-bottom: 20px;}
-  .help-card .thumb{ height:110px; border-radius:10px; overflow:hidden; }
-  .help-card .thumb img{ width: 100%; height: 100%; object-fit: cover; }
-  .help-card h3{ font-family:'Poppins',sans-serif; font-weight:700; font-size:19px; margin-bottom:6px; color:var(--bleu-nuit);}
-  .help-card p{ font-size:14px; color:#5a6472; line-height:1.5; margin:0;}
-  
   /* buttons */
   .btn-or{ background:linear-gradient(135deg,#f5a623,#c9860a); color:#ffffff; padding:12px 22px; border-radius:999px; font-family:'Poppins',sans-serif; font-weight:600; font-size:14px; box-shadow:0 6px 16px rgba(201,134,10,0.30); display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; text-decoration:none; white-space: nowrap;}
   .btn-or:hover{ box-shadow:0 8px 20px rgba(201,134,10,0.40); transform:translateY(-1px); }
@@ -81,7 +74,6 @@
     .current-card-media{ min-height:200px; order:-1; }
     .upcoming-grid{ grid-template-columns:1fr; }
     .completed-card{ grid-template-columns:1fr; text-align:left; }
-    .completed-card .thumb{ width:100%; height:140px; }
     .help-card{ grid-template-columns:1fr; text-align:left; }
   }
 </style>
@@ -280,18 +272,17 @@
   </div>
 
   <!-- HELP -->
-  <div class="help-card">
-    <div class="thumb">
-      <img src="{% static 'images/programme/illu-communaute.png' %}" alt="Besoin d'aide" loading="lazy">
-    </div>
-    <div>
-      <h3>Besoin d'aide ?</h3>
-      <p>Une question sur ton programme ? La communauté Restart est là pour t'accompagner.</p>
-    </div>
-    <a href="{{ WHATSAPP_GROUP_LINK }}" target="_blank" class="btn btn-blue">
-      Rejoindre la communauté
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
+  <div class="bg-white rounded-[32px] p-6 shadow-[0_2px_12px_rgba(18,58,102,0.04)] mb-10 mt-10 max-w-[480px] mx-auto flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(18,58,102,0.08)]">
+      <div class="w-full mb-6">
+          <img src="{% static 'images/programme/illu-communaute.png' %}" alt="Communauté" class="w-full h-auto rounded-[24px] object-cover">
+      </div>
+      <div class="px-2 text-left">
+          <h3 class="text-[26px] font-extrabold text-[#123A66] mb-3 font-['Poppins']">Besoin d'aide ?</h3>
+          <p class="text-[#5a6472] text-[16px] md:text-[17px] mb-8 leading-relaxed">Une question sur ton programme ? La communauté Restart est là pour t'accompagner.</p>
+          <a href="{{ WHATSAPP_GROUP_LINK|default:'https://chat.whatsapp.com/GdR1kJsTenpEwJYN8KgPt3' }}" target="_blank" class="inline-flex items-center justify-center bg-[#1a4fb4] text-white font-bold py-4 px-10 rounded-full hover:bg-blue-700 transition-colors whitespace-nowrap text-[16px] w-full shadow-[0_4px_12px_rgba(26,79,180,0.25)]">
+              Rejoindre la communauté &rarr;
+          </a>
+      </div>
   </div>
 
 </div>
