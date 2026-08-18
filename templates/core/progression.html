@@ -2,75 +2,77 @@
 {% load static %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-['Inter']">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-['Inter'] bg-[#f4f7fe]">
     
     <!-- 1. En-tête -->
-    <div class="flex flex-col md:flex-row justify-between items-center mb-10">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-8">
         <div class="text-center md:text-left">
-            <h1 class="text-[38px] md:text-[44px] font-extrabold text-[#123A66] mb-2 font-['Poppins'] leading-tight">Ma Progression</h1>
-            <p class="text-[#5a6472] text-[15px] md:text-[16px]">Suis tes accomplissements et reste constant.</p>
+            <h1 class="text-[38px] md:text-[44px] font-extrabold text-[#123A66] mb-3 font-['Poppins'] leading-tight">Ma Progression</h1>
+            <p class="text-[#5a6472] text-[16px] md:text-[18px]">Suis tes accomplissements et reste constant.</p>
         </div>
-        <div class="hidden md:block mt-8 md:mt-0">
-            <!-- Image du hero plus grande comme sur la maquette -->
-            <img src="{% static 'images/progression/hero-progression.png' %}" alt="Progression" class="h-48 md:h-[260px] object-contain drop-shadow-sm">
+        <div class="flex w-full md:w-auto justify-center md:justify-end">
+            <!-- Image du hero agrandie, visible sur mobile, dans un fond blanc -->
+            <div class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(18,58,102,0.06)] border border-white flex items-center justify-center w-full max-w-[320px] md:max-w-none md:w-auto">
+                <img src="{% static 'images/progression/hero-progression.png' %}" alt="Progression" class="h-48 md:h-[280px] object-contain drop-shadow-sm">
+            </div>
         </div>
     </div>
 
     <!-- 2. Bloc stats de la semaine -->
-    <div class="bg-[#f8f9fc] rounded-[24px] p-8 md:p-10 mb-12 border border-[#e8ecf4]">
-        <div class="flex flex-col md:flex-row items-center gap-10 md:gap-14">
+    <div class="bg-[#f8f9fc] rounded-[24px] p-8 md:p-12 mb-12 border border-[#e8ecf4]">
+        <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
             <!-- Cercle de progression -->
-            <div class="w-44 h-44 md:w-52 md:h-52 shrink-0 rounded-full flex items-center justify-center relative shadow-sm" style="background: conic-gradient(#123A66 0%, #123A66 {% widthratio stats_cours.score 6 100 %}%, #e8ecf4 {% widthratio stats_cours.score 6 100 %}%, #e8ecf4 100%);">
-                <div class="w-[160px] h-[160px] md:w-[192px] md:h-[192px] bg-white rounded-full flex flex-col items-center justify-center">
-                    <span class="text-[40px] md:text-[48px] font-extrabold text-[#123A66] leading-none mb-1">{{ stats_cours.score }}/6</span>
-                    <span class="text-[13px] md:text-[14px] text-[#123A66] font-medium">Cette semaine</span>
+            <div class="w-48 h-48 md:w-64 md:h-64 shrink-0 rounded-full flex items-center justify-center relative shadow-sm" style="background: conic-gradient(#123A66 0%, #123A66 {% widthratio stats_cours.score 6 100 %}%, #e8ecf4 {% widthratio stats_cours.score 6 100 %}%, #e8ecf4 100%);">
+                <div class="w-[176px] h-[176px] md:w-[236px] md:h-[236px] bg-white rounded-full flex flex-col items-center justify-center shadow-inner">
+                    <span class="text-[48px] md:text-[60px] font-extrabold text-[#123A66] leading-none mb-2">{{ stats_cours.score }}/6</span>
+                    <span class="text-[14px] md:text-[16px] text-[#123A66] font-medium">Cette semaine</span>
                 </div>
             </div>
             
             <div class="flex-grow w-full flex flex-col justify-center">
                 <!-- 3 Indicateurs -->
-                <div class="flex flex-col sm:flex-row gap-6 mb-8 md:mb-10 justify-between">
+                <div class="flex flex-col sm:flex-row gap-6 mb-10 md:mb-12 justify-between">
                     <!-- Défis terminés -->
-                    <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center shrink-0 border border-gray-100">
-                            <i data-lucide="check-circle-2" class="text-blue-600 w-7 h-7"></i>
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 md:w-20 md:h-20 rounded-[16px] bg-white shadow-[0_4px_16px_rgba(18,58,102,0.06)] flex items-center justify-center shrink-0 border border-white p-3">
+                            <i data-lucide="check-circle-2" class="text-blue-600 w-8 h-8 md:w-10 md:h-10"></i>
                         </div>
                         <div>
-                            <p class="text-[13px] text-[#5a6472] font-medium mb-0.5">Défis terminés</p>
-                            <p class="font-bold text-[18px] text-[#123A66] leading-none">{{ stats_cours.score }}/6</p>
+                            <p class="text-[14px] text-[#5a6472] font-medium mb-1">Défis terminés</p>
+                            <p class="font-bold text-[20px] md:text-[24px] text-[#123A66] leading-none">{{ stats_cours.score }}/6</p>
                         </div>
                     </div>
                     <!-- XP gagnés -->
-                    <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center shrink-0 border border-gray-100">
-                            <img src="{% static 'images/progression/icon-etoile-xp.png' %}" alt="XP gagnés" class="w-8 h-8 object-contain">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 md:w-20 md:h-20 rounded-[16px] bg-white shadow-[0_4px_16px_rgba(18,58,102,0.06)] flex items-center justify-center shrink-0 border border-white p-3">
+                            <img src="{% static 'images/progression/icon-etoile-xp.png' %}" alt="XP gagnés" class="w-full h-full object-contain">
                         </div>
                         <div>
-                            <p class="text-[13px] text-[#5a6472] font-medium mb-0.5">XP gagnés</p>
-                            <p class="font-bold text-[18px] text-[#123A66] leading-none">{{ stats_cours.xp_semaine }}</p>
+                            <p class="text-[14px] text-[#5a6472] font-medium mb-1">XP gagnés</p>
+                            <p class="font-bold text-[20px] md:text-[24px] text-[#123A66] leading-none">{{ stats_cours.xp_semaine }}</p>
                         </div>
                     </div>
                     <!-- XP global -->
-                    <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center shrink-0 border border-gray-100">
-                            <img src="{% static 'images/progression/icon-etoile-xp.png' %}" alt="XP global" class="w-8 h-8 object-contain">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 md:w-20 md:h-20 rounded-[16px] bg-white shadow-[0_4px_16px_rgba(18,58,102,0.06)] flex items-center justify-center shrink-0 border border-white p-3">
+                            <img src="{% static 'images/progression/icon-etoile-xp.png' %}" alt="XP global" class="w-full h-full object-contain">
                         </div>
                         <div>
-                            <p class="text-[13px] text-[#5a6472] font-medium mb-0.5">XP global</p>
-                            <p class="font-bold text-[18px] text-[#123A66] leading-none">{{ user.profil.xp_total|default:"0" }}</p>
+                            <p class="text-[14px] text-[#5a6472] font-medium mb-1">XP global</p>
+                            <p class="font-bold text-[20px] md:text-[24px] text-[#123A66] leading-none">{{ user.profil.xp_total|default:"0" }}</p>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Barre de progression -->
                 <div class="flex items-center gap-4 mb-4">
-                    <div class="w-full bg-[#e8ecf4] rounded-full h-3 overflow-hidden">
+                    <div class="w-full bg-[#e8ecf4] rounded-full h-4 overflow-hidden shadow-inner">
                         <div class="bg-[#D4AF37] h-full rounded-full transition-all duration-500" style="width: {% widthratio stats_cours.score 6 100 %}%;"></div>
                     </div>
-                    <span class="text-[14px] font-bold text-[#123A66]">{% widthratio stats_cours.score 6 100 %}%</span>
+                    <span class="text-[16px] font-bold text-[#123A66]">{% widthratio stats_cours.score 6 100 %}%</span>
                 </div>
                 
-                <p class="text-[14px] text-[#5a6472] mt-2 text-center md:text-left">
+                <p class="text-[15px] text-[#5a6472] mt-2 text-center md:text-left">
                     {% if dernier_defi %}
                     <span class="text-[#123A66] font-semibold">Dernier défi réalisé :</span> {{ dernier_defi.action_choisie.texte }}
                     {% else %}
@@ -82,113 +84,109 @@
     </div>
 
     <!-- 3. Historique des programmes -->
-    <div class="mb-12">
-        <h3 class="text-[22px] font-extrabold text-[#123A66] mb-6 font-['Poppins']">
+    <div class="mb-14">
+        <h3 class="text-[24px] font-extrabold text-[#123A66] mb-6 font-['Poppins']">
             Historique des programmes
         </h3>
         
         <div class="space-y-4">
             {% if programmes_historique %}
             {% for prog in programmes_historique %}
-            <div class="bg-white rounded-[20px] p-6 shadow-[0_2px_10px_rgba(18,58,102,0.04)] border border-[#e8ecf4] flex flex-col sm:flex-row items-center gap-6">
-                <!-- Icône Programme -->
-                {% if 'amour' in prog.theme|lower or 'construire' in prog.theme|lower %}
-                    <div class="w-[80px] h-[80px] rounded-full bg-[#e6f8ef] flex items-center justify-center shrink-0">
-                        <img src="{% static 'images/progression/icon-amour.png' %}" alt="Amour" class="w-10 h-10 object-contain">
-                    </div>
-                {% elif 'confiance' in prog.theme|lower %}
-                    <div class="w-[80px] h-[80px] rounded-full bg-[#eaf2ff] flex items-center justify-center shrink-0">
-                        <img src="{% static 'images/progression/icon-confiance.png' %}" alt="Confiance" class="w-10 h-10 object-contain">
-                    </div>
-                {% else %}
-                    <div class="w-[80px] h-[80px] rounded-full bg-[#eaf2ff] flex items-center justify-center shrink-0">
-                        <i data-lucide="award" class="text-[#123A66] w-9 h-9"></i>
-                    </div>
-                {% endif %}
+            <div class="bg-white rounded-[24px] p-6 shadow-[0_2px_12px_rgba(18,58,102,0.04)] border border-[#e8ecf4] flex flex-col sm:flex-row items-center gap-6">
+                <!-- Icône Programme dans un carré blanc -->
+                <div class="w-[88px] h-[88px] rounded-[20px] bg-white flex items-center justify-center shrink-0 border border-gray-100 shadow-[0_4px_16px_rgba(18,58,102,0.06)] p-4">
+                    {% if 'amour' in prog.theme|lower or 'construire' in prog.theme|lower %}
+                        <img src="{% static 'images/progression/icon-amour.png' %}" alt="Amour" class="w-full h-full object-contain">
+                    {% elif 'confiance' in prog.theme|lower %}
+                        <img src="{% static 'images/progression/icon-confiance.png' %}" alt="Confiance" class="w-full h-full object-contain">
+                    {% else %}
+                        <i data-lucide="award" class="text-[#123A66] w-10 h-10"></i>
+                    {% endif %}
+                </div>
                 
                 <div class="flex-grow w-full text-center sm:text-left">
-                    <p class="font-bold text-[#123A66] text-[18px] mb-2">{{ prog.theme }}</p>
-                    <div class="flex items-center justify-center sm:justify-start gap-2 text-[13px] text-[#5a6472] font-medium mb-3">
+                    <p class="font-bold text-[#123A66] text-[20px] mb-2">{{ prog.theme }}</p>
+                    <div class="flex items-center justify-center sm:justify-start gap-3 text-[14px] text-[#5a6472] font-medium mb-4">
                         <span>{{ prog.progression }}/{{ prog.total }} terminés</span>
-                        <span class="w-1 h-1 rounded-full bg-[#cbd5e1]"></span>
-                        <span class="text-[#D4AF37]">+{{ prog.xp_total }} XP</span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#cbd5e1]"></span>
+                        <span class="text-[#D4AF37] font-bold">+{{ prog.xp_total }} XP</span>
                     </div>
                     <!-- Mini barre de progression du programme -->
-                    <div class="w-full sm:max-w-[280px] bg-[#e8ecf4] rounded-full h-2 overflow-hidden mx-auto sm:mx-0">
+                    <div class="w-full sm:max-w-[300px] bg-[#e8ecf4] rounded-full h-2.5 overflow-hidden mx-auto sm:mx-0">
                         <div class="bg-[#123A66] h-full rounded-full transition-all duration-500" style="width: {% widthratio prog.progression prog.total 100 %}%;"></div>
                     </div>
                 </div>
                 
-                <div class="shrink-0 mt-4 sm:mt-0">
-                    <a href="{% url 'defi_redirect_programme' prog.id %}" class="inline-flex items-center gap-2 px-6 py-2.5 border-[1.5px] border-[#123A66] text-[#123A66] font-bold rounded-full text-[14px] hover:bg-[#f4f7fe] transition-colors whitespace-nowrap">
-                        Commencer <span aria-hidden="true" class="text-lg leading-none">&rarr;</span>
+                <div class="shrink-0 mt-6 sm:mt-0">
+                    <a href="{% url 'defi_redirect_programme' prog.id %}" class="inline-flex items-center gap-2 px-8 py-3 border-[2px] border-[#123A66] text-[#123A66] font-bold rounded-full text-[15px] hover:bg-[#f4f7fe] transition-colors whitespace-nowrap">
+                        Commencer <span aria-hidden="true" class="text-xl leading-none">&rarr;</span>
                     </a>
                 </div>
             </div>
             {% endfor %}
             {% else %}
-            <div class="bg-white rounded-[20px] p-10 shadow-sm border border-gray-100 text-center text-gray-500">
+            <div class="bg-white rounded-[24px] p-12 shadow-sm border border-gray-100 text-center text-gray-500">
                 Tu n'as pas encore d'historique de programmes.
             </div>
             {% endif %}
         </div>
         
         <div class="mt-8 flex justify-center">
-            <a href="{% url 'programmes_list' %}" class="inline-flex items-center justify-center gap-3 bg-[#f8f9fc] text-[#123A66] font-bold py-3 px-8 rounded-xl hover:bg-[#e8ecf4] transition-colors text-[14px] w-full sm:w-auto">
+            <a href="{% url 'programmes_list' %}" class="inline-flex items-center justify-center gap-3 bg-[#f8f9fc] text-[#123A66] font-bold py-3.5 px-8 rounded-xl hover:bg-[#e8ecf4] transition-colors text-[15px] w-full sm:w-auto border border-[#e8ecf4]">
                 <i data-lucide="calendar" class="w-5 h-5 text-[#8695aa]"></i> Voir tous mes programmes &rarr;
             </a>
         </div>
     </div>
 
     <!-- 4. Dernières notes & Motivation -->
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-12 items-stretch">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-14 items-stretch">
         <!-- Dernières notes (span 3) -->
         <div class="lg:col-span-3 flex flex-col">
-            <h3 class="text-[22px] font-extrabold text-[#123A66] mb-6 font-['Poppins']">
+            <h3 class="text-[24px] font-extrabold text-[#123A66] mb-6 font-['Poppins']">
                 Dernières notes
             </h3>
             
-            <div class="bg-[#f8f9fc] rounded-[24px] p-8 flex flex-col sm:flex-row items-center gap-8 border border-[#e8ecf4] flex-grow">
-                <div class="w-48 h-48 md:w-56 md:h-56 shrink-0">
+            <div class="bg-[#f8f9fc] rounded-[24px] p-8 md:p-10 flex flex-col sm:flex-row items-center gap-8 border border-[#e8ecf4] flex-grow">
+                <div class="w-48 h-48 md:w-64 md:h-64 shrink-0 bg-white rounded-[24px] shadow-[0_4px_16px_rgba(18,58,102,0.06)] border border-white p-6 flex items-center justify-center mx-auto sm:mx-0">
                     <img src="{% static 'images/progression/icon-journal.png' %}" alt="Journal" class="w-full h-full object-contain drop-shadow-sm">
                 </div>
                 
-                <div class="flex-grow flex flex-col items-center sm:items-start text-center sm:text-left gap-5 w-full">
+                <div class="flex-grow flex flex-col items-center sm:items-start text-center sm:text-left gap-6 w-full">
                     {% if dernieres_notes %}
-                        <div class="w-full space-y-3">
+                        <div class="w-full space-y-4">
                             {% for note in dernieres_notes|slice:":2" %}
-                            <div class="bg-white p-4 rounded-xl border border-gray-100 w-full text-left shadow-[0_2px_8px_rgba(18,58,102,0.03)]">
-                                <p class="text-[12px] text-[#8695aa] mb-1 font-medium">{{ note.date_creation|date:"d M Y" }}</p>
-                                <p class="text-[14px] text-[#123A66] line-clamp-2 leading-relaxed">{{ note.texte }}</p>
+                            <div class="bg-white p-5 rounded-xl border border-gray-100 w-full text-left shadow-[0_2px_8px_rgba(18,58,102,0.03)]">
+                                <p class="text-[13px] text-[#8695aa] mb-2 font-medium">{{ note.date_creation|date:"d M Y" }}</p>
+                                <p class="text-[15px] text-[#123A66] line-clamp-2 leading-relaxed">{{ note.texte }}</p>
                             </div>
                             {% endfor %}
                         </div>
                     {% else %}
-                        <p class="text-[#123A66] text-[15px] font-medium px-4 sm:px-0">Tu n'as encore aucune note dans ton journal.</p>
+                        <p class="text-[#123A66] text-[16px] font-medium px-4 sm:px-0">Tu n'as encore aucune note dans ton journal.</p>
                     {% endif %}
                     
-                    <a href="{% url 'journal' %}" class="inline-flex items-center justify-center bg-gradient-to-br from-[#f5a623] to-[#c9860a] text-white font-bold py-3 px-6 rounded-[12px] hover:scale-[1.02] transition-transform shadow-[0_6px_16px_rgba(201,134,10,0.3)] whitespace-nowrap text-[14px] w-full sm:w-auto">
-                        <i data-lucide="edit-3" class="w-4 h-4 mr-2"></i> Commencer à écrire
+                    <a href="{% url 'journal' %}" class="inline-flex items-center justify-center bg-gradient-to-br from-[#f5a623] to-[#c9860a] text-white font-bold py-3.5 px-8 rounded-[12px] hover:scale-[1.02] transition-transform shadow-[0_6px_16px_rgba(201,134,10,0.3)] whitespace-nowrap text-[15px] w-full sm:w-auto">
+                        <i data-lucide="edit-3" class="w-5 h-5 mr-2"></i> Commencer à écrire
                     </a>
                 </div>
             </div>
         </div>
         
         <!-- Encart motivation (span 2) -->
-        <div class="lg:col-span-2 flex flex-col pt-0 lg:pt-[54px]">
-            <div class="bg-[#fffdf5] rounded-[24px] p-8 flex flex-col items-center text-center border border-[#ffecd1] flex-grow justify-center relative overflow-hidden">
-                <div class="w-36 h-36 md:w-40 md:h-40 mb-4 relative z-10">
+        <div class="lg:col-span-2 flex flex-col pt-0 lg:pt-[56px]">
+            <div class="bg-[#f8f9fc] rounded-[24px] p-8 md:p-10 flex flex-col items-center text-center border border-[#e8ecf4] flex-grow justify-center relative overflow-hidden">
+                <div class="w-40 h-40 md:w-56 md:h-56 mb-8 relative z-10 bg-white rounded-[24px] shadow-[0_4px_16px_rgba(18,58,102,0.06)] border border-white p-6 flex items-center justify-center">
                     <img src="{% static 'images/progression/icon-trophee.png' %}" alt="Trophée" class="w-full h-full object-contain">
                 </div>
                 
-                <h4 class="text-[18px] font-extrabold text-[#123A66] mb-3 leading-snug font-['Poppins'] z-10 relative">
+                <h4 class="text-[20px] md:text-[22px] font-extrabold text-[#123A66] mb-4 leading-snug font-['Poppins'] z-10 relative">
                     Chaque grande transformation commence par une première action.
                 </h4>
-                <p class="text-[14px] text-[#5a6472] mb-8 leading-relaxed z-10 relative px-2">
+                <p class="text-[15px] text-[#5a6472] mb-10 leading-relaxed z-10 relative px-2">
                     Lance ton premier défi et commence ton évolution.
                 </p>
                 
-                <a href="{% url 'programmes_list' %}" class="inline-flex items-center justify-center bg-gradient-to-br from-[#f5a623] to-[#c9860a] text-white font-bold py-3.5 px-6 rounded-[12px] hover:scale-[1.02] transition-transform shadow-[0_6px_16px_rgba(201,134,10,0.3)] w-full text-[14px] z-10 relative">
+                <a href="{% url 'programmes_list' %}" class="inline-flex items-center justify-center bg-gradient-to-br from-[#f5a623] to-[#c9860a] text-white font-bold py-4 px-8 rounded-[12px] hover:scale-[1.02] transition-transform shadow-[0_6px_16px_rgba(201,134,10,0.3)] w-full text-[15px] z-10 relative">
                     Commencer mes défis &rarr;
                 </a>
             </div>
@@ -196,16 +194,16 @@
     </div>
 
     <!-- 5. Bloc "Besoin d'aide ?" -->
-    <div class="bg-[#f4f7fe] rounded-[24px] p-8 flex flex-col md:flex-row items-center gap-8 border border-[#e8ecf4]">
-        <div class="w-56 h-auto md:w-72 shrink-0 md:-my-6 lg:-my-8 mx-auto md:mx-0 relative z-10">
-            <img src="{% static 'images/programme/illu-communaute.png' %}" alt="Communauté" class="w-full h-full object-contain">
+    <div class="bg-[#f8f9fc] rounded-[24px] p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 border border-[#e8ecf4]">
+        <div class="w-full max-w-[280px] md:max-w-[320px] h-auto shrink-0 mx-auto md:mx-0 relative z-10 bg-white rounded-[24px] shadow-[0_4px_16px_rgba(18,58,102,0.06)] border border-white p-6 flex items-center justify-center">
+            <img src="{% static 'images/programme/illu-communaute.png' %}" alt="Communauté" class="w-full h-auto object-contain">
         </div>
         <div class="flex-grow text-center md:text-left z-10">
-            <h3 class="text-[20px] font-extrabold text-[#123A66] mb-2 font-['Poppins']">Besoin d'aide ?</h3>
-            <p class="text-[#5a6472] text-[14px] max-w-md mx-auto md:mx-0">Notre communauté est là pour te soutenir et t'accompagner dans tes défis.</p>
+            <h3 class="text-[24px] font-extrabold text-[#123A66] mb-3 font-['Poppins']">Besoin d'aide ?</h3>
+            <p class="text-[#5a6472] text-[15px] md:text-[16px] max-w-lg mx-auto md:mx-0">Notre communauté est là pour te soutenir et t'accompagner dans tes défis.</p>
         </div>
-        <div class="shrink-0 mt-4 md:mt-0 z-10 w-full md:w-auto">
-            <a href="{{ WHATSAPP_GROUP_LINK|default:'https://chat.whatsapp.com/GdR1kJsTenpEwJYN8KgPt3' }}" target="_blank" class="inline-flex items-center justify-center bg-[#1a4fb4] text-white font-bold py-3.5 px-6 rounded-[12px] hover:bg-blue-700 transition-transform hover:-translate-y-0.5 shadow-[0_4px_12px_rgba(26,79,180,0.25)] whitespace-nowrap text-[14px] w-full md:w-auto">
+        <div class="shrink-0 mt-6 md:mt-0 z-10 w-full md:w-auto">
+            <a href="{{ WHATSAPP_GROUP_LINK|default:'https://chat.whatsapp.com/GdR1kJsTenpEwJYN8KgPt3' }}" target="_blank" class="inline-flex items-center justify-center bg-[#1a4fb4] text-white font-bold py-4 px-8 rounded-[12px] hover:bg-blue-700 transition-transform hover:-translate-y-0.5 shadow-[0_4px_12px_rgba(26,79,180,0.25)] whitespace-nowrap text-[15px] w-full md:w-auto">
                 Rejoindre la communauté &rarr;
             </a>
         </div>
