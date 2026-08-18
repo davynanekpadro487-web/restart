@@ -52,10 +52,20 @@
       {% for past_sem in programmes_termines_historique %}
         <div style="background:white; border-radius:14px; padding:22px; box-shadow:0 4px 18px rgba(13,27,76,0.08); display:flex; flex-direction:column; gap:14px;">
           <div style="height:140px; border-radius:10px; overflow:hidden; background:#f0f4f8;">
-            {% if past_sem.programme.illustration %}
-              <img src="{{ past_sem.programme.illustration.url }}" alt="{{ past_sem.programme.theme }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+            {% if 'amour' in past_sem.programme.theme|lower or 'construire' in past_sem.programme.theme|lower %}
+              <img src="{% static 'images/programme/illu-chemin-coeur.png' %}" alt="{{ past_sem.programme.theme }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+            {% elif 'confiance' in past_sem.programme.theme|lower %}
+              <img src="{% static 'images/programme/illu-montagne.png' %}" alt="{{ past_sem.programme.theme }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+            {% elif 'entourage' in past_sem.programme.theme|lower %}
+              <img src="{% static 'images/programme/illu-entourage.png' %}" alt="{{ past_sem.programme.theme }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+            {% elif 'discipline' in past_sem.programme.theme|lower %}
+              <img src="{% static 'images/programme/illu-discipline.png' %}" alt="{{ past_sem.programme.theme }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+            {% elif 'temps' in past_sem.programme.theme|lower or 'gestion' in past_sem.programme.theme|lower %}
+              <img src="{% static 'images/programme/illu-horloge.png' %}" alt="{{ past_sem.programme.theme }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+            {% elif past_sem.programme.illustration %}
+              <img src="{{ past_sem.programme.illustration.url }}" alt="{{ past_sem.programme.theme }}" onerror="this.onerror=null; this.src='{% static \'images/programme/illu-laptop-nuit.png\' %}'" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
             {% else %}
-              <div class="img-placeholder" style="border:none; border-radius:0;">IMAGE<br>{{ past_sem.programme.theme }}</div>
+              <img src="{% static 'images/programme/illu-laptop-nuit.png' %}" alt="{{ past_sem.programme.theme }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
             {% endif %}
           </div>
           <div>
