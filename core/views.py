@@ -441,16 +441,17 @@ def defi_semaine(request, semaine_id):
 
 @login_required
 def defis_historique(request):
-    programmes_termines_historique = []
-    toutes_semaines = Semaine.objects.select_related('programme')
-    for sem in toutes_semaines:
-        domaines_termines_count = DomaineUtilisateur.objects.filter(
-            utilisateur=request.user, 
-            domaine__semaine=sem,
-            statut='completed'
-        ).exclude(domaine__categorie='spiritualite').count()
-        if domaines_termines_count >= 6:
-            programmes_termines_historique.append(sem)
+    from django.db.models import Count, Q
+    
+    programmes_termines_historique = Semaine.objects.annotate(
+        domaines_termines_count=Count(
+            'domaines__choix_utilisateurs',
+            filter=Q(
+                domaines__choix_utilisateurs__utilisateur=request.user,
+                domaines__choix_utilisateurs__statut='completed'
+            ) & ~Q(domaines__categorie='spiritualite')
+        )
+    ).filter(domaines_termines_count__gte=6).select_related('programme')
             
     return render(request, 'core/defis_historique.html', {
         'programmes_termines_historique': programmes_termines_historique,

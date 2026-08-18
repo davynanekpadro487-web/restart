@@ -120,7 +120,7 @@
           </div>
           <div class="progress-bar-track">
             {% widthratio programme_actuel.progression programme_actuel.total 100 as prog_percent %}
-            <div class="progress-bar-fill" style="width: {{ prog_percent }}%"></div>
+            <div class="progress-bar-fill" data-width="{{ prog_percent }}"></div>
           </div>
         </div>
 

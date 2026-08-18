@@ -127,7 +127,7 @@
   }
   
   /* Thèmes de cartes colorées */
-  .domain-card.theme-bleu { background: #2563EB; }
+  .domain-card.theme-bleu { background: var(--bleu-profond); }
   .domain-card.theme-jaune { background: #D89B1E; }
   
   .domain-card.theme-bleu .domain-info h4,
@@ -153,6 +153,12 @@
   
   .domain-card.theme-bleu .status-percent,
   .domain-card.theme-jaune .status-percent { color: rgba(255,255,255,0.9); }
+
+  /* ALERT MESSAGES */
+  .msg-alert { padding:16px; border-radius:12px; display:flex; align-items:flex-start; gap:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+  .msg-success { background:#e6f8ed; border:1px solid #c3e8d1; color:#177a41; }
+  .msg-error { background:#fdeaf0; border:1px solid #f8cddc; color:#c94f7c; }
+  .msg-info { background:#eaf2ff; border:1px solid #c9deff; color:var(--bleu-profond); }
 
   /* HELP CARD */
   .help-card{
@@ -203,7 +209,7 @@
   {% if messages %}
   <div style="margin-bottom: 24px; display:flex; flex-direction:column; gap:12px;">
       {% for message in messages %}
-      <div style="padding:16px; border-radius:12px; display:flex; align-items:flex-start; gap:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05); {% if message.tags == 'success' %}background:#e6f8ed; border:1px solid #c3e8d1; color:#177a41;{% elif message.tags == 'error' %}background:#fdeaf0; border:1px solid #f8cddc; color:#c94f7c;{% else %}background:#eaf2ff; border:1px solid #c9deff; color:var(--bleu-profond);{% endif %}">
+      <div class="msg-alert {% if message.tags == 'success' %}msg-success{% elif message.tags == 'error' %}msg-error{% else %}msg-info{% endif %}">
           <span style="font-weight:600; font-size:14px;">{{ message }}</span>
       </div>
       {% endfor %}
@@ -271,7 +277,7 @@
     </div>
     <div class="status-progress">
       <div class="progress-label"><span>Progression</span><span>{{ prog_percent }}%</span></div>
-      <div class="progress-bar-track"><div class="progress-bar-fill" style="width:{{ prog_percent }}%"></div></div>
+      <div class="progress-bar-track"><div class="progress-bar-fill" data-width="{{ prog_percent }}"></div></div>
       <div class="domain-count">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3V7M16 3V7M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         {{ prog_count }} / {{ prog_max }}
