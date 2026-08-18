@@ -65,24 +65,34 @@ def get_programme_actuel(utilisateur=None):
     # Utilisateur non connecté : on renvoie le premier programme publié
     return programmes_publies.first()
 
-def enrich_programme(prog, user, programme_actuel=None):
+def enrich_programme(prog, user, programme_actuel=None, precomputed_stats=None):
     if not prog:
         return None
         
-    total_domaines = DomaineSemaine.objects.filter(semaine__programme=prog).exclude(categorie='spiritualite').count()
-    prog.total = total_domaines if total_domaines > 0 else 6
-    
-    if user and user.is_authenticated:
-        domaines_termines = DomaineUtilisateur.objects.filter(
-            utilisateur=user, 
-            domaine__semaine__programme=prog,
-            statut='completed'
-        ).exclude(domaine__categorie='spiritualite').count()
-        prog.progression = domaines_termines
-        prog.a_commence = domaines_termines > 0 or DomaineUtilisateur.objects.filter(utilisateur=user, domaine__semaine__programme=prog, statut='engaged').exists()
+    if precomputed_stats:
+        stats = precomputed_stats.get(prog.id, {})
+        prog.total = stats.get('total', 6)
+        if user and user.is_authenticated:
+            prog.progression = stats.get('termines', 0)
+            prog.a_commence = stats.get('a_commence', False)
+        else:
+            prog.progression = 0
+            prog.a_commence = False
     else:
-        prog.progression = 0
-        prog.a_commence = False
+        total_domaines = DomaineSemaine.objects.filter(semaine__programme=prog).exclude(categorie='spiritualite').count()
+        prog.total = total_domaines if total_domaines > 0 else 6
+        
+        if user and user.is_authenticated:
+            domaines_termines = DomaineUtilisateur.objects.filter(
+                utilisateur=user, 
+                domaine__semaine__programme=prog,
+                statut='completed'
+            ).exclude(domaine__categorie='spiritualite').count()
+            prog.progression = domaines_termines
+            prog.a_commence = domaines_termines > 0 or DomaineUtilisateur.objects.filter(utilisateur=user, domaine__semaine__programme=prog, statut='engaged').exists()
+        else:
+            prog.progression = 0
+            prog.a_commence = False
 
     prog.pourcentage = int((prog.progression / prog.total) * 100) if prog.total > 0 else 0
     
@@ -237,9 +247,11 @@ def programmes_list(request):
     programmes_termines = []
     
     programme_actif = get_programme_actuel(request.user)
+    from .utils import get_precomputed_program_stats
+    stats = get_precomputed_program_stats(request.user)
     
     for prog in programmes:
-        prog = enrich_programme(prog, request.user, programme_actuel=programme_actif)
+        prog = enrich_programme(prog, request.user, programme_actuel=programme_actif, precomputed_stats=stats)
         
         if prog.statut_user == 'termine':
             programmes_termines.append(prog)
@@ -783,21 +795,18 @@ def progression(request):
     # Historique des programmes commencés
     programmes = Programme.objects.all().order_by('ordre', 'date_debut')
     programmes_historique = []
+    from .utils import get_precomputed_program_stats
+    stats = get_precomputed_program_stats(request.user)
     
     for prog in programmes:
-        domaines_termines = DomaineUtilisateur.objects.filter(
-            utilisateur=request.user, 
-            domaine__semaine__programme=prog,
-            statut='completed'
-        ).exclude(domaine__categorie='spiritualite').count()
-        
-        a_commence = domaines_termines > 0 or DomaineUtilisateur.objects.filter(utilisateur=request.user, domaine__semaine__programme=prog, statut='engaged').exists()
+        prog_stats = stats.get(prog.id, {})
+        a_commence = prog_stats.get('a_commence', False)
         
         if a_commence:
-            prog.progression = domaines_termines
-            prog.total = 6
-            xp_d = DomaineUtilisateur.objects.filter(utilisateur=request.user, domaine__semaine__programme=prog).aggregate(total=Sum('xp_gagnes'))['total'] or 0
-            xp_b = ActionBonusUtilisateur.objects.filter(utilisateur=request.user, domaine__semaine__programme=prog).aggregate(total=Sum('xp_gagnes'))['total'] or 0
+            prog.progression = prog_stats.get('termines', 0)
+            prog.total = prog_stats.get('total', 6)
+            xp_d = prog_stats.get('xp_d', 0)
+            xp_b = prog_stats.get('xp_b', 0)
             prog.xp_total = xp_d + xp_b
             
             # Add completion bonus if 6/6 is reached in at least one week? For now just use the basic logic.

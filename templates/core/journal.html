@@ -47,13 +47,13 @@
             body { background-color: #ffffff !important; }
         </style>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            <a href="{% url 'journal' %}?filtre=toutes" class="py-2.5 px-3 text-sm font-semibold rounded-full text-center flex items-center justify-center bg-aurea-dark text-white transition-all hover:scale-105 {% if filtre == 'toutes' %}ring-2 ring-offset-2 ring-aurea-dark shadow-md scale-105 font-bold{% endif %}">
+            <a href="{% url 'journal' %}?filtre=toutes" class="py-2.5 px-3 text-sm font-semibold rounded-full text-center flex items-center justify-center bg-[#2563EB] text-white transition-all hover:scale-105 {% if filtre == 'toutes' %}ring-2 ring-offset-2 ring-[#2563EB] shadow-md scale-105 font-bold{% endif %}">
                 Toutes
             </a>
             <a href="{% url 'journal' %}?filtre=defi" class="py-2.5 px-3 text-sm font-semibold rounded-full text-center flex items-center justify-center bg-aurea-gold text-white transition-all hover:scale-105 {% if filtre == 'defi' %}ring-2 ring-offset-2 ring-aurea-gold shadow-md scale-105 font-bold{% endif %}">
                 Défis et bilans
             </a>
-            <a href="{% url 'journal' %}?filtre=libre" class="py-2.5 px-3 text-sm font-semibold rounded-full text-center flex items-center justify-center bg-aurea-dark text-white transition-all hover:scale-105 {% if filtre == 'libre' %}ring-2 ring-offset-2 ring-aurea-dark shadow-md scale-105 font-bold{% endif %}">
+            <a href="{% url 'journal' %}?filtre=libre" class="py-2.5 px-3 text-sm font-semibold rounded-full text-center flex items-center justify-center bg-[#2563EB] text-white transition-all hover:scale-105 {% if filtre == 'libre' %}ring-2 ring-offset-2 ring-[#2563EB] shadow-md scale-105 font-bold{% endif %}">
                 Notes libres
             </a>
             <a href="{% url 'journal' %}?filtre=spiritualite" class="py-2.5 px-3 text-sm font-semibold rounded-full text-center flex flex-col xl:flex-row items-center justify-center gap-1 xl:gap-2 bg-aurea-gold text-white transition-all hover:scale-105 {% if filtre == 'spiritualite' %}ring-2 ring-offset-2 ring-aurea-gold shadow-md scale-105 font-bold{% endif %}">

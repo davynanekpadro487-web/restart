@@ -646,3 +646,63 @@ def get_initial_action_data(categorie, texte, is_bonus=False):
         }
         
     return None
+
+def get_precomputed_program_stats(user):
+    """
+    Pré-calcule les statistiques de tous les programmes pour l'utilisateur
+    afin d'éviter le problème des requêtes N+1.
+    """
+    from .models import DomaineSemaine, DomaineUtilisateur, ActionBonusUtilisateur
+    from django.db.models import Count, Sum
+    
+    stats = {}
+    
+    # 1. Totaux de domaines par programme (indépendant de l'utilisateur)
+    domaines = DomaineSemaine.objects.exclude(categorie='spiritualite').values('semaine__programme_id').annotate(total=Count('id'))
+    for d in domaines:
+        prog_id = d['semaine__programme_id']
+        stats[prog_id] = {'total': d['total'], 'termines': 0, 'a_commence': False, 'xp_d': 0, 'xp_b': 0}
+        
+    if user and user.is_authenticated:
+        # 2. Domaines terminés par programme
+        termines = DomaineUtilisateur.objects.filter(
+            utilisateur=user, statut='completed'
+        ).exclude(domaine__categorie='spiritualite').values('domaine__semaine__programme_id').annotate(total=Count('id'))
+        
+        for t in termines:
+            prog_id = t['domaine__semaine__programme_id']
+            if prog_id not in stats:
+                stats[prog_id] = {'total': 6, 'termines': 0, 'a_commence': False, 'xp_d': 0, 'xp_b': 0}
+            stats[prog_id]['termines'] = t['total']
+            
+        # 3. Programmes commencés
+        engages = DomaineUtilisateur.objects.filter(
+            utilisateur=user
+        ).values('domaine__semaine__programme_id').distinct()
+        
+        for e in engages:
+            prog_id = e['domaine__semaine__programme_id']
+            if prog_id in stats:
+                stats[prog_id]['a_commence'] = True
+                
+        # 4. XP par programme (Domaines)
+        xp_domaines = DomaineUtilisateur.objects.filter(
+            utilisateur=user
+        ).values('domaine__semaine__programme_id').annotate(total=Sum('xp_gagnes'))
+        
+        for x in xp_domaines:
+            prog_id = x['domaine__semaine__programme_id']
+            if prog_id in stats:
+                stats[prog_id]['xp_d'] = x['total'] or 0
+                
+        # 5. XP par programme (Bonus)
+        xp_bonus = ActionBonusUtilisateur.objects.filter(
+            utilisateur=user
+        ).values('domaine__semaine__programme_id').annotate(total=Sum('xp_gagnes'))
+        
+        for x in xp_bonus:
+            prog_id = x['domaine__semaine__programme_id']
+            if prog_id in stats:
+                stats[prog_id]['xp_b'] = x['total'] or 0
+                
+    return stats

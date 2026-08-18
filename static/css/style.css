@@ -712,3 +712,16 @@ div.bg-\[\#f8f9fc\][class*="rounded-[24px]"]:hover {
 .accordeon-contenu { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; padding: 0 22px; }
 .accordeon-contenu.ouvert { max-height: 3000px; padding: 0 22px 22px 22px; }
 
+/* ============================================
+   ANIMATIONS GLOBALES (Apparition au scroll)
+   ============================================ */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}

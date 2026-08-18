@@ -164,6 +164,7 @@ if IS_PRODUCTION:
             "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
         },
     }
+    WHITENOISE_MAX_AGE = 31536000
 else:
     STORAGES = {
         "default": {
