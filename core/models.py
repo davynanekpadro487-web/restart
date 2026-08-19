@@ -8,6 +8,10 @@ THEMES_COULEUR = [
     ('sombre', 'Sombre'),
 ]
 
+from io import BytesIO
+from PIL import Image
+from django.core.files.base import ContentFile
+
 class Profil(models.Model):
     utilisateur = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profil")
     telephone = models.CharField(max_length=20, verbose_name="Téléphone")
@@ -18,6 +22,52 @@ class Profil(models.Model):
 
     def __str__(self):
         return f"Profil de {self.utilisateur.username}"
+
+    def save(self, *args, **kwargs):
+        # Handle image compression before saving
+        if self.photo_profil:
+            try:
+                # Open image
+                img = Image.open(self.photo_profil)
+                
+                # Check if it's already an uploaded file that we are processing
+                # To prevent re-saving the same image over and over, we check if we need to resize
+                if img.width > 400 or img.height > 400 or img.format != 'WEBP':
+                    # Convert to RGB (in case of RGBA/PNG)
+                    if img.mode in ("RGBA", "P"):
+                        img = img.convert("RGB")
+                    
+                    # Resize while maintaining aspect ratio (cover/crop to square)
+                    size = (400, 400)
+                    img.thumbnail(size, Image.Resampling.LANCZOS)
+                    
+                    # Create a square crop
+                    width, height = img.size
+                    new_size = min(width, height)
+                    left = (width - new_size)/2
+                    top = (height - new_size)/2
+                    right = (width + new_size)/2
+                    bottom = (height + new_size)/2
+                    img = img.crop((left, top, right, bottom))
+                    
+                    # Save to BytesIO in WEBP format
+                    output = BytesIO()
+                    img.save(output, format='WEBP', quality=85)
+                    output.seek(0)
+                    
+                    # Change the file extension
+                    import os
+                    filename = os.path.basename(self.photo_profil.name)
+                    name, _ = os.path.splitext(filename)
+                    new_filename = f"{name}.webp"
+                    
+                    # Save to the field
+                    self.photo_profil.save(new_filename, ContentFile(output.read()), save=False)
+            except Exception as e:
+                # If anything fails (e.g., file not found on a model update), just pass and save normally
+                print(f"Erreur de compression d'image: {e}")
+                
+        super().save(*args, **kwargs)
 
 class Programme(models.Model):
     STATUT_CHOICES = [
