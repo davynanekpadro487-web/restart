@@ -30,12 +30,12 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-local-123')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1', 't')
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',')
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -145,7 +146,6 @@ _trusted = os.getenv(
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in _trusted.split(',') if o.strip()]
 
 # Cookies sécurisés uniquement sur HTTPS (activé en prod, inoffensif en local
-# car le navigateur ignore ces flags sur http://127.0.0.1)
 IS_PRODUCTION = not DEBUG
 CSRF_COOKIE_SECURE    = IS_PRODUCTION
 SESSION_COOKIE_SECURE = IS_PRODUCTION
@@ -178,3 +178,6 @@ else:
 # Session longue durée (30 jours)
 SESSION_COOKIE_AGE = 2592000
 SESSION_SAVE_EVERY_REQUEST = True
+
+
+INTERNAL_IPS = ["127.0.0.1"]

@@ -41,15 +41,13 @@ def get_programme_actuel(utilisateur=None):
         return Programme.objects.order_by('ordre').first()
         
     if utilisateur and utilisateur.is_authenticated:
+        from .utils import get_precomputed_program_stats
+        stats = get_precomputed_program_stats(utilisateur)
+        
         for prog in programmes_publies:
-            total_domaines = DomaineSemaine.objects.filter(semaine__programme=prog).exclude(categorie='spiritualite').count()
-            prog_total = total_domaines if total_domaines > 0 else 6
-            
-            domaines_termines = DomaineUtilisateur.objects.filter(
-                utilisateur=utilisateur, 
-                domaine__semaine__programme=prog,
-                statut='completed'
-            ).exclude(domaine__categorie='spiritualite').count()
+            prog_stats = stats.get(prog.id, {})
+            prog_total = prog_stats.get('total', 6)
+            domaines_termines = prog_stats.get('termines', 0)
             
             if domaines_termines < prog_total:
                 # C'est le premier programme publié que l'utilisateur n'a pas terminé
@@ -58,9 +56,7 @@ def get_programme_actuel(utilisateur=None):
         # Si tous les programmes publiés sont terminés, on renvoie le premier non publié
         # pour qu'il s'affiche en "Bientôt disponible", ou à défaut le dernier publié
         prochain_non_publie = Programme.objects.filter(publie=False).order_by('ordre').first()
-        if prochain_non_publie:
-            return prochain_non_publie
-        return programmes_publies.last()
+        return prochain_non_publie if prochain_non_publie else programmes_publies.last()
         
     # Utilisateur non connecté : on renvoie le premier programme publié
     return programmes_publies.first()
@@ -124,16 +120,33 @@ def get_semaine_en_cours(programme=None, utilisateur=None):
     if not programme:
         return None
         
-    semaines = Semaine.objects.filter(programme=programme).order_by('date_rendez_vous', 'id')
+    semaines = list(Semaine.objects.filter(programme=programme).order_by('date_rendez_vous', 'id'))
+    
+    if not utilisateur or not utilisateur.is_authenticated:
+        return semaines[0] if semaines else None
+        
+    from django.db.models import Count
+    # Pré-calculer les totaux de domaines par semaine
+    domaines_par_semaine = DomaineSemaine.objects.filter(semaine__programme=programme).exclude(categorie='spiritualite').values('semaine_id').annotate(total=Count('id'))
+    total_dict = {d['semaine_id']: d['total'] for d in domaines_par_semaine}
+    
+    # Pré-calculer les domaines terminés par l'utilisateur pour ce programme
+    termines_par_semaine = DomaineUtilisateur.objects.filter(
+        utilisateur=utilisateur,
+        domaine__semaine__programme=programme,
+        statut='completed'
+    ).exclude(domaine__categorie='spiritualite').values('domaine__semaine_id').annotate(total=Count('id'))
+    termines_dict = {t['domaine__semaine_id']: t['total'] for t in termines_par_semaine}
+    
     for semaine in semaines:
-        if utilisateur and utilisateur.is_authenticated:
-            stats = get_semaine_stats(semaine, utilisateur)
-            if not stats['terminee']:
-                return semaine
-        else:
+        total = total_dict.get(semaine.id, 6)
+        total = max(1, total) # Au moins 1 domaine requis pour terminer une semaine si elle en a
+        termines = termines_dict.get(semaine.id, 0)
+        
+        if termines < total:
             return semaine
             
-    return semaines.last()
+    return semaines[-1] if semaines else None
 
 def get_semaine_stats(semaine, utilisateur):
     if not semaine or not utilisateur.is_authenticated:
