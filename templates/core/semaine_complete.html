@@ -131,7 +131,7 @@
             <i data-lucide="book-open" class="w-6 h-6 text-aurea-purple"></i> Ton bilan de la semaine est prêt
         </h4>
         <p class="text-gray-700 mb-4 text-sm font-medium">Prends un instant pour faire le point sur ce que tu as accompli. Une page t'attend dans ton journal.</p>
-        <a href="{% url 'journal' %}?filtre=defi&prefill_type=bilan" class="inline-flex items-center gap-2 bg-aurea-purple text-white px-6 py-3 rounded-xl font-bold shadow-sm transition-transform hover:scale-105">
+        <a data-no-swup href="{% url 'journal' %}?filtre=defi&prefill_type=bilan" class="inline-flex items-center gap-2 bg-aurea-purple text-white px-6 py-3 rounded-xl font-bold shadow-sm transition-transform hover:scale-105">
             Compléter mon bilan <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </a>
     </div>
@@ -144,7 +144,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        (function() {
+            function initConfetti() {
             var duration = 3 * 1000;
             var animationEnd = Date.now() + duration;
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
@@ -165,7 +166,13 @@
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, colors: colors }));
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, colors: colors }));
             }, 250);
-        });
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initConfetti);
+            } else {
+                initConfetti();
+            }
+        })();
     </script>
 </div>
 {% endblock %}

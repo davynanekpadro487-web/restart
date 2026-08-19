@@ -1,74 +1,269 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="conteneur-auth">
-  <div class="forme-fond" style="width:340px; height:340px; top:-100px; right:-100px; background:radial-gradient(circle, rgba(63,169,240,0.16), transparent 70%);"></div>
-  <div class="forme-fond" style="width:300px; height:300px; bottom:-100px; left:-80px; background:radial-gradient(circle, rgba(247,201,72,0.14), transparent 70%);"></div>
+<style>
+    body { background-color: #f8fafc; }
+    .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+</style>
 
-  <div class="carte-auth carte-profil">
-    <div class="profil-entete">
-      <div class="avatar-grand">
-        {% if profil.photo_profil %}
-          <img src="{{ profil.photo_profil.url }}" alt="Photo de profil" loading="lazy">
-        {% else %}
-          <span>{{ user.username|first|upper }}</span>
-        {% endif %}
-      </div>
-      <form method="post" enctype="multipart/form-data" class="form-photo">
-        {% csrf_token %}
-        <label for="id_photo_profil" class="bouton-secondaire-petit">Changer la photo</label>
-        <input type="file" id="id_photo_profil" name="photo_profil" accept="image/*" onchange="this.form.submit()" hidden>
-      </form>
+<div class="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    
+    <!-- Messages Flash -->
+    {% if messages %}
+    <div id="flash-messages" class="space-y-2 mb-6">
+        {% for message in messages %}
+        <div class="flash-toast p-4 rounded-xl text-sm font-medium {% if message.tags == 'success' %}bg-green-50 text-green-700 border border-green-200{% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %} transition-opacity duration-500 opacity-100">
+            {{ message }}
+        </div>
+        {% endfor %}
     </div>
+    
+    <script>
+        // Disparition automatique des messages flash après 3 secondes
+        setTimeout(function() {
+            var toasts = document.querySelectorAll('.flash-toast');
+            toasts.forEach(function(toast) {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+                setTimeout(function() {
+                    toast.style.display = 'none';
+                }, 500); // Temps de la transition
+            });
+        }, 3000);
+    </script>
+    {% endif %}
 
-    <h1 style="text-align:center;">{{ user.username }}</h1>
-    <p class="sous-titre-auth" style="text-align:center;">Membre depuis le {{ user.date_joined|date:"d F Y" }}</p>
-
-    <div class="stats-profil">
-      <div class="stat-item">
-        <span class="stat-valeur">{{ defis_termines }}</span>
-        <span class="stat-label">défi{{ defis_termines|pluralize }} terminé{{ defis_termines|pluralize }}</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-valeur">{{ profil.xp_total }}</span>
-        <span class="stat-label">XP</span>
-      </div>
-    </div>
-
-    <div class="actions-profil">
-      <a href="{% url 'parametres' %}" class="bouton-submit" style="text-decoration:none; text-align:center; display:block;">Paramètres</a>
-      <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="bouton-deconnexion">Se déconnecter</button>
-      </form>
-    </div>
-  </div>
-
-  <div class="carte-auth carte-profil" style="margin-top: 2rem;">
-    <h2 class="text-xl font-bold text-aurea-purple mb-6 border-b border-gray-100 pb-3" style="text-align:center;">Ma boussole</h2>
-    <form method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="update_espace">
-        
-        <div class="groupe-input">
-            <label style="font-weight:bold; margin-bottom:0.5rem; display:block; color:#4a5568; font-size:0.875rem;">Ce que je construis (Ma vision)</label>
-            <textarea name="vision" rows="4" class="input-auth" placeholder="Où te vois-tu dans 5 ans ?" style="resize:none; padding:1rem;">{{ espace.vision|default_if_none:'' }}</textarea>
+    <!-- BLOC 1 : IDENTITÉ (HÉRO) -->
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row items-stretch min-h-[300px]">
+        <!-- Infos Joueur (Gauche) -->
+        <div class="p-6 md:p-10 flex-1 flex flex-col justify-center">
+            <div class="flex items-center gap-6 mb-6">
+                <!-- Avatar -->
+                <div class="relative flex-shrink-0">
+                    <div class="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-100 flex items-center justify-center text-4xl font-bold text-gray-300">
+                        {% if profil.photo_profil %}
+                            <img src="{{ profil.photo_profil.url }}" alt="Avatar" class="w-full h-full object-cover">
+                        {% else %}
+                            {{ user.username|first|upper }}
+                        {% endif %}
+                    </div>
+                    <!-- Bouton Upload -->
+                    <form method="post" enctype="multipart/form-data" id="form-photo-profil">
+                        {% csrf_token %}
+                        <label for="id_photo_profil" class="absolute bottom-0 right-0 w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-md flex items-center justify-center cursor-pointer text-gray-500 hover:text-blue-600 transition-colors border border-gray-100">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        </label>
+                        <input type="file" id="id_photo_profil" name="photo_profil" accept="image/*" onchange="document.getElementById('form-photo-profil').submit()" hidden>
+                    </form>
+                </div>
+                
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2 uppercase tracking-wide">{{ user.username }}</h1>
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 bg-blue-50 text-blue-700 font-bold text-xs rounded-full border border-blue-100 uppercase tracking-wider">
+                            {{ niveau_data.badge }}
+                        </span>
+                        <span class="text-gray-500 text-sm font-medium">Niveau {{ niveau_data.niveau }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Barre XP -->
+            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 w-full max-w-sm">
+                <div class="flex justify-between text-xs font-bold text-gray-500 mb-2">
+                    <span class="flex items-center gap-1">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        {{ niveau_data.xp_actuel_niveau }} / {{ niveau_data.xp_requis }} XP
+                    </span>
+                </div>
+                <div class="h-3 w-full bg-gray-200 rounded-full overflow-hidden mb-1 shadow-inner">
+                    <div class="h-full bg-blue-600 rounded-full" style="width: {{ niveau_data.pourcentage }}%;"></div>
+                </div>
+                <p class="text-[11px] text-gray-400 mt-1">Continue ainsi, tu avances bien !</p>
+            </div>
         </div>
         
-        <div class="groupe-input" style="margin-top:1.5rem;">
-            <label style="font-weight:bold; margin-bottom:0.5rem; display:block; color:#4a5568; font-size:0.875rem;">Qui je veux devenir (Mes objectifs)</label>
-            <textarea name="objectifs" rows="4" class="input-auth" placeholder="Tes buts pour ce mois ou cette année." style="resize:none; padding:1rem;">{{ espace.objectifs|default_if_none:'' }}</textarea>
+        <!-- Illustration (Droite) -->
+        <div class="hidden md:flex w-2/5 bg-white items-center justify-center border-l border-gray-100 p-6">
+            <img src="{% static 'images/progression/hero-progression.png' %}" alt="Montagne" class="w-full h-full object-contain">
+        </div>
+        <div class="md:hidden w-full h-48 bg-white flex items-center justify-center overflow-hidden border-t border-gray-100 p-4">
+            <img src="{% static 'images/progression/hero-progression.png' %}" alt="Montagne" class="w-full h-full object-contain">
+        </div>
+    </div>
+
+    <!-- BLOC 2 : MA BOUSSOLE -->
+    <form method="POST" action="{% url 'profil' %}" class="bg-white rounded-3xl p-4 md:p-6 shadow-sm border border-gray-100 relative">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_boussole">
+        
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 leading-tight">Ma boussole</h2>
+                <p class="text-gray-500 text-sm leading-tight">Ta direction, ta clarté, ton pouvoir.</p>
+            </div>
         </div>
         
-        <div class="groupe-input" style="margin-top:1.5rem;">
-            <label style="font-weight:bold; margin-bottom:0.5rem; display:block; color:#4a5568; font-size:0.875rem;">Mes forces (Mes qualités)</label>
-            <textarea name="qualites" rows="3" class="input-auth" placeholder="Ce qui fait ta force." style="resize:none; padding:1rem;">{{ espace.qualites|default_if_none:'' }}</textarea>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+            <!-- Vision -->
+            <div class="flex flex-col items-center text-center p-3 md:p-4 bg-gradient-to-b from-purple-50/50 to-white rounded-2xl border-t-4 border-purple-400 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mb-2 shadow-inner">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 text-base leading-tight mb-2">Ma vision</h3>
+                <textarea name="vision" required rows="2" class="w-full text-center text-sm md:text-base leading-snug text-gray-700 resize-none bg-white/60 backdrop-blur-sm border border-purple-100 rounded-xl p-2 focus:ring-2 focus:ring-purple-300 focus:border-purple-300 placeholder-gray-400 shadow-sm" placeholder='"Construire une vie épanouie..."'>{{ espace.vision|default_if_none:'' }}</textarea>
+            </div>
+            
+            <!-- Objectifs -->
+            <div class="flex flex-col items-center text-center p-3 md:p-4 bg-gradient-to-b from-orange-50/50 to-white rounded-2xl border-t-4 border-orange-400 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 mb-2 shadow-inner">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 text-base leading-tight mb-2">Mes objectifs</h3>
+                <textarea name="objectifs" required rows="2" class="w-full text-center text-sm md:text-base leading-snug text-gray-700 resize-none bg-white/60 backdrop-blur-sm border border-orange-100 rounded-xl p-2 focus:ring-2 focus:ring-orange-300 focus:border-orange-300 placeholder-gray-400 shadow-sm" placeholder="• Objectif 1&#10;• Objectif 2">{{ espace.objectifs|default_if_none:'' }}</textarea>
+            </div>
+            
+            <!-- Forces -->
+            <div class="flex flex-col items-center text-center p-3 md:p-4 bg-gradient-to-b from-green-50/50 to-white rounded-2xl border-t-4 border-green-400 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 mb-2 shadow-inner">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 text-base leading-tight mb-2">Mes forces</h3>
+                <textarea name="qualites" required rows="2" class="w-full text-center text-sm md:text-base leading-snug text-gray-700 resize-none bg-white/60 backdrop-blur-sm border border-green-100 rounded-xl p-2 focus:ring-2 focus:ring-green-300 focus:border-green-300 placeholder-gray-400 shadow-sm" placeholder="• Force 1&#10;• Force 2">{{ espace.qualites|default_if_none:'' }}</textarea>
+            </div>
         </div>
         
-        <button type="submit" class="bouton-submit" style="margin-top:2rem; width:100%;">
-            Sauvegarder ma boussole
-        </button>
+        <div class="flex justify-center">
+            <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-sm whitespace-nowrap">
+                Enregistrer ma boussole
+            </button>
+        </div>
     </form>
-  </div>
+
+    <!-- BLOC 3 : STATISTIQUES & NIVEAU -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Stats -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col justify-center">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg>
+                </div>
+                <h2 class="text-lg font-bold text-gray-900">Mes statistiques</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4 text-center md:text-left border border-gray-100 shadow-sm">
+                    <img src="{% static 'images/progression/icon-trophee.png' %}" alt="Défis" class="w-16 h-16 object-contain">
+                    <div>
+                        <div class="text-2xl font-black text-gray-900 leading-none mb-1">{{ defis_termines }}</div>
+                        <div class="text-[11px] text-gray-500 font-medium uppercase tracking-wider">Défis terminés</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4 text-center md:text-left border border-gray-100 shadow-sm">
+                    <img src="{% static 'images/progression/icon-etoile-xp.png' %}" alt="XP" class="w-16 h-16 object-contain drop-shadow-sm">
+                    <div>
+                        <div class="text-2xl font-black text-gray-900 leading-none mb-1">{{ profil.xp_total }}</div>
+                        <div class="text-[11px] text-gray-500 font-medium uppercase tracking-wider">XP gagnés</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Niveau & Badge -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col justify-center">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                </div>
+                <h2 class="text-lg font-bold text-gray-900">Mon niveau</h2>
+            </div>
+            
+            <div class="bg-blue-50 rounded-2xl p-6 border border-blue-100 flex items-center gap-6 relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 opacity-10">
+                    <svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                </div>
+                
+                <div class="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center relative z-10 flex-shrink-0 text-blue-600">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path></svg>
+                </div>
+                <div class="relative z-10">
+                    <div class="text-xs text-blue-600 font-bold uppercase tracking-wider mb-1">Badge Actuel</div>
+                    <div class="text-xl font-black text-gray-900">{{ niveau_data.badge }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BLOC 4 : CITATION PERSONNELLE -->
+    <form method="POST" action="{% url 'profil' %}" class="bg-blue-50/50 rounded-3xl p-6 md:p-8 shadow-sm border border-blue-100/50 relative">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_citation">
+        
+        <div class="flex items-center gap-3 mb-6 justify-center md:justify-start">
+            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v8c0 1.25.75 2 2 2h3v2c0 2.25-1.75 3-3 3h-1v1zM15 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v8c0 1.25.75 2 2 2h3v2c0 2.25-1.75 3-3 3h-1v1z"></path></svg>
+            </div>
+            <h2 class="text-lg font-bold text-gray-900">Ma citation personnelle</h2>
+        </div>
+        
+        <div class="text-center relative py-2 bg-white rounded-2xl p-4 shadow-sm border border-blue-100 mb-6">
+            <textarea name="citation_personnelle" required rows="2" class="w-full md:w-3/4 mx-auto text-center text-lg md:text-xl font-serif italic text-gray-700 resize-none bg-transparent border-0 focus:ring-0 placeholder-gray-300 outline-none" placeholder='"Écris ici une phrase qui te donne de la force..."'>{{ profil.citation_personnelle|default_if_none:'' }}</textarea>
+        </div>
+        
+        <div class="flex justify-center">
+            <button type="submit" class="px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-sm whitespace-nowrap">
+                Enregistrer ma citation
+            </button>
+        </div>
+    </form>
+
+    <!-- BLOC 5 : ACCÈS RAPIDE PARAMÈTRES -->
+    <div class="bg-white rounded-3xl p-4 shadow-sm border border-gray-100 flex divide-x divide-gray-100">
+        <a href="{% url 'parametres' %}" class="flex-1 px-4 py-3 flex items-center justify-between group hover:bg-blue-50 transition-colors rounded-l-3xl">
+            <div class="flex items-center gap-3">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500 group-hover:text-blue-700 transition-colors"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span class="text-sm font-medium text-blue-600 group-hover:text-blue-800 transition-colors">Mon compte / Paramètres</span>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-300 group-hover:text-blue-500"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </a>
+        <form method="post" action="{% url 'logout' %}" id="logout-form" class="flex-1 flex m-0 p-0 border-none">
+            {% csrf_token %}
+            <button type="button" onclick="document.getElementById('logout-modal').classList.remove('hidden')" class="w-full px-4 py-3 flex items-center justify-between group hover:bg-red-50 transition-colors rounded-r-3xl text-left">
+                <div class="flex items-center gap-3">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-400 group-hover:text-red-600 transition-colors"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    <span class="text-sm font-medium text-red-500 group-hover:text-red-700 transition-colors">Se déconnecter</span>
+                </div>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Modale de Déconnexion -->
+<div id="logout-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Overlay sombre -->
+    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" onclick="document.getElementById('logout-modal').classList.add('hidden')"></div>
+    
+    <!-- Contenu de la modale -->
+    <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl relative z-10 transform scale-100">
+        <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500 mb-4 mx-auto">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </div>
+        
+        <h3 class="text-lg font-bold text-gray-900 text-center mb-2">Se déconnecter ?</h3>
+        <p class="text-gray-500 text-sm text-center mb-6">Es-tu sûre de vouloir te déconnecter de ton espace personnel ?</p>
+        
+        <div class="flex gap-3">
+            <button type="button" onclick="document.getElementById('logout-modal').classList.add('hidden')" class="flex-1 py-2.5 px-4 bg-gray-100 text-gray-700 font-semibold text-sm rounded-xl hover:bg-gray-200 transition-colors">
+                Annuler
+            </button>
+            <button type="button" onclick="document.getElementById('logout-form').submit()" class="flex-1 py-2.5 px-4 bg-blue-600 text-white font-semibold text-sm rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+                Oui, déconnexion
+            </button>
+        </div>
+    </div>
 </div>
 {% endblock %}

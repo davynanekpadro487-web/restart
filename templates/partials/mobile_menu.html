@@ -43,6 +43,17 @@
   }
 
   .mobile-menu-links a:last-child { border-bottom: none; }
+  
+  .btn-mobile-logout {
+    text-align: left; background: none; border: none; padding: 14px 16px; margin-top: 8px; border-radius: 12px;
+    font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 16px; color: #ef4444;
+    cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease;
+  }
+  .btn-mobile-logout:hover, .btn-mobile-logout:active {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    padding-left: 20px;
+  }
 </style>
 
 <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
@@ -59,19 +70,25 @@
   <hr style="border:none; border-top:1px solid rgba(13,27,76,0.12); margin: 0 0 20px 0;">
   <div class="mobile-menu-links">
     {% if user.is_authenticated %}
-    <a href="{% url 'home' %}" class="{% if request.path == '/' or request.path == '/home/' %}active{% endif %}">Accueil</a>
-    <a href="{% url 'programmes_list' %}" class="{% if '/programme' in request.path %}active{% endif %}">Programme</a>
-    <a href="{% url 'defi_redirect_actuel' %}" class="{% if '/defi' in request.path %}active{% endif %}">Défis</a>
-    <a href="{% url 'journal' %}" class="{% if '/journal' in request.path %}active{% endif %}">Journal</a>
-    <a href="{% url 'progression' %}" class="{% if '/progression' in request.path %}active{% endif %}">Progression</a>
-    <a href="{% url 'profil' %}" class="{% if '/profil' in request.path %}active{% endif %}">Profil</a>
-    <a href="{% url 'parametres' %}" class="{% if '/parametres' in request.path %}active{% endif %}">Paramètres</a>
+    <a href="{% url 'home' %}">Accueil</a>
+    <a href="{% url 'programmes_list' %}">Programme</a>
+    <a href="{% url 'defi_redirect_actuel' %}">Défis</a>
+    <a href="{% url 'journal' %}">Journal</a>
+    <a href="{% url 'progression' %}">Progression</a>
+    <a href="{% url 'profil' %}">Profil</a>
+    <a href="{% url 'parametres' %}">Paramètres</a>
+    
+    <button type="button" onclick="document.getElementById('global-logout-modal').classList.remove('hidden')" class="btn-mobile-logout">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      Se déconnecter
+    </button>
     {% else %}
     <a href="{% url 'login' %}" translate="no">Se connecter</a>
     <a href="{% url 'register' %}" style="color:var(--bleu-profond);" translate="no">Nous rejoindre</a>
     {% endif %}
   </div>
 </div>
+
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -94,7 +111,6 @@
     }
 
     if(menuBtn) {
-      // Nettoyer les anciens event listeners au cas où
       const newMenuBtn = menuBtn.cloneNode(true);
       if(menuBtn.parentNode) {
         menuBtn.parentNode.replaceChild(newMenuBtn, menuBtn);

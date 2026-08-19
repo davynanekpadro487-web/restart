@@ -15,29 +15,142 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v={% now 'U' %}">
 
-    <!-- Tailwind (utilisé par les pages internes : dashboard, programme, défis, journal, progression, communauté) -->
-    <script src="{% static 'js/tailwind.js' %}"></script>
-    <script>
-      const theme = "{{ user.profil.theme_couleur|default:'violet_or' }}";
-      let aureaPurple = '#7C3AED';
-      let aureaGold = '#F7C948';
-      let aureaDark = '#4C1D95';
+    <!-- THÈMES CSS -->
+    <style>
+      :root, .theme-bleu_or {
+        /* Variables Tailwind Globales */
+        --tw-white: 255 255 255;
+        --tw-gray-50: 249 250 251;
+        --tw-gray-100: 243 244 246;
+        --tw-gray-200: 229 231 235;
+        --tw-gray-300: 209 213 219;
+        --tw-gray-400: 156 163 175;
+        --tw-gray-500: 107 114 128;
+        --tw-gray-600: 75 85 99;
+        --tw-gray-700: 55 65 81;
+        --tw-gray-800: 31 41 55;
+        --tw-gray-900: 17 24 39;
+        
+        --tw-primary-50: 239 246 255;
+        --tw-primary-100: 219 234 254;
+        --tw-primary-200: 191 219 254;
+        --tw-primary-300: 147 197 253;
+        --tw-primary-400: 96 165 250;
+        --tw-primary-500: 59 130 246;
+        --tw-primary-600: 37 99 235;
+        --tw-primary-700: 29 78 216;
+        --tw-primary-800: 30 64 175;
+        --tw-primary-900: 30 58 138;
 
-      if (theme === 'sombre') {
-          aureaPurple = '#3FA9F0';
-          aureaDark = '#0B1220';
-      } else if (theme !== 'violet_or') {
-          aureaPurple = '#1D6FB8';
-          aureaDark = '#123A66';
+        /* Variables CSS existantes de style.css pour le menu/header */
+        --bleu-nuit: #0D1B4C;
+        --bleu-profond: #1A4FB4;
+        --bleu-clair: #EEF4FF;
+        --bg-site: #F9FAFB;
+        --header-bg: rgba(255, 255, 255, 0.95);
+        --header-text: #0D1B4C;
       }
 
+      .theme-violet_or {
+        --tw-primary-50: 250 245 255;
+        --tw-primary-100: 243 232 255;
+        --tw-primary-200: 233 213 255;
+        --tw-primary-300: 216 180 254;
+        --tw-primary-400: 192 132 252;
+        --tw-primary-500: 168 85 247;
+        --tw-primary-600: 147 51 234;
+        --tw-primary-700: 126 34 206;
+        --tw-primary-800: 107 33 168;
+        --tw-primary-900: 88 28 135;
+
+        --bleu-nuit: #4c1d95;
+        --bleu-profond: #7e22ce;
+        --bleu-clair: #faf5ff;
+        --header-text: #4c1d95;
+      }
+
+      .theme-sombre {
+        /* Inversion des gris */
+        --tw-white: 17 24 39;       /* gray-900 */
+        --tw-gray-50: 3 7 18;       /* gray-950 */
+        --tw-gray-100: 31 41 55;    /* gray-800 */
+        --tw-gray-200: 55 65 81;    /* gray-700 */
+        --tw-gray-300: 75 85 99;    /* gray-600 */
+        --tw-gray-400: 107 114 128; /* gray-500 */
+        --tw-gray-500: 156 163 175; /* gray-400 */
+        --tw-gray-600: 209 213 219; /* gray-300 */
+        --tw-gray-700: 229 231 235; /* gray-200 */
+        --tw-gray-800: 243 244 246; /* gray-100 */
+        --tw-gray-900: 255 255 255; /* white */
+        
+        --tw-primary-50: 30 58 138;
+        --tw-primary-100: 30 64 175;
+        --tw-primary-200: 29 78 216;
+        --tw-primary-300: 37 99 235;
+        --tw-primary-400: 59 130 246;
+        --tw-primary-500: 96 165 250;
+        --tw-primary-600: 147 197 253;
+        --tw-primary-700: 191 219 254;
+        --tw-primary-800: 219 234 254;
+        --tw-primary-900: 239 246 255;
+
+        --bleu-nuit: #f3f4f6;
+        --bleu-profond: #60a5fa;
+        --bleu-clair: #111827;
+        --bg-site: #030712;
+        --header-bg: rgba(17, 24, 39, 0.95);
+        --header-text: #f3f4f6;
+      }
+
+      /* Application stricte et limitée pour ne pas casser le style par défaut (Bleu & Or) */
+      .theme-sombre body { background-color: var(--bg-site); color: #d1d5db; }
+      .theme-sombre .site-header { background: var(--header-bg); }
+      .theme-sombre .nav-membre a, .theme-sombre .nav-visiteur a, .theme-sombre .logo-nom { color: var(--header-text); }
+      .theme-sombre .mobile-menu { background: rgb(var(--tw-white)) !important; }
+      .theme-sombre .mobile-menu-links a { color: var(--header-text) !important; border-bottom: 1px solid rgb(var(--tw-gray-100)) !important; }
+      .theme-sombre .mobile-menu-links a.active { background: rgb(var(--tw-primary-50)) !important; color: rgb(var(--tw-primary-600)) !important; }
+      .theme-sombre .mobile-menu-close, .theme-sombre .bouton-menu-mobile { color: var(--header-text) !important; }
+      .theme-sombre .site-footer { background: rgb(var(--tw-gray-100)) !important; border-top: 1px solid rgb(var(--tw-gray-200)) !important; }
+      .theme-sombre .footer-inner p, .theme-sombre .footer-pillars { color: rgb(var(--tw-gray-500)) !important; }
+      
+      .theme-violet_or .logo-nom { color: var(--bleu-nuit); }
+      .theme-violet_or .mobile-menu-links a.active { background: rgb(var(--tw-primary-50)) !important; color: rgb(var(--tw-primary-600)) !important; }
+    </style>
+
+    <script src="{% static 'js/tailwind.js' %}"></script>
+    <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              'aurea-purple': aureaPurple,
-              'aurea-gold': aureaGold,
-              'aurea-dark': aureaDark,
+              white: 'rgb(var(--tw-white) / <alpha-value>)',
+              gray: {
+                50: 'rgb(var(--tw-gray-50) / <alpha-value>)',
+                100: 'rgb(var(--tw-gray-100) / <alpha-value>)',
+                200: 'rgb(var(--tw-gray-200) / <alpha-value>)',
+                300: 'rgb(var(--tw-gray-300) / <alpha-value>)',
+                400: 'rgb(var(--tw-gray-400) / <alpha-value>)',
+                500: 'rgb(var(--tw-gray-500) / <alpha-value>)',
+                600: 'rgb(var(--tw-gray-600) / <alpha-value>)',
+                700: 'rgb(var(--tw-gray-700) / <alpha-value>)',
+                800: 'rgb(var(--tw-gray-800) / <alpha-value>)',
+                900: 'rgb(var(--tw-gray-900) / <alpha-value>)',
+              },
+              blue: {
+                50: 'rgb(var(--tw-primary-50) / <alpha-value>)',
+                100: 'rgb(var(--tw-primary-100) / <alpha-value>)',
+                200: 'rgb(var(--tw-primary-200) / <alpha-value>)',
+                300: 'rgb(var(--tw-primary-300) / <alpha-value>)',
+                400: 'rgb(var(--tw-primary-400) / <alpha-value>)',
+                500: 'rgb(var(--tw-primary-500) / <alpha-value>)',
+                600: 'rgb(var(--tw-primary-600) / <alpha-value>)',
+                700: 'rgb(var(--tw-primary-700) / <alpha-value>)',
+                800: 'rgb(var(--tw-primary-800) / <alpha-value>)',
+                900: 'rgb(var(--tw-primary-900) / <alpha-value>)',
+              },
+              'aurea-purple': 'var(--bleu-profond)',
+              'aurea-gold': 'var(--or-fonce)',
+              'aurea-dark': 'var(--bleu-nuit)'
             }
           }
         }
@@ -47,7 +160,7 @@
     <!-- Lucide Icons -->
     <script src="{% static 'js/lucide.js' %}"></script>
 </head>
-<body class="flex flex-col min-h-screen theme-{{ user.profil.theme_couleur|default:'bleu_or' }}">
+<body class="flex flex-col min-h-screen theme-{{ user_theme }}">
     <!-- Header -->
     <header class="site-header">
       <div class="header-inner">
@@ -113,7 +226,7 @@
     {% endif %}
 
     <!-- Main Content -->
-    <main class="flex-grow">
+    <main id="swup" class="flex-grow transition-fade">
         {% block content %}{% endblock %}
     </main>
 
@@ -144,6 +257,31 @@
 
 
 
+    <!-- Modale de Déconnexion Globale (Injectée au niveau du body pour éviter les problèmes de z-index) -->
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'logout' %}" id="global-logout-form" style="display:none;">
+        {% csrf_token %}
+    </form>
+    <div id="global-logout-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" onclick="document.getElementById('global-logout-modal').classList.add('hidden')"></div>
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl relative z-[10000] transform scale-100">
+            <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500 mb-4 mx-auto">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 text-center mb-2">Se déconnecter ?</h3>
+            <p class="text-gray-500 text-sm text-center mb-6">Es-tu sûre de vouloir te déconnecter de ton espace personnel ?</p>
+            <div class="flex gap-3">
+                <button type="button" onclick="document.getElementById('global-logout-modal').classList.add('hidden')" class="flex-1 py-2.5 px-4 bg-gray-100 text-gray-700 font-semibold text-sm rounded-xl hover:bg-gray-200 transition-colors">
+                    Annuler
+                </button>
+                <button type="button" onclick="document.getElementById('global-logout-form').submit()" class="flex-1 py-2.5 px-4 bg-red-600 text-white font-semibold text-sm rounded-xl hover:bg-red-700 transition-colors shadow-sm">
+                    Oui, déconnexion
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Scripts -->
     <script>
         // Initialize Lucide icons (si le CDN est bloqué/hors-ligne, on ne casse pas le reste du JS)
@@ -153,9 +291,18 @@
     </script>
     <script src="{% static 'js/animations.js' %}"></script>
     <script>
+        // Sauvegarde et restauration du scroll pour éviter de remonter en haut lors des soumissions de formulaires
+        document.addEventListener("DOMContentLoaded", function() {
+            const scrollPos = sessionStorage.getItem('scrollPosition_' + window.location.pathname);
+            if (scrollPos) {
+                window.scrollTo(0, parseInt(scrollPos));
+                sessionStorage.removeItem('scrollPosition_' + window.location.pathname);
+            }
+        });
 
-        // Animation de la barre de progression au chargement
-        window.addEventListener('load', () => {
+        window.addEventListener("beforeunload", function() {
+            sessionStorage.setItem('scrollPosition_' + window.location.pathname, wind        // Animation de la barre de progression au chargement
+                window.addEventListener('load', () => {
             const progressBars = document.querySelectorAll('.progress-bar-fill');
             progressBars.forEach(bar => {
                 const targetWidth = bar.getAttribute('data-width');
@@ -165,6 +312,54 @@
                     }, 300); // Léger délai pour effet visuel
                 }
             });
+        });
+    </script>
+    
+    <!-- Swup JS -->
+    <script src="https://unpkg.com/swup@4"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const swup = new Swup({
+                containers: ["#swup"],
+                cache: true,
+            });
+
+            // Re-initialize scripts on Swup content replaced
+            swup.hooks.on('content:replace', () => {
+                // Re-initialize lucide icons
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+                // Update nav links
+                updateNavLinks();
+                // Trigger any custom event if needed
+                document.dispatchEvent(new Event('swup:contentReplaced'));
+            });
+
+            function updateNavLinks() {
+                const path = window.location.pathname;
+                
+                // Update Desktop Nav
+                document.querySelectorAll('.nav-membre a').forEach(link => {
+                    link.classList.remove('actif');
+                    const href = link.getAttribute('href');
+                    if (href === path || (href !== '/' && path.startsWith(href))) {
+                        link.classList.add('actif');
+                    }
+                });
+
+                // Update Mobile Nav
+                document.querySelectorAll('.mobile-menu-links a').forEach(link => {
+                    link.classList.remove('active');
+                    const href = link.getAttribute('href');
+                    if (href === path || (href !== '/' && path.startsWith(href))) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            // Init on first load
+            updateNavLinks();
         });
     </script>
 

@@ -706,3 +706,31 @@ def get_precomputed_program_stats(user):
                 stats[prog_id]['xp_b'] = x['total'] or 0
                 
     return stats
+
+def get_niveau_et_badge(xp):
+    """
+    Calcule le niveau actuel, le badge, et l'XP requis pour le prochain niveau.
+    Chaque niveau demande 100 XP.
+    """
+    niveau = (xp // 100) + 1
+    xp_actuel_niveau = xp % 100
+    xp_requis = 100
+    
+    badges = {
+        1: "Apprentie",
+        2: "Exploratrice",
+        3: "Audacieuse",
+        4: "Conquérante",
+        5: "Stratège",
+        6: "Bâtisseuse"
+    }
+    
+    titre_badge = badges.get(niveau, "Légende")
+    
+    return {
+        'niveau': niveau,
+        'badge': titre_badge,
+        'xp_actuel_niveau': xp_actuel_niveau,
+        'xp_requis': xp_requis,
+        'pourcentage': int((xp_actuel_niveau / xp_requis) * 100) if xp_requis > 0 else 0
+    }

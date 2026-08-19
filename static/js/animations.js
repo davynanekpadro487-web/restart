@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+function initAnimations() {
     const observerOptions = {
         root: null,
         rootMargin: '0px',
@@ -26,7 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
         .bg-white.rounded-2xl, 
         .section-title, 
         .page-head, 
-        .status-banner
+        .status-banner,
+        .carte-profil,
+        .bloc-parametre,
+        main > section,
+        main > div > section,
+        .carte,
+        .stat-item,
+        .liste-programmes > div
     `);
 
     elementsToAnimate.forEach(el => {
@@ -35,4 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         observer.observe(el);
     });
-});
+}
+
+document.addEventListener('DOMContentLoaded', initAnimations);
+document.addEventListener('swup:contentReplaced', initAnimations);

@@ -14,6 +14,7 @@ class Profil(models.Model):
     photo_profil = models.ImageField(upload_to='profils/', blank=True, null=True, verbose_name="Photo de profil")
     xp_total = models.PositiveIntegerField(default=0, verbose_name="XP")
     theme_couleur = models.CharField(max_length=20, choices=THEMES_COULEUR, default='bleu_or', verbose_name="Thème de couleurs")
+    citation_personnelle = models.TextField(blank=True, null=True, verbose_name="Ma citation personnelle")
 
     def __str__(self):
         return f"Profil de {self.utilisateur.username}"

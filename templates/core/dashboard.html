@@ -318,7 +318,8 @@
     {% endfor %}
 </div>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    (function() {
+        function initMessages() {
         setTimeout(function() {
             var msgs = document.querySelectorAll('.flash-msg');
             msgs.forEach(function(msg) {
@@ -326,7 +327,13 @@
                 setTimeout(function() { msg.remove(); }, 500);
             });
         }, 3500);
-    });
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMessages);
+        } else {
+            initMessages();
+        }
+    })();
 </script>
 {% endif %}
 
@@ -538,7 +545,8 @@
 </footer>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  (function() {
+    function initDashboard() {
 
 
     // Animation barres de progression
@@ -569,7 +577,13 @@
       }
       observer.observe(el);
     });
-  });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDashboard);
+    } else {
+      initDashboard();
+    }
+  })();
 </script>
 
 </body>

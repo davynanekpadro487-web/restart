@@ -289,9 +289,10 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const tabs = document.querySelectorAll('.tab');
-  const contents = document.querySelectorAll('.tab-content');
+(function() {
+  function initTabs() {
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -307,6 +308,13 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById(targetId).style.display = 'block';
     });
   });
-});
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTabs);
+  } else {
+    initTabs();
+  }
+})();
 </script>
 {% endblock %}

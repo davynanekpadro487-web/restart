@@ -727,7 +727,8 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    (function() {
+        function initDomaineDetail() {
         // Initialisation de l'état du bouton etape-next-btn
         const etapeNextBtn = document.getElementById('etape-next-btn');
         if (etapeNextBtn) {
@@ -837,6 +838,13 @@
                 }
             });
         });
-    });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDomaineDetail);
+        } else {
+            initDomaineDetail();
+        }
+    })();
 </script>
 {% endblock %}

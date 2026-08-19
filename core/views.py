@@ -880,12 +880,20 @@ def profil(request):
 
     if request.method == 'POST':
         action = request.POST.get('action')
-        if action == 'update_espace':
+        if action == 'update_boussole':
             espace.objectifs = request.POST.get('objectifs', espace.objectifs)
             espace.vision = request.POST.get('vision', espace.vision)
             espace.qualites = request.POST.get('qualites', espace.qualites)
             espace.save()
             messages.success(request, 'Boussole mise à jour !')
+            return redirect('profil')
+            
+        elif action == 'update_citation':
+            citation = request.POST.get('citation_personnelle')
+            if citation is not None:
+                profil_utilisateur.citation_personnelle = citation
+                profil_utilisateur.save()
+            messages.success(request, 'Citation mise à jour !')
             return redirect('profil')
         elif 'photo_profil' in request.FILES:
             form_photo = PhotoProfilForm(request.POST, request.FILES, instance=profil_utilisateur)
@@ -895,11 +903,21 @@ def profil(request):
             return redirect('profil')
 
     defis_termines = DomaineUtilisateur.objects.filter(utilisateur=request.user, statut='completed').count()
+    
+    from .utils import get_niveau_et_badge
+    niveau_data = get_niveau_et_badge(profil_utilisateur.xp_total)
+
+    # Convertir les objectifs et forces en liste pour un affichage éventuel si ce n'est pas un formulaire
+    objectifs_liste = [obj.strip() for obj in espace.objectifs.split('\n') if obj.strip()] if espace.objectifs else []
+    forces_liste = [force.strip() for force in espace.qualites.split('\n') if force.strip()] if espace.qualites else []
 
     return render(request, 'core/profil.html', {
         'profil': profil_utilisateur,
         'defis_termines': defis_termines,
         'espace': espace,
+        'niveau_data': niveau_data,
+        'objectifs_liste': objectifs_liste,
+        'forces_liste': forces_liste,
     })
 
 @login_required
@@ -926,6 +944,14 @@ def parametres(request):
                 profil_utilisateur.save()
                 messages.success(request, 'Tes informations ont été mises à jour !')
                 return redirect('parametres')
+
+        elif 'photo_profil' in request.FILES:
+            from .forms import PhotoProfilForm
+            form_photo = PhotoProfilForm(request.POST, request.FILES, instance=profil_utilisateur)
+            if form_photo.is_valid():
+                form_photo.save()
+                messages.success(request, 'Photo de profil mise à jour !')
+            return redirect('parametres')
 
         elif action == 'change_password':
             password_form = PasswordChangeForm(request.user, request.POST)

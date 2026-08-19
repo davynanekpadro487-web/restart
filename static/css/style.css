@@ -80,6 +80,36 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bleu-profond); 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
 /* ============================================
+   SWUP.JS & ANIMATIONS GLOBALES
+   ============================================ */
+.transition-fade {
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  opacity: 1;
+  transform: translateY(0);
+}
+html.is-animating .transition-fade {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Interactivité globale : Boutons et Liens */
+button, .bouton-nav-principal, .bouton-secondaire, .bouton-plein {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease !important;
+}
+button:active:not(:disabled), a.bouton-nav-principal:active {
+  transform: scale(0.96) !important;
+}
+
+/* Interactivité globale : Cartes (Hover Lift) */
+.card-premium, .carte, .domain-card, .bg-white.rounded-2xl {
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+.card-premium:hover, .carte:hover, .domain-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* ============================================
    HEADER
    ============================================ */
 .site-header {

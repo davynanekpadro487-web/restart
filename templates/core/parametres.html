@@ -1,83 +1,249 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="conteneur-auth">
-  <div class="forme-fond" style="width:340px; height:340px; top:-100px; left:-100px; background:radial-gradient(circle, rgba(63,169,240,0.16), transparent 70%);"></div>
-  <div class="forme-fond" style="width:300px; height:300px; bottom:-100px; right:-80px; background:radial-gradient(circle, rgba(247,201,72,0.14), transparent 70%);"></div>
+<div class="max-w-3xl mx-auto px-4 py-8 md:py-12 relative">
+    
+    <!-- HEADER -->
+    <div class="flex items-center gap-4 mb-8 md:mb-10">
+        <a href="{% url 'profil' %}" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors border border-gray-100 flex-shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </a>
+        <div>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">Paramètres</h1>
+            <p class="text-gray-500 text-sm mt-1">Gère les informations et les préférences de ton compte.</p>
+        </div>
+    </div>
 
-  <div class="carte-auth carte-parametres">
-    <a href="{% url 'profil' %}" class="retour-accueil">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-      Retour au profil
-    </a>
+    <!-- BLOC 1 : INFORMATIONS DU COMPTE -->
+    <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 mb-8">
+        <div class="flex items-center gap-4 mb-8">
+            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <div>
+                <h2 class="text-xl md:text-2xl font-black text-blue-600 tracking-tight">Informations du compte</h2>
+                <p class="text-gray-500 text-xs">Modifie tes informations personnelles.</p>
+            </div>
+        </div>
 
-    <h1>Paramètres</h1>
-    <p class="sous-titre-auth">Gère les informations de ton compte.</p>
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+            <!-- Avatar Upload -->
+            <div class="relative flex-shrink-0 mx-auto md:mx-0">
+                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-white shadow-md overflow-hidden bg-gray-100 flex items-center justify-center text-4xl font-bold text-gray-300">
+                    {% if profil.photo_profil %}
+                        <img src="{{ profil.photo_profil.url }}" alt="Avatar" class="w-full h-full object-cover">
+                    {% else %}
+                        {{ user.username|first|upper }}
+                    {% endif %}
+                </div>
+                <form method="post" enctype="multipart/form-data" id="form-photo-profil" class="absolute bottom-0 right-0">
+                    {% csrf_token %}
+                    <label for="id_photo_profil" class="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-full shadow-lg flex items-center justify-center cursor-pointer text-white hover:bg-blue-700 transition-colors border-2 border-white">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    </label>
+                    <input type="file" id="id_photo_profil" name="photo_profil" accept="image/*" onchange="document.getElementById('form-photo-profil').submit()" hidden>
+                </form>
+            </div>
 
-    <section class="bloc-parametre">
-      <h2>Informations du compte</h2>
-      <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="update_infos">
+            <!-- Infos Form -->
+            <form method="post" class="flex-1 w-full space-y-5">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_infos">
+                
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Nom d'utilisateur</label>
+                    <input type="text" name="username" value="{{ infos_form.username.value|default_if_none:'' }}" required class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors outline-none shadow-sm">
+                    {% if infos_form.username.errors %}<p class="text-red-500 text-xs mt-1">{{ infos_form.username.errors|striptags }}</p>{% endif %}
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Numéro de téléphone</label>
+                    <input type="text" name="telephone" value="{{ infos_form.telephone.value|default_if_none:'' }}" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors outline-none shadow-sm">
+                    {% if infos_form.telephone.errors %}<p class="text-red-500 text-xs mt-1">{{ infos_form.telephone.errors|striptags }}</p>{% endif %}
+                </div>
+                
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="flex items-center gap-2 px-6 py-2.5 bg-yellow-500 text-white text-sm font-bold rounded-xl hover:bg-yellow-600 transition-colors shadow-sm">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        <label for="{{ infos_form.username.id_for_label }}">{{ infos_form.username.label }}</label>
-        {{ infos_form.username }}
-        {% if infos_form.username.errors %}<p class="erreur-champ">{{ infos_form.username.errors|striptags }}</p>{% endif %}
+    <!-- BLOC 2 : SÉCURITÉ -->
+    <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 mb-8">
+        <div class="flex items-center gap-4 mb-8">
+            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <div>
+                <h2 class="text-xl md:text-2xl font-black text-blue-600 tracking-tight">Sécurité</h2>
+                <p class="text-gray-500 text-xs">Change ton mot de passe régulièrement.</p>
+            </div>
+        </div>
 
-        <label for="{{ infos_form.telephone.id_for_label }}">{{ infos_form.telephone.label }}</label>
-        {{ infos_form.telephone }}
-        {% if infos_form.telephone.errors %}<p class="erreur-champ">{{ infos_form.telephone.errors|striptags }}</p>{% endif %}
+        <form method="post" class="space-y-5 md:pl-14">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="change_password">
+            
+            {% for field in password_form %}
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">{{ field.label }}</label>
+                <div class="relative">
+                    <input type="password" name="{{ field.name }}" required class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors outline-none shadow-sm pr-12">
+                    <button type="button" class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-2">
+                        <!-- Eye off icon -->
+                        <svg class="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                        <!-- Eye on icon (hidden by default) -->
+                        <svg class="eye-on hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
+                {% if field.errors %}<p class="text-red-500 text-xs mt-1">{{ field.errors|striptags }}</p>{% endif %}
+            </div>
+            {% endfor %}
 
-        <button type="submit" class="bouton-submit">Enregistrer</button>
-      </form>
-    </section>
+            <div class="flex justify-end pt-2">
+                <button type="submit" class="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    Modifier le mot de passe
+                </button>
+            </div>
+        </form>
+    </div>
 
-    <section class="bloc-parametre">
-      <h2>Mot de passe</h2>
-      <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="change_password">
+    <!-- BLOC 3 : APPARENCE -->
+    <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 mb-8">
+        <div class="flex items-center gap-4 mb-8">
+            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+            </div>
+            <div>
+                <h2 class="text-xl md:text-2xl font-black text-blue-600 tracking-tight">Apparence</h2>
+                <p class="text-gray-500 text-xs">Choisis le thème de ton application.</p>
+            </div>
+        </div>
 
-        <label for="{{ password_form.old_password.id_for_label }}">{{ password_form.old_password.label }}</label>
-        {{ password_form.old_password }}
-        {% if password_form.old_password.errors %}<p class="erreur-champ">{{ password_form.old_password.errors|striptags }}</p>{% endif %}
+        <form method="post" id="form-theme">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_theme">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:pl-14">
+                {% for code, label in themes_couleur %}
+                <label class="relative cursor-pointer group">
+                    <input type="radio" name="theme_couleur" value="{{ code }}" class="peer sr-only" onchange="document.getElementById('form-theme').submit()" {% if profil.theme_couleur == code %}checked{% endif %}>
+                    
+                    <div class="h-full border-2 rounded-2xl p-5 flex flex-col items-center justify-center gap-4 transition-all duration-200
+                        {% if profil.theme_couleur == code %}
+                            border-blue-600 bg-blue-50/30
+                        {% else %}
+                            border-gray-100 hover:border-blue-300 hover:bg-gray-50
+                        {% endif %}">
+                        
+                        <!-- Check badge -->
+                        {% if profil.theme_couleur == code %}
+                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-md border-2 border-white">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        {% endif %}
 
-        <label for="{{ password_form.new_password1.id_for_label }}">{{ password_form.new_password1.label }}</label>
-        {{ password_form.new_password1 }}
-        {% if password_form.new_password1.errors %}<p class="erreur-champ">{{ password_form.new_password1.errors|striptags }}</p>{% endif %}
+                        <!-- Theme preview dots -->
+                        <div class="flex gap-2">
+                            {% if code == 'bleu_or' %}
+                                <div class="w-6 h-6 rounded-full shadow-sm" style="background-color: #2563EB;"></div>
+                                <div class="w-6 h-6 rounded-full bg-yellow-500 shadow-sm"></div>
+                            {% elif code == 'violet_or' %}
+                                <div class="w-6 h-6 rounded-full bg-purple-600 shadow-sm"></div>
+                                <div class="w-6 h-6 rounded-full bg-yellow-500 shadow-sm"></div>
+                            {% else %}
+                                <div class="w-6 h-6 rounded-full bg-gray-900 shadow-sm"></div>
+                                <div class="w-6 h-6 rounded-full bg-gray-500 shadow-sm"></div>
+                            {% endif %}
+                        </div>
+                        
+                        <span class="text-sm font-bold text-gray-900">{{ label }}</span>
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
 
-        <label for="{{ password_form.new_password2.id_for_label }}">{{ password_form.new_password2.label }}</label>
-        {{ password_form.new_password2 }}
-        {% if password_form.new_password2.errors %}<p class="erreur-champ">{{ password_form.new_password2.errors|striptags }}</p>{% endif %}
+    <!-- BLOC 4 : ZONE DANGEREUSE -->
+    <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-red-100 mb-8 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-[100px] -z-0 opacity-50"></div>
+        
+        <div class="relative z-10">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center text-red-500">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                </div>
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-red-500 tracking-tight">Zone dangereuse</h2>
+                    <p class="text-gray-500 text-xs">La suppression de ton compte est définitive et irréversible.</p>
+                </div>
+            </div>
 
-        <button type="submit" class="bouton-submit">Changer le mot de passe</button>
-      </form>
-    </section>
-
-    <section class="bloc-parametre">
-      <h2>Thème de couleurs</h2>
-      <form method="post" class="choix-themes">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="update_theme">
-        {% for code, label in themes_couleur %}
-        <label class="carte-theme carte-theme-{{ code }} {% if profil.theme_couleur == code %}selectionnee{% endif %}">
-          <input type="radio" name="theme_couleur" value="{{ code }}" {% if profil.theme_couleur == code %}checked{% endif %} onchange="this.form.submit()">
-          <span class="apercu-theme"></span>
-          <span>{{ label }}</span>
-        </label>
-        {% endfor %}
-      </form>
-    </section>
-
-    <section class="bloc-parametre bloc-danger">
-      <h2>Zone dangereuse</h2>
-      <p class="sous-titre-auth">Supprimer ton compte est définitif et irréversible.</p>
-      <form method="post" onsubmit="return confirm('Es-tu sûr(e) de vouloir supprimer définitivement ton compte ? Cette action est irréversible.');">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="delete_account">
-        <button type="submit" class="bouton-danger">Supprimer mon compte</button>
-      </form>
-    </section>
-  </div>
+            <div class="flex justify-end pt-4">
+                <form method="post" id="delete-account-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete_account">
+                    <button type="button" onclick="document.getElementById('delete-modal').classList.remove('hidden')" class="flex items-center gap-2 px-6 py-2.5 bg-white border border-red-200 text-red-500 text-sm font-bold rounded-xl hover:bg-red-50 hover:text-red-600 transition-colors shadow-sm">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        Supprimer mon compte
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Modale de Suppression de Compte -->
+<div id="delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Overlay sombre -->
+    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" onclick="document.getElementById('delete-modal').classList.add('hidden')"></div>
+    
+    <!-- Contenu de la modale -->
+    <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl relative z-10 transform scale-100">
+        <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500 mb-4 mx-auto">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </div>
+        
+        <h3 class="text-lg font-bold text-gray-900 text-center mb-2">Supprimer le compte ?</h3>
+        <p class="text-gray-500 text-sm text-center mb-6">Cette action est définitive et irréversible, veux-tu vraiment supprimer ton compte ?</p>
+        
+        <div class="flex gap-3">
+            <button type="button" onclick="document.getElementById('delete-modal').classList.add('hidden')" class="flex-1 py-2.5 px-4 bg-gray-100 text-gray-700 font-semibold text-sm rounded-xl hover:bg-gray-200 transition-colors">
+                Annuler
+            </button>
+            <button type="button" onclick="document.getElementById('delete-account-form').submit()" class="flex-1 py-2.5 px-4 bg-red-600 text-white font-semibold text-sm rounded-xl hover:bg-red-700 transition-colors shadow-sm">
+                Oui, supprimer
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS POUR LES MOTS DE PASSE -->
+<script>
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            const eyeOff = this.querySelector('.eye-off');
+            const eyeOn = this.querySelector('.eye-on');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeOff.classList.add('hidden');
+                eyeOn.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                eyeOff.classList.remove('hidden');
+                eyeOn.classList.add('hidden');
+            }
+        });
+    });
+</script>
+
 {% endblock %}
