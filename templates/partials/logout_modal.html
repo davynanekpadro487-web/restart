@@ -1,9 +1,8 @@
 <form method="post" action="{% url 'logout' %}" id="global-logout-form" style="display:none;">
         {% csrf_token %}
     </form>
-    <div id="global-logout-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" onclick="document.getElementById('global-logout-modal').classList.add('hidden')"></div>
-        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl relative z-[10000] transform scale-100">
+    <div id="global-logout-modal" class="modal-overlay-global hidden" onclick="if(event.target === this) this.classList.add('hidden')">
+        <div class="modal-content-global">
             <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500 mb-4 mx-auto">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
             </div>
