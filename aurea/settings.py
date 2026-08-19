@@ -30,7 +30,17 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-local-123')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1', 't')
 
-
+ALLOWED_HOSTS = [
+    'restart-aurea.onrender.com',
+    'restartbyaurea.com',
+    'www.restartbyaurea.com',
+    'localhost',
+    '127.0.0.1',
+    'testserver',
+]
+env_hosts = os.getenv('ALLOWED_HOSTS')
+if env_hosts:
+    ALLOWED_HOSTS.extend([h.strip() for h in env_hosts.split(',') if h.strip()])
 
 # Application definition
 
