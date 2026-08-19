@@ -26,11 +26,11 @@
       {% endif %}
 
       <label for="{{ form.username.id_for_label }}">Nom d'utilisateur</label>
-      {{ form.username }}
+      <input type="text" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150" required id="id_username">
       {% if form.username.errors %}<p class="erreur-champ">{{ form.username.errors|striptags }}</p>{% endif %}
 
       <label for="{{ form.password.id_for_label }}">Mot de passe</label>
-      {{ form.password }}
+      <input type="password" name="password" autocomplete="current-password" required id="id_password">
       {% if form.password.errors %}<p class="erreur-champ">{{ form.password.errors|striptags }}</p>{% endif %}
 
       <button type="submit" class="bouton-submit">Se connecter</button>

@@ -174,3 +174,7 @@ else:
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
     }
+
+# Session longue durée (30 jours)
+SESSION_COOKIE_AGE = 2592000
+SESSION_SAVE_EVERY_REQUEST = True

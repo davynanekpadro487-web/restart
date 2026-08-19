@@ -43,7 +43,7 @@
                 <div class="relative flex-shrink-0">
                     <div class="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-100 flex items-center justify-center text-4xl font-bold text-gray-300">
                         {% if profil.photo_profil %}
-                            <img src="{{ profil.photo_profil.url }}" alt="Avatar" class="w-full h-full object-cover">
+                            <img decoding="async" src="{{ profil.photo_profil.url }}" alt="Avatar" class="w-full h-full object-cover">
                         {% else %}
                             {{ user.username|first|upper }}
                         {% endif %}
@@ -86,10 +86,10 @@
         
         <!-- Illustration (Droite) -->
         <div class="hidden md:flex w-2/5 bg-white items-center justify-center border-l border-gray-100 p-6">
-            <img src="{% static 'images/progression/hero-progression.png' %}" alt="Montagne" class="w-full h-full object-contain">
+            <img decoding="async" src="{% static 'images/progression/hero-progression.png' %}" alt="Montagne" class="w-full h-full object-contain">
         </div>
         <div class="md:hidden w-full h-48 bg-white flex items-center justify-center overflow-hidden border-t border-gray-100 p-4">
-            <img src="{% static 'images/progression/hero-progression.png' %}" alt="Montagne" class="w-full h-full object-contain">
+            <img decoding="async" src="{% static 'images/progression/hero-progression.png' %}" alt="Montagne" class="w-full h-full object-contain">
         </div>
     </div>
 
@@ -157,14 +157,14 @@
             
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-white rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4 text-center md:text-left border border-gray-100 shadow-sm">
-                    <img src="{% static 'images/progression/icon-trophee.png' %}" alt="Défis" class="w-16 h-16 object-contain">
+                    <img decoding="async" src="{% static 'images/progression/icon-trophee.png' %}" alt="Défis" class="w-16 h-16 object-contain">
                     <div>
                         <div class="text-2xl font-black text-gray-900 leading-none mb-1">{{ defis_termines }}</div>
                         <div class="text-[11px] text-gray-500 font-medium uppercase tracking-wider">Défis terminés</div>
                     </div>
                 </div>
                 <div class="bg-white rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4 text-center md:text-left border border-gray-100 shadow-sm">
-                    <img src="{% static 'images/progression/icon-etoile-xp.png' %}" alt="XP" class="w-16 h-16 object-contain drop-shadow-sm">
+                    <img decoding="async" src="{% static 'images/progression/icon-etoile-xp.png' %}" alt="XP" class="w-16 h-16 object-contain drop-shadow-sm">
                     <div>
                         <div class="text-2xl font-black text-gray-900 leading-none mb-1">{{ profil.xp_total }}</div>
                         <div class="text-[11px] text-gray-500 font-medium uppercase tracking-wider">XP gagnés</div>

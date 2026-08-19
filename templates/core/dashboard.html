@@ -306,7 +306,7 @@
   }
 </style>
 </head>
-<body>
+<body class="theme-{{ user_theme|default:'bleu_or' }}">
 
 {% if messages %}
 <div class="flash-messages">
@@ -376,7 +376,7 @@
       <p class="desc">Chaque petite action te rapproche de <span class="highlight">la personne que tu veux devenir</span>.</p>
     </div>
   </div>
-  <img class="hero-img" src="{% static 'images/accueuil/hero-accueil.jpg' %}" alt="Accueil">
+  <img decoding="async" class="hero-img" src="{% static 'images/accueuil/hero-accueil.jpg' %}" alt="Accueil">
 </section>
 
 <div class="grid">
@@ -442,7 +442,7 @@
       </a>
       {% endif %}
     </div>
-    <img class="card-img" src="{% static 'images/accueuil/illu-programme.png' %}" alt="Programme" loading="lazy">
+    <img decoding="async" class="card-img" src="{% static 'images/accueuil/illu-programme.png' %}" alt="Programme" loading="lazy">
   </div>
 
   <!-- Défi de la semaine -->
@@ -472,7 +472,7 @@
         </a>
       {% endif %}
     </div>
-    <img class="card-img" src="{% static 'images/illu-defi.png' %}" alt="Défi" loading="lazy">
+    <img decoding="async" class="card-img" src="{% static 'images/illu-defi.png' %}" alt="Défi" loading="lazy">
   </div>
 
   <!-- Communauté -->
@@ -495,7 +495,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:20px; height:20px;"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
     </div>
-    <img class="card-img round" src="{% static 'images/accueuil/communaute.png' %}" alt="Communauté" loading="lazy">
+    <img decoding="async" class="card-img round" src="{% static 'images/accueuil/communaute.png' %}" alt="Communauté" loading="lazy">
   </div>
 
   <!-- Ma progression -->
@@ -517,7 +517,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:20px; height:20px;"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
     </div>
-    <img class="card-img" src="{% static 'images/accueuil/illu-progression.png' %}" alt="Progression" loading="lazy">
+    <img decoding="async" class="card-img" src="{% static 'images/accueuil/illu-progression.png' %}" alt="Progression" loading="lazy">
   </div>
 
 </div>
@@ -559,7 +559,7 @@
       });
     }, 100);
 
-    // Intersection Observer pour animer l'apparition au scroll
+    // Intersection Observer pour animer l'apparition au scroll (optimisé pour la rapidité)
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -567,12 +567,23 @@
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0, rootMargin: '50px' });
     
+    
+    // Mobile menu active links support
+    const path = window.location.pathname;
+    const links = document.querySelectorAll('.nav-links a, .mobile-menu-links a');
+    links.forEach(link => {
+        link.classList.remove('active');
+        const href = link.getAttribute('href');
+        if (href === path || (href !== '/' && path.startsWith(href))) {
+            link.classList.add('active');
+        }
+    });
     let cardIndex = 0;
     document.querySelectorAll('.animate-on-scroll').forEach((el) => {
       if(el.classList.contains('card')) {
-        el.style.transitionDelay = `${cardIndex * 0.1}s`;
+        el.style.transitionDelay = `${cardIndex * 0.03}s`;
         cardIndex++;
       }
       observer.observe(el);
@@ -586,6 +597,7 @@
   })();
 </script>
 
+{% include 'partials/logout_modal.html' %}
 </body>
 </html>
 

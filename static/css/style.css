@@ -83,13 +83,13 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bleu-profond); 
    SWUP.JS & ANIMATIONS GLOBALES
    ============================================ */
 .transition-fade {
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
   opacity: 1;
   transform: translateY(0);
 }
 html.is-animating .transition-fade {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(4px);
 }
 
 /* Interactivité globale : Boutons et Liens */
