@@ -27,8 +27,7 @@
     margin:0;
     font-family:'Inter',sans-serif;
     color:var(--text);
-    background: linear-gradient(160deg, #EEC0C8 0%, #F2CDA6 55%, #E3B563 100%);
-    background-attachment: fixed;
+    background:#EDEEF0;
     -webkit-font-smoothing:antialiased;
     min-height: 100vh;
     min-height: 100dvh;
@@ -38,18 +37,22 @@
 
   .adhesion-phone{
     width:100%;
-    max-width: 100%;
+    max-width: 768px;
+    background: var(--white);
+    box-shadow: 0 30px 60px -20px rgba(10,38,71,.1);
     position: relative;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   /* ============ SCREEN A — LANDING (Version Rose/Or) ============ */
   #screen-landing {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    min-height: 100dvh;
+    flex: 1;
+    background: linear-gradient(160deg, #EEC0C8 0%, #F2CDA6 55%, #E3B563 100%);
     width: 100%;
   }
 
@@ -66,8 +69,8 @@
     display:flex;flex-direction:column;
     align-items:center;justify-content:center;
     text-align:center;
-    padding:90px 24px 40px;
-    max-width: 600px;
+    padding:100px 24px 40px;
+    max-width: 500px;
     margin: 0 auto;
     width: 100%;
   }
@@ -200,8 +203,7 @@
   #screen-form {
     display: none;
     flex-direction: column;
-    min-height: 100vh;
-    min-height: 100dvh;
+    flex: 1;
     width: 100%;
   }
   .formscr { 
@@ -211,10 +213,10 @@
   }
   .form-top {
     position: relative;
-    padding: 60px 24px 46px;
-    max-width: 600px;
-    margin: 0 auto;
+    padding: 50px 24px 80px;
+    background: linear-gradient(160deg, #EEC0C8 0%, #F2CDA6 55%, #E3B563 100%);
     width: 100%;
+    text-align: center;
   }
   .back-row {
     display: flex; align-items: center; gap: 8px; color: #5C4A42;
@@ -290,13 +292,13 @@
 
   .form-card{
     position:relative;
-    margin:-24px auto 60px;
+    margin:-40px auto 40px;
     background:var(--white);
     border-radius:22px;
-    box-shadow:0 20px 44px -20px rgba(10,38,71,.3);
+    box-shadow:0 20px 44px -20px rgba(10,38,71,.15);
     padding:32px 24px;
-    max-width: 550px;
-    width: calc(100% - 48px);
+    max-width: 500px;
+    width: 100%;
   }
   .field{margin-bottom:15px;}
   .field label.main-label{display:block;font-family:'Poppins',sans-serif;font-size:11.5px;font-weight:600;color:var(--night);margin-bottom:7px;}
@@ -463,20 +465,27 @@
   .fade-screen { animation: fadeScreen 0.4s ease forwards; }
   
   /* ============ CORRECTIONS RESPONSIVE MOBILE ============ */
+  @media (max-width: 768px) {
+    .adhesion-phone {
+      max-width: 100%;
+      box-shadow: none;
+    }
+  }
+
   @media (max-width: 480px) {
     .landing-tag {
       top: 16px;
-      padding: 0 16px;
+      padding: 0 20px;
     }
     .landing-content {
-      padding: 76px 20px 40px;
+      padding: 80px 20px 40px;
     }
     .landing-photo {
       margin-bottom: 20px;
     }
     .form-card {
-      margin: -24px auto 40px;
-      width: calc(100% - 32px);
+      margin: -40px auto 40px;
+      width: calc(100% - 48px);
       padding: 24px 20px;
     }
     .brand-sig { font-size: 18px; }
