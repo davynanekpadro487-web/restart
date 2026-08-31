@@ -28,14 +28,14 @@
     color:var(--text);
     background:#EDEEF0;
     -webkit-font-smoothing:antialiased;
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
   }
 
   .adhesion-phone{
     width:100%;
-    max-width:480px;
+    max-width:650px;
     background:var(--white);
     box-shadow:0 30px 60px -20px rgba(10,38,71,.35);
     position: relative;
@@ -46,13 +46,14 @@
   #screen-landing {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
   }
 
   .landing{
     position:relative;
     flex: 1;
+    min-height: 100%;
     background:linear-gradient(160deg, #EEC0C8 0%, #F2CDA6 55%, #E3B563 100%);
     display:flex;
     flex-direction:column;
@@ -192,10 +193,10 @@
   #screen-form {
     display: none;
     flex-direction: column;
-    height: 100%;
-    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
   }
-  .formscr { flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .formscr { flex: 1; display: flex; flex-direction: column; min-height: 100%; }
   .form-top {
     position: relative;
     padding: 30px 24px 46px;
@@ -291,6 +292,35 @@
   }
   .input-shell input::placeholder{color:var(--text-faint);}
   .input-shell.focused input, .input-shell input:focus {border-color:#C68A42;background:var(--white);box-shadow:0 0 0 4px rgba(198,138,66,.15);}
+
+  .phone-group {
+    display: flex;
+    gap: 8px;
+  }
+  .phone-group select {
+    flex: 0 0 42%;
+    border: 1.5px solid var(--line);
+    background: var(--cream);
+    border-radius: 11px;
+    padding: 12px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: var(--text);
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .phone-group select:focus {
+    border-color: #C68A42;
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(198,138,66,.15);
+  }
+  .phone-group .input-shell {
+    flex: 1;
+  }
 
   .genre-row{display:flex;gap:9px;}
   .pill{
@@ -413,6 +443,41 @@
   /* Apparition en douceur du conteneur */
   @keyframes fadeScreen { from { opacity: 0; } to { opacity: 1; } }
   .fade-screen { animation: fadeScreen 0.4s ease forwards; }
+  
+  /* ============ CORRECTIONS RESPONSIVE MOBILE ============ */
+  @media (max-width: 480px) {
+    .adhesion-phone {
+      max-width: 100%;
+      box-shadow: none;
+      border-radius: 0;
+    }
+    .landing-tag {
+      top: 16px; left: 16px; right: 16px;
+    }
+    .landing-content {
+      padding: 76px 20px 40px;
+    }
+    .landing-photo {
+      max-width: 100%;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .landing-eyebrow {
+      margin-bottom: 16px;
+    }
+    .landing-sub {
+      margin-bottom: 24px;
+    }
+    .brand-sig {
+      font-size: 18px;
+    }
+    .brand-sig span {
+      font-size: 12px;
+    }
+    .phone-group select {
+      flex: 0 0 48%; /* Un peu plus large sur mobile pour le texte */
+    }
+  }
 </style>
 
 <div class="adhesion-wrapper">
@@ -500,9 +565,59 @@
 
             <div class="field">
               <label class="main-label">Numéro WhatsApp</label>
-              <div class="input-shell">
-                <input type="tel" name="telephone" id="telephone" placeholder="+225 07 00 00 00 00" required>
+              <div class="phone-group">
+                <select id="indicatif">
+                  <option value="+225">🇨🇮 Côte d'Ivoire (+225)</option>
+                  <option value="+27">🇿🇦 Afrique du Sud (+27)</option>
+                  <option value="+213">🇩🇿 Algérie (+213)</option>
+                  <option value="+49">🇩🇪 Allemagne (+49)</option>
+                  <option value="+244">🇦🇴 Angola (+244)</option>
+                  <option value="+32">🇧🇪 Belgique (+32)</option>
+                  <option value="+229">🇧🇯 Bénin (+229)</option>
+                  <option value="+226">🇧🇫 Burkina Faso (+226)</option>
+                  <option value="+257">🇧🇮 Burundi (+257)</option>
+                  <option value="+237">🇨🇲 Cameroun (+237)</option>
+                  <option value="+1">🇨🇦 Canada (+1)</option>
+                  <option value="+238">🇨🇻 Cap-Vert (+238)</option>
+                  <option value="+236">🇨🇫 Centrafrique (+236)</option>
+                  <option value="+269">🇰🇲 Comores (+269)</option>
+                  <option value="+242">🇨🇬 Congo-Brazzaville (+242)</option>
+                  <option value="+243">🇨🇩 Congo-Kinshasa (+243)</option>
+                  <option value="+253">🇩🇯 Djibouti (+253)</option>
+                  <option value="+20">🇪🇬 Égypte (+20)</option>
+                  <option value="+34">🇪🇸 Espagne (+34)</option>
+                  <option value="+1">🇺🇸 États-Unis (+1)</option>
+                  <option value="+33">🇫🇷 France (+33)</option>
+                  <option value="+241">🇬🇦 Gabon (+241)</option>
+                  <option value="+220">🇬🇲 Gambie (+220)</option>
+                  <option value="+233">🇬🇭 Ghana (+233)</option>
+                  <option value="+224">🇬🇳 Guinée (+224)</option>
+                  <option value="+240">🇬🇶 Guinée équatoriale (+240)</option>
+                  <option value="+245">🇬🇼 Guinée-Bissau (+245)</option>
+                  <option value="+261">🇲🇬 Madagascar (+261)</option>
+                  <option value="+223">🇲🇱 Mali (+223)</option>
+                  <option value="+212">🇲🇦 Maroc (+212)</option>
+                  <option value="+230">🇲🇺 Maurice (+230)</option>
+                  <option value="+222">🇲🇷 Mauritanie (+222)</option>
+                  <option value="+52">🇲🇽 Mexique (+52)</option>
+                  <option value="+258">🇲🇿 Mozambique (+258)</option>
+                  <option value="+264">🇳🇦 Namibie (+264)</option>
+                  <option value="+227">🇳🇪 Niger (+227)</option>
+                  <option value="+234">🇳🇬 Nigeria (+234)</option>
+                  <option value="+256">🇺🇬 Ouganda (+256)</option>
+                  <option value="+44">🇬🇧 Royaume-Uni (+44)</option>
+                  <option value="+250">🇷🇼 Rwanda (+250)</option>
+                  <option value="+221">🇸🇳 Sénégal (+221)</option>
+                  <option value="+248">🇸🇨 Seychelles (+248)</option>
+                  <option value="+41">🇨🇭 Suisse (+41)</option>
+                  <option value="+228">🇹🇬 Togo (+228)</option>
+                  <option value="+216">🇹🇳 Tunisie (+216)</option>
+                </select>
+                <div class="input-shell">
+                  <input type="tel" id="numero-local" placeholder="07 00 00 00 00" required>
+                </div>
               </div>
+              <input type="hidden" name="telephone" id="telephone">
               <div class="erreur-champ" id="err-tel">Le numéro WhatsApp est requis.</div>
             </div>
 
@@ -526,5 +641,23 @@
     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.3 1.2-1.8 1.27-.46.07-1.04.1-1.68-.1-.39-.12-.9-.3-1.54-.58-2.72-1.18-4.5-3.9-4.63-4.08-.14-.18-1.1-1.47-1.1-2.8 0-1.33.7-1.98.95-2.25.25-.27.54-.34.72-.34h.5c.16 0 .38-.03.58.44.22.53.75 1.83.82 1.97.07.14.11.3.02.48-.09.18-.14.3-.27.46-.14.16-.29.36-.41.48-.14.14-.28.29-.12.56.16.27.72 1.19 1.55 1.92 1.06.95 1.96 1.24 2.23 1.38.27.14.43.12.6-.07.16-.2.68-.79.86-1.06.18-.27.36-.22.6-.13.25.09 1.58.75 1.85.88.27.14.45.2.51.32.07.12.07.68-.15 1.3z"/></svg>
   </a>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var form = document.getElementById('adhesion-form');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        var indicatif = document.getElementById('indicatif').value;
+        var numeroLocal = document.getElementById('numero-local').value.trim();
+        
+        // Supprimer les espaces et tirets pour avoir un numéro propre
+        var numeroPropre = numeroLocal.replace(/[\s-]/g, '');
+        
+        // Concaténer et affecter au champ caché
+        document.getElementById('telephone').value = indicatif + numeroPropre;
+      });
+    }
+  });
+</script>
 
 {% endblock %}
