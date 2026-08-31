@@ -21,13 +21,16 @@
     --text-faint:#9FAEBD;
     --line:#E9EDF1;
   }
-  
+  *, *::before, *::after { box-sizing: border-box; }
+
   .adhesion-wrapper {
     margin:0;
     font-family:'Inter',sans-serif;
     color:var(--text);
-    background:#EDEEF0;
+    background: linear-gradient(160deg, #EEC0C8 0%, #F2CDA6 55%, #E3B563 100%);
+    background-attachment: fixed;
     -webkit-font-smoothing:antialiased;
+    min-height: 100vh;
     min-height: 100dvh;
     display: flex;
     justify-content: center;
@@ -35,11 +38,10 @@
 
   .adhesion-phone{
     width:100%;
-    max-width:650px;
-    background:var(--white);
-    box-shadow:0 30px 60px -20px rgba(10,38,71,.35);
+    max-width: 100%;
     position: relative;
-    /* overflow: hidden; retiré pour éviter les bugs de scroll sur iOS */
+    display: flex;
+    flex-direction: column;
   }
 
   /* ============ SCREEN A — LANDING (Version Rose/Or) ============ */
@@ -54,8 +56,6 @@
   .landing{
     position:relative;
     flex: 1;
-    min-height: 100%;
-    background:linear-gradient(160deg, #EEC0C8 0%, #F2CDA6 55%, #E3B563 100%);
     display:flex;
     flex-direction:column;
   }
@@ -66,7 +66,10 @@
     display:flex;flex-direction:column;
     align-items:center;justify-content:center;
     text-align:center;
-    padding:90px 30px 40px;
+    padding:90px 24px 40px;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
   }
   .landing-photo{
     width:100%;
@@ -168,8 +171,11 @@
     font-size:28px;
   }
   .landing-tag{
-    position:absolute;top:26px;left:24px;right:24px;z-index:3;
+    position:absolute;top:26px;left:0;right:0;z-index:3;
     display:flex;justify-content:space-between;align-items:center;
+    padding:0 24px;
+    max-width:1000px;
+    margin:0 auto;
   }
   .brand-sig{
     font-family:'Poppins',sans-serif;font-weight:600;font-size:20px;color:#0A2647;
@@ -198,11 +204,17 @@
     min-height: 100dvh;
     width: 100%;
   }
-  .formscr { flex: 1; display: flex; flex-direction: column; min-height: 100%; }
+  .formscr { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+  }
   .form-top {
     position: relative;
-    padding: 30px 24px 46px;
-    background: linear-gradient(160deg, #EEC0C8 0%, #F2CDA6 55%, #E3B563 100%);
+    padding: 60px 24px 46px;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
   }
   .back-row {
     display: flex; align-items: center; gap: 8px; color: #5C4A42;
@@ -278,12 +290,13 @@
 
   .form-card{
     position:relative;
-    margin:-24px 18px 0;
+    margin:-24px auto 60px;
     background:var(--white);
     border-radius:22px;
     box-shadow:0 20px 44px -20px rgba(10,38,71,.3);
-    padding:24px 20px 22px;
-    flex: 1;
+    padding:32px 24px;
+    max-width: 550px;
+    width: calc(100% - 48px);
   }
   .field{margin-bottom:15px;}
   .field label.main-label{display:block;font-family:'Poppins',sans-serif;font-size:11.5px;font-weight:600;color:var(--night);margin-bottom:7px;}
@@ -394,7 +407,7 @@
     border-radius: 99px;
     box-shadow: 0 8px 20px -6px rgba(10,38,71,.15);
     opacity: 0; 
-    transform: translateX(10px);
+    transform: translateX(-10px);
     transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
   }
@@ -451,37 +464,24 @@
   
   /* ============ CORRECTIONS RESPONSIVE MOBILE ============ */
   @media (max-width: 480px) {
-    .adhesion-phone {
-      max-width: 100%;
-      box-shadow: none;
-      border-radius: 0;
-    }
     .landing-tag {
-      top: 16px; left: 16px; right: 16px;
+      top: 16px;
+      padding: 0 16px;
     }
     .landing-content {
       padding: 76px 20px 40px;
     }
     .landing-photo {
-      max-width: 100%;
-      width: 100%;
       margin-bottom: 20px;
     }
-    .landing-eyebrow {
-      margin-bottom: 16px;
+    .form-card {
+      margin: -24px auto 40px;
+      width: calc(100% - 32px);
+      padding: 24px 20px;
     }
-    .landing-sub {
-      margin-bottom: 24px;
-    }
-    .brand-sig {
-      font-size: 18px;
-    }
-    .brand-sig span {
-      font-size: 12px;
-    }
-    .phone-group select {
-      flex: 0 0 48%; /* Un peu plus large sur mobile pour le texte */
-    }
+    .brand-sig { font-size: 18px; }
+    .brand-sig span { font-size: 12px; }
+    .phone-group select { flex: 0 0 48%; }
   }
 </style>
 
