@@ -1,0 +1,460 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block header_actions %}{% endblock %}
+
+{% block content %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,500&family=Poppins:wght@300;400;500;600&family=Inter:wght@400;500&display=swap');
+
+  :root {
+    --white: #ffffff;
+    --cream: #FAF9F6;
+    --night: #0A2647;
+    --gold-light: #E3B563;
+    --gold-mid: #C68A42;
+    --gold-dark: #A9702E;
+    --text-soft: #5C4A42;
+    --text-faint: #8A6E60;
+    --line: #E9EDF1;
+  }
+
+  /* ===== WRAPPER ===== */
+  .adhesion-wrapper {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color: var(--night);
+    background: #EDEEF0;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+
+  .adhesion-phone {
+    width: 100%;
+    max-width: 480px;
+    background: linear-gradient(160deg, #EEC0C8 0%, #F2CDA6 55%, #E3B563 100%);
+    box-shadow: 0 30px 60px -20px rgba(10,38,71,.35);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 80px;
+  }
+
+  /* ===== TOP BAR ===== */
+  .top-bar {
+    padding: 32px 24px 16px;
+  }
+  .back-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-soft);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .back-row:hover { opacity: 0.65; }
+  .back-row svg { width: 15px; height: 15px; }
+  .back-row svg path { stroke: var(--text-soft); }
+
+  /* ===== EYEBROW AVEC TRAITS ===== */
+  .page-eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--gold-dark);
+    font-family: 'Poppins', sans-serif;
+    font-size: 9.5px;
+    font-weight: 400;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    padding: 0 24px;
+    margin-bottom: 20px;
+  }
+  .page-eyebrow::before,
+  .page-eyebrow::after {
+    content: "";
+    flex: 1;
+    max-width: 36px;
+    height: 1px;
+    background: var(--gold-dark);
+    opacity: 0.6;
+  }
+
+  /* ===== CARD PRINCIPALE ===== */
+  .result-card {
+    margin: 0 16px;
+    background: var(--white);
+    border-radius: 24px;
+    box-shadow: 0 24px 50px -22px rgba(10,38,71,0.22);
+    padding: 44px 30px 38px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* ===== TITRE PRINCIPAL ===== */
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--night);
+    line-height: 1.25;
+    margin: 0 0 16px;
+    letter-spacing: -0.005em;
+  }
+  .card-title em {
+    font-style: italic;
+    color: var(--gold-dark);
+    font-weight: 500;
+  }
+
+  /* ===== SOUS-TEXTE ===== */
+  .card-sub {
+    color: var(--text-faint);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.75;
+    margin: 0 0 30px;
+    max-width: 250px;
+  }
+
+  /* ===== BOUTON ACTION PRINCIPAL (pill compact, or) ===== */
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-mid) 55%, var(--gold-dark) 100%);
+    color: var(--white);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 14px 28px;
+    border-radius: 99px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 12px 24px -10px rgba(169, 112, 46, 0.55);
+    letter-spacing: .01em;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+  }
+  .btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px -8px rgba(169, 112, 46, 0.65);
+  }
+  .btn-action svg { width: 14px; height: 14px; fill: white; }
+  .btn-action .arrow { font-size: 13px; }
+
+  /* ===== SÉPARATEUR INVISIBLE (espacement) ===== */
+  .gap-section { height: 32px; }
+
+  /* ===== BLOC APPLICATION RESTA ===== */
+  .resta-block {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .resta-eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--gold-dark);
+    font-family: 'Poppins', sans-serif;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  .resta-eyebrow::before,
+  .resta-eyebrow::after {
+    content: "";
+    flex: 1;
+    max-width: 28px;
+    height: 1px;
+    background: var(--gold-dark);
+    opacity: 0.5;
+  }
+
+  .resta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--night);
+    margin: 0 0 12px;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+  }
+  .resta-title em {
+    font-style: italic;
+    color: var(--gold-dark);
+    font-weight: 500;
+  }
+
+  .resta-sub {
+    color: var(--text-faint);
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.75;
+    margin: 0 0 24px;
+    max-width: 260px;
+  }
+
+  /* ===== BOUTON CODE D'ACCÈS — CONTOUR TRANSPARENT ===== */
+  .btn-code {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: transparent;
+    border: 1.5px solid var(--gold-mid);
+    color: var(--gold-dark);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 26px;
+    border-radius: 99px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+    white-space: nowrap;
+  }
+  .btn-code:hover {
+    background: rgba(198, 138, 66, 0.06);
+    transform: scale(1.02);
+  }
+  .btn-code:active { transform: scale(0.97); }
+
+  /* Form code caché */
+  .code-form {
+    display: none;
+    margin-top: 14px;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+  }
+  .code-form input {
+    flex: 1;
+    border: 1.5px solid var(--line);
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--night);
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+  }
+  .code-form input:focus {
+    border-color: var(--gold-mid);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(198,138,66,0.12);
+  }
+  .code-form button {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold-dark));
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .code-form button:hover { transform: translateY(-2px); }
+
+  /* ===== MESSAGES ERREUR DJANGO ===== */
+  .msg-error {
+    margin-bottom: 14px;
+    color: #D32F2F;
+    font-size: 12.5px;
+    font-weight: 500;
+    text-align: center;
+    width: 100%;
+  }
+
+  /* ===== WIDGET WHATSAPP FLOTTANT ===== */
+  .wa-floating-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 999;
+  }
+  .wa-floating-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #25D366, #0E7C3F);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 24px -6px rgba(37, 211, 102, 0.45);
+    text-decoration: none;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+  }
+  .wa-floating-btn:hover {
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 0 16px 32px -8px rgba(37, 211, 102, 0.55);
+  }
+  .wa-floating-btn svg { width: 28px; height: 28px; fill: white; }
+  .wa-tooltip {
+    background: var(--white);
+    color: #0E7C3F;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 99px;
+    box-shadow: 0 8px 20px -6px rgba(10,38,71,.15);
+    opacity: 0;
+    transform: translateX(10px);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .wa-floating-widget:hover .wa-tooltip { opacity: 1; transform: translateX(0); }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .au { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+  .d1 { animation-delay: 0.08s; }
+  .d2 { animation-delay: 0.16s; }
+  .d3 { animation-delay: 0.24s; }
+  .d4 { animation-delay: 0.32s; }
+  .d5 { animation-delay: 0.40s; }
+
+  header.site-header { display: none !important; }
+  footer.site-footer { display: none !important; }
+</style>
+
+<div class="adhesion-wrapper">
+  <div class="adhesion-phone">
+
+    <!-- Retour -->
+    <div class="top-bar au">
+      <a href="{% url 'rejoindre_aurea' %}" class="back-row">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Retour
+      </a>
+    </div>
+
+    <!-- Eyebrow page -->
+    <div class="page-eyebrow au d1">Communauté Auréa</div>
+
+    <!-- Carte résultat -->
+    <div class="result-card au d2">
+
+      {% if messages %}
+      <div class="msg-error">
+        {% for message in messages %}{{ message }}{% endfor %}
+      </div>
+      {% endif %}
+
+      {# ======= VUE HOMME ======= #}
+      {% if adhesion.genre == 'M' %}
+
+        <h1 class="card-title au d3">Merci de ton <em>intérêt</em></h1>
+        <p class="card-sub au d3">
+          La communauté Auréa est aujourd'hui réservée aux femmes.<br>
+          Une communauté pour les hommes arrive bientôt !
+        </p>
+
+        <!-- Bloc Resta -->
+        <div class="gap-section"></div>
+        <div class="resta-block au d4">
+          <div class="resta-eyebrow">Application Resta</div>
+          <h2 class="resta-title">L'app arrive <em>bientôt</em></h2>
+          <p class="resta-sub">Tu as un code d'accès, teste la version en avant-première dès maintenant.</p>
+          <button type="button" class="btn-code" onclick="document.getElementById('code-form-m').style.display='flex'; this.style.display='none';">
+            🔑 J'ai un code d'accès
+          </button>
+          <form id="code-form-m" class="code-form" method="post" action="{% url 'statut_adhesion' %}">
+            {% csrf_token %}
+            <input type="text" name="code" placeholder="Code secret" required>
+            <button type="submit">OK</button>
+          </form>
+        </div>
+
+      {# ======= VUE FEMME ======= #}
+      {% else %}
+
+        {% if adhesion.age < 30 %}
+          {# --- Femme < 30 --- #}
+          <h1 class="card-title au d3">Bienvenue, {{ adhesion.prenom }}</h1>
+          <p class="card-sub au d3">
+            Tu peux maintenant rejoindre la communauté Auréa sur WhatsApp.
+          </p>
+          <a href="https://chat.whatsapp.com/GdR1kJsTenpEwJYN8KgPt3?s=cl&p=i&mlu=0&ilr=0"
+             target="_blank"
+             class="btn-action au d4">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.3 1.2-1.8 1.27-.46.07-1.04.1-1.68-.1-.39-.12-.9-.3-1.54-.58-2.72-1.18-4.5-3.9-4.63-4.08-.14-.18-1.1-1.47-1.1-2.8 0-1.33.7-1.98.95-2.25.25-.27.54-.34.72-.34h.5c.16 0 .38-.03.58.44.22.53.75 1.83.82 1.97.07.14.11.3.02.48-.09.18-.14.3-.27.46-.14.16-.29.36-.41.48-.14.14-.28.29-.12.56.16.27.72 1.19 1.55 1.92 1.06.95 1.96 1.24 2.23 1.38.27.14.43.12.6-.07.16-.2.68-.79.86-1.06.18-.27.36-.22.6-.13.25.09 1.58.75 1.85.88.27.14.45.2.51.32.07.12.07.68-.15 1.3z"/></svg>
+            Rejoindre sur WhatsApp
+            <span class="arrow">→</span>
+          </a>
+
+        {% else %}
+          {# --- Femme ≥ 30 --- #}
+          <h1 class="card-title au d3">Bienvenue, {{ adhesion.prenom }}</h1>
+          <p class="card-sub au d3">
+            Clique ci-dessous pour envoyer ta demande à notre équipe sur WhatsApp.
+          </p>
+          <a href="https://wa.me/2250714849094?text=Bonjour%2C%20je%20souhaite%20rejoindre%20le%20groupe%20Aur%C3%A9a%20Adulte%20%F0%9F%99%8F"
+             target="_blank"
+             class="btn-action au d4">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.3 1.2-1.8 1.27-.46.07-1.04.1-1.68-.1-.39-.12-.9-.3-1.54-.58-2.72-1.18-4.5-3.9-4.63-4.08-.14-.18-1.1-1.47-1.1-2.8 0-1.33.7-1.98.95-2.25.25-.27.54-.34.72-.34h.5c.16 0 .38-.03.58.44.22.53.75 1.83.82 1.97.07.14.11.3.02.48-.09.18-.14.3-.27.46-.14.16-.29.36-.41.48-.14.14-.28.29-.12.56.16.27.72 1.19 1.55 1.92 1.06.95 1.96 1.24 2.23 1.38.27.14.43.12.6-.07.16-.2.68-.79.86-1.06.18-.27.36-.22.6-.13.25.09 1.58.75 1.85.88.27.14.45.2.51.32.07.12.07.68-.15 1.3z"/></svg>
+            Contacter sur WhatsApp
+            <span class="arrow">→</span>
+          </a>
+        {% endif %}
+
+        <!-- Bloc Resta commun aux femmes -->
+        <div class="gap-section"></div>
+        <div class="resta-block au d5">
+          <div class="resta-eyebrow">Application Resta</div>
+          <h2 class="resta-title">L'app arrive <em>bientôt</em></h2>
+          <p class="resta-sub">Tu as un code d'accès, teste la version en avant-première dès maintenant.</p>
+          <button type="button" class="btn-code" onclick="document.getElementById('code-form-f').style.display='flex'; this.style.display='none';">
+            🔑 J'ai un code d'accès
+          </button>
+          <form id="code-form-f" class="code-form" method="post" action="{% url 'statut_adhesion' %}">
+            {% csrf_token %}
+            <input type="text" name="code" placeholder="Code secret" required>
+            <button type="submit">OK</button>
+          </form>
+        </div>
+
+      {% endif %}
+
+    </div><!-- /.result-card -->
+
+  </div><!-- /.adhesion-phone -->
+</div><!-- /.adhesion-wrapper -->
+
+<!-- Widget WhatsApp flottant (aide, reste vert) -->
+<div class="wa-floating-widget">
+  <div class="wa-tooltip">Besoin d'aide ?</div>
+  <a href="https://wa.me/2250705166277" class="wa-floating-btn" target="_blank" rel="noopener" aria-label="Aide WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.3 1.2-1.8 1.27-.46.07-1.04.1-1.68-.1-.39-.12-.9-.3-1.54-.58-2.72-1.18-4.5-3.9-4.63-4.08-.14-.18-1.1-1.47-1.1-2.8 0-1.33.7-1.98.95-2.25.25-.27.54-.34.72-.34h.5c.16 0 .38-.03.58.44.22.53.75 1.83.82 1.97.07.14.11.3.02.48-.09.18-.14.3-.27.46-.14.16-.29.36-.41.48-.14.14-.28.29-.12.56.16.27.72 1.19 1.55 1.92 1.06.95 1.96 1.24 2.23 1.38.27.14.43.12.6-.07.16-.2.68-.79.86-1.06.18-.27.36-.22.6-.13.25.09 1.58.75 1.85.88.27.14.45.2.51.32.07.12.07.68-.15 1.3z"/></svg>
+  </a>
+</div>
+
+{% endblock %}

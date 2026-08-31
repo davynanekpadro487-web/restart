@@ -22,6 +22,10 @@ urlpatterns = [
     path('profil/', views.profil, name='profil'),
     path('parametres/', views.parametres, name='parametres'),
 
+    # Adhésion Auréa
+    path('rejoindre/', views.rejoindre_aurea, name='rejoindre_aurea'),
+    path('rejoindre/statut/', views.statut_adhesion, name='statut_adhesion'),
+
     # Auth
     path('register/', views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(authentication_form=ConnexionForm), name='login'),

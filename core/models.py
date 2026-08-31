@@ -303,3 +303,28 @@ class MessageInspirant(models.Model):
 
     def __str__(self):
         return f"Citation de {self.auteur or 'Anonyme'}"
+
+class AdhesionAurea(models.Model):
+    GENRE_CHOICES = [
+        ('F', 'Femme'),
+        ('M', 'Homme'),
+        ('A', 'Autre'),
+    ]
+    prenom = models.CharField(max_length=100, verbose_name="Prénom")
+    age = models.PositiveIntegerField(verbose_name="Âge")
+    genre = models.CharField(max_length=10, choices=GENRE_CHOICES, verbose_name="Genre")
+    telephone = models.CharField(max_length=20, verbose_name="Numéro WhatsApp")
+    
+    destination_attribuee = models.CharField(max_length=50, blank=True, verbose_name="Destination attribuée")
+    code_testeuse_utilise = models.BooleanField(default=False, verbose_name="Code testeuse utilisé")
+    date_demande = models.DateTimeField(auto_now_add=True, verbose_name="Date de la demande")
+    
+    donnees_supplementaires = models.JSONField(default=dict, blank=True, verbose_name="Données supplémentaires")
+
+    class Meta:
+        verbose_name = "Adhésion Auréa"
+        verbose_name_plural = "Adhésions Auréa"
+        ordering = ['-date_demande']
+
+    def __str__(self):
+        return f"{self.prenom} - {self.age} ans ({self.get_genre_display()})"

@@ -12,7 +12,7 @@ from .models import (
     Programme, Semaine, Defi, StatutDefi, EspacePersonnel, NoteEvolution, MessageInspirant, Profil,
     Action, ActionUtilisateur, PratiqueSpirituelle, PratiqueUtilisateur, CATEGORIES_ACTION, THEMES_COULEUR,
     XP_DEFI_TERMINE, XP_BONUS_PREUVE, XP_ENGAGEMENT, DomaineSemaine, ActionProposee, DomaineUtilisateur,
-    ActionBonusUtilisateur,
+    ActionBonusUtilisateur, AdhesionAurea,
 )
 from .forms import InscriptionForm, PhotoProfilForm, InfosCompteForm
 import random
@@ -993,4 +993,77 @@ def parametres(request):
         'password_form': password_form,
         'profil': profil_utilisateur,
         'themes_couleur': THEMES_COULEUR,
+    })
+
+
+# ==============================================================================
+# VUES ADHÉSION AURÉA (Nouvelle feature)
+# ==============================================================================
+
+def rejoindre_aurea(request):
+    code_param = request.GET.get('code')
+    if code_param == '2005':
+        return redirect('home')
+
+    if request.method == 'POST':
+        prenom = request.POST.get('prenom')
+        age = request.POST.get('age')
+        genre = request.POST.get('genre')
+        telephone = request.POST.get('telephone')
+        
+        # Validation basique
+        if prenom and age and genre and telephone:
+            try:
+                age_int = int(age)
+                # Détermination de la destination pour les stats
+                if genre == 'M':
+                    destination = 'refus'
+                elif genre == 'F':
+                    if age_int < 30:
+                        destination = 'groupe_jeunes'
+                    else:
+                        destination = 'wa_adulte'
+                else:
+                    destination = 'refus'
+                    
+                adhesion = AdhesionAurea.objects.create(
+                    prenom=prenom,
+                    age=age_int,
+                    genre=genre,
+                    telephone=telephone,
+                    destination_attribuee=destination
+                )
+                request.session['adhesion_id'] = adhesion.id
+                return redirect('statut_adhesion')
+            except ValueError:
+                messages.error(request, "L'âge doit être un nombre valide.")
+        else:
+            messages.error(request, "Veuillez remplir tous les champs.")
+
+    return render(request, 'core/rejoindre.html')
+
+def statut_adhesion(request):
+    adhesion_id = request.session.get('adhesion_id')
+    if not adhesion_id:
+        return redirect('rejoindre_aurea')
+        
+    try:
+        adhesion = AdhesionAurea.objects.get(id=adhesion_id)
+    except AdhesionAurea.DoesNotExist:
+        return redirect('rejoindre_aurea')
+        
+    if request.method == 'POST':
+        code = request.POST.get('code')
+        if code == '2005':
+            adhesion.code_testeuse_utilise = True
+            adhesion.save()
+            return redirect('home')
+        else:
+            messages.error(request, "Code invalide.")
+
+    code_valide = request.session.get('code_testeuse_valide', False)
+    
+    return render(request, 'core/rejoindre_statut.html', {
+        'adhesion': adhesion,
+        'code_valide': code_valide
     })

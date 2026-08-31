@@ -196,10 +196,12 @@
           </a>
         </div>
         {% else %}
+        {% block header_actions %}
         <nav class="nav-visiteur" aria-label="Navigation visiteur">
           <a href="{% url 'login' %}" translate="no">Connexion</a>
           <a href="{% url 'register' %}" class="bouton-nav-principal" translate="no">Nous Rejoindre</a>
         </nav>
+        {% endblock %}
         {% endif %}
 
         <button class="bouton-menu-mobile" id="mobile-menu-btn" aria-label="Ouvrir le menu" aria-expanded="false">
@@ -277,7 +279,7 @@
             lucide.createIcons();
         }
     </script>
-    <script src="{% static 'js/animations.js' %}"></script>
+    <script src="{% static 'js/animations.js' %}?v={% now 'U' %}"></script>
     <script>
         // Sauvegarde et restauration du scroll pour éviter de remonter en haut lors des soumissions de formulaires
         document.addEventListener("DOMContentLoaded", function() {
@@ -289,8 +291,11 @@
         });
 
         window.addEventListener("beforeunload", function() {
-            sessionStorage.setItem('scrollPosition_' + window.location.pathname, wind        // Animation de la barre de progression au chargement
-                window.addEventListener('load', () => {
+            sessionStorage.setItem('scrollPosition_' + window.location.pathname, window.scrollY);
+        });
+
+        // Animation de la barre de progression au chargement
+        window.addEventListener('load', () => {
             const progressBars = document.querySelectorAll('.progress-bar-fill');
             progressBars.forEach(bar => {
                 const targetWidth = bar.getAttribute('data-width');
