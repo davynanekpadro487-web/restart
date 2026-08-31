@@ -84,19 +84,32 @@
   }
   .photo-overlay-text {
     position: absolute;
-    top: 14px; /* Centré verticalement dans la bande haute */
+    top: 10px; 
     left: 0;
     right: 0;
     text-align: center;
     z-index: 10;
     padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
   }
-  .overlay-main {
+  .overlay-small {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #FAF9F6;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-shadow: 0 1px 3px rgba(10,38,71,0.15);
+  }
+  .overlay-large {
     font-family: 'Great Vibes', cursive;
-    color: #FFFFFF;
-    font-size: 38px;
+    color: #F0D68C; /* Or doux et clair pour bien ressortir sur le fond */
+    font-size: 36px;
     font-weight: 400;
-    line-height: 1.15;
+    line-height: 1.1;
     text-shadow: 0 1px 4px rgba(10,38,71,0.15);
   }
   .landing-sub{
@@ -157,9 +170,9 @@
     display:flex;justify-content:space-between;align-items:center;
   }
   .brand-sig{
-    font-family:'Poppins',sans-serif;font-weight:600;font-size:17px;color:#0A2647;
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:20px;color:#0A2647;
   }
-  .brand-sig span{color:#A9702E;font-weight:600;font-size:12px;letter-spacing:.02em;margin-left:5px;}
+  .brand-sig span{color:#A9702E;font-weight:600;font-size:13.5px;letter-spacing:.02em;margin-left:5px;}
   .member-badge{
     display:flex;align-items:center;
     background:rgba(227, 181, 99, 0.18);
@@ -416,7 +429,8 @@
         <div class="landing-content">
           <div class="landing-photo animate-up d-1">
             <div class="photo-overlay-text">
-              <div class="overlay-main">Tu n'es plus seule</div>
+              <div class="overlay-small">Tu n’es plus seule</div>
+              <div class="overlay-large">tu es avec nous.</div>
             </div>
             <img src="{% static 'images/adhesion/femmes.png' %}" alt="Communauté Auréa">
           </div>
