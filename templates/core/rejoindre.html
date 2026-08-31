@@ -39,13 +39,14 @@
     background:var(--white);
     box-shadow:0 30px 60px -20px rgba(10,38,71,.35);
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; retiré pour éviter les bugs de scroll sur iOS */
   }
 
   /* ============ SCREEN A — LANDING (Version Rose/Or) ============ */
   #screen-landing {
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
     min-height: 100dvh;
     width: 100%;
   }
@@ -193,6 +194,7 @@
   #screen-form {
     display: none;
     flex-direction: column;
+    min-height: 100vh;
     min-height: 100dvh;
     width: 100%;
   }
@@ -296,9 +298,11 @@
   .phone-group {
     display: flex;
     gap: 8px;
+    width: 100%;
   }
   .phone-group select {
     flex: 0 0 42%;
+    min-width: 0; /* Empêche le select de déborder sur mobile */
     border: 1.5px solid var(--line);
     background: var(--cream);
     border-radius: 11px;
@@ -320,6 +324,7 @@
   }
   .phone-group .input-shell {
     flex: 1;
+    min-width: 0; /* Empêche l'input de déborder */
   }
 
   .genre-row{display:flex;gap:9px;}
