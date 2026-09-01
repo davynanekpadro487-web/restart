@@ -29,8 +29,7 @@
     color:var(--text);
     background:#EDEEF0;
     -webkit-font-smoothing:antialiased;
-    min-height: 100vh;
-    min-height: 100dvh;
+    width: 100%;
     display: flex;
     justify-content: center;
   }
@@ -38,13 +37,11 @@
   .adhesion-phone{
     width:100%;
     max-width: 768px;
-    background: var(--white);
+    background: transparent;
     box-shadow: 0 30px 60px -20px rgba(10,38,71,.1);
     position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    min-height: 100dvh;
     overflow-x: hidden;
   }
 
@@ -52,9 +49,10 @@
   #screen-landing {
     display: flex;
     flex-direction: column;
-    flex: 1;
     background: linear-gradient(160deg, #EEC0C8 0%, #F2CDA6 55%, #E3B563 100%);
     width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .landing{
@@ -77,8 +75,7 @@
   }
   .landing-photo{
     width:100%;
-    max-width:340px;
-    aspect-ratio:3/2;
+    max-width: none;
     border-radius:20px;
     overflow:hidden;
     margin-bottom:28px;
@@ -204,8 +201,10 @@
   #screen-form {
     display: none;
     flex-direction: column;
-    flex: 1;
+    background: var(--cream);
     width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
   .formscr { 
     flex: 1; 
@@ -479,14 +478,16 @@
       padding: 0 16px;
     }
     .landing-content {
-      padding: 70px 20px 24px;
+      padding: 70px 16px 24px;
     }
     .landing-photo {
-      margin-bottom: 16px;
+      border-radius: 16px;
+      margin-bottom: 20px;
     }
+    .landing-title { font-size: 26px; }
     .form-card {
-      margin: -24px 20px 40px;
-      width: calc(100% - 40px);
+      margin: -24px 16px 40px;
+      width: calc(100% - 32px);
       padding: 24px 20px;
     }
     .brand-sig { font-size: 18px; }
