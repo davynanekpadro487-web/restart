@@ -708,22 +708,6 @@
   </a>
 </div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    var form = document.getElementById('adhesion-form');
-    if (form) {
-      form.addEventListener('submit', function(e) {
-        var indicatif = document.getElementById('indicatif').value;
-        var numeroLocal = document.getElementById('numero-local').value.trim();
-        
-        // Supprimer les espaces et tirets pour avoir un numéro propre
-        var numeroPropre = numeroLocal.replace(/[\s-]/g, '');
-        
-        // Concaténer et affecter au champ caché
-        document.getElementById('telephone').value = indicatif + numeroPropre;
-      });
-    }
-  });
-</script>
+
 
 {% endblock %}

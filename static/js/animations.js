@@ -92,6 +92,15 @@ document.addEventListener('submit', (e) => {
             document.getElementById('err-age').style.display = 'none'; 
         }
 
+        const indicatif = document.getElementById('indicatif');
+        const numeroLocal = document.getElementById('numero-local');
+        const telHidden = document.getElementById('telephone');
+        
+        if (indicatif && numeroLocal && telHidden) {
+            const numeroPropre = numeroLocal.value.trim().replace(/[\s-]/g, '');
+            telHidden.value = indicatif.value + numeroPropre;
+        }
+
         const tel = document.getElementById('telephone');
         if (tel && !tel.value.trim()) { 
             document.getElementById('err-tel').style.display = 'block'; isValid = false; 

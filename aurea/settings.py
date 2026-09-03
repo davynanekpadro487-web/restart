@@ -153,6 +153,9 @@ _trusted = os.getenv(
 )
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in _trusted.split(',') if o.strip()]
 
+# Résolution des erreurs CSRF derrière un reverse proxy (ex: Render)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Cookies sécurisés uniquement sur HTTPS (activé en prod, inoffensif en local
 IS_PRODUCTION = not DEBUG
 CSRF_COOKIE_SECURE    = IS_PRODUCTION
